@@ -1966,7 +1966,7 @@ function renderQuotationPreview() {
   const companyContact = 'Mob: +91 9911678386 | Email: asprintgallery742@gmail.com';
 
 
-  const companyGstin = 'GSTIN: 09XXXXX0000X1Z5 | PAN: XXXXX0000X';
+  const companyGstin = 'GSTIN: 09AWKPN5910E1ZG';
 
 
 
