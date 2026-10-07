@@ -1,5 +1,6 @@
 // Complete Printing Cost Calculator Web Application Engine
-// Preserving the Exact Mathematical Algorithm with Leaf (Lamination-Style), Plates Charges, and Die Charges
+// Preserving the Exact Mathematical Algorithm with 100% Precision
+// Full Bidirectional Sync for Dropdowns, Divisor Chips & Inputs
 
 function n(id) {
   const el = document.getElementById(id);
@@ -75,6 +76,7 @@ const PRESETS = {
   }
 };
 
+// Main Calculation Engine (Strictly preserves user's exact mathematical equations)
 function calculate() {
   const batchQty = n('batchQty') || 1;
 
@@ -98,7 +100,7 @@ function calculate() {
   let lamPaise = (d && lamType !== 'None') ? ((ll * lw) / d) : 0;
   const lamCost = lamPaise / 100;
 
-  // 3. Leaf / Foil (Lamination ki tarah formula): (Length * Width / Divide By) = Paise -> Rupees + Block Charges
+  // 3. Leaf / Foil (Lamination style formula): (Length * Width / Divide By) = Paise -> Rupees + Block
   const leafType = document.getElementById('leafType') ? document.getElementById('leafType').value : 'None';
   const leafL = n('leafL');
   const leafW = n('leafW');
@@ -135,7 +137,7 @@ function calculate() {
   const wastageCost = (direct * wastage) / 100;
   const cost = direct + wastageCost;
 
-  // Profit & Final Sale Price
+  // Margin & Final Sale Price
   const profit = n('profit');
   const profitAmount = (cost * profit) / 100;
   const finalPrice = cost + profitAmount;
@@ -177,7 +179,7 @@ function calculate() {
     if (leafType === 'None') {
       leafCostEl.textContent = '₹0.00';
     } else {
-      leafCostEl.textContent = `${lamPaise.toFixed(0) ? leafPaise.toFixed(2) + 'p' : ''} (${money(totalLeafPerSheet)})`;
+      leafCostEl.textContent = `${leafPaise.toFixed(2)}p (${money(totalLeafPerSheet)})`;
     }
   }
 
@@ -229,6 +231,7 @@ function calculate() {
   }
 
   updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType);
+  syncActiveChips();
 }
 
 function updateText(id, text) {
@@ -295,6 +298,166 @@ function updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType) {
   }
 }
 
+// -------------------------------------------------------------
+// Bidirectional Handlers for Dropdowns & Chips
+// -------------------------------------------------------------
+
+// Dropdown Change: When user selects Lamination type from dropdown
+function handleLamTypeChange() {
+  const lamType = document.getElementById('lamType').value;
+  const divideEl = document.getElementById('divide');
+
+  if (lamType === 'Gloss') {
+    divideEl.value = 2.5;
+  } else if (lamType === 'Matt') {
+    divideEl.value = 2.2;
+  } else if (lamType === 'Velvet') {
+    divideEl.value = 1.8;
+  } else if (lamType === 'Thermal') {
+    divideEl.value = 2.0;
+  }
+
+  calculate();
+}
+
+// Dropdown Change: When user selects Leaf/Foil type from dropdown
+function handleLeafTypeChange() {
+  const leafType = document.getElementById('leafType').value;
+  const leafDivideEl = document.getElementById('leafDivide');
+
+  if (leafType === 'Gold Foil' || leafType === 'Silver Foil' || leafType === 'Copper Foil' || leafType === 'Red Foil') {
+    leafDivideEl.value = 2.5;
+  } else if (leafType === 'Rose Gold') {
+    leafDivideEl.value = 2.2;
+  } else if (leafType === 'Holographic') {
+    leafDivideEl.value = 2.0;
+  }
+
+  calculate();
+}
+
+// Chip Click: When user clicks Lamination chip below
+function setLaminationDivider(val, name) {
+  document.getElementById('divide').value = val;
+  if (name) {
+    document.getElementById('lamType').value = name;
+  }
+  calculate();
+}
+
+// Chip Click: When user clicks Leaf chip below
+function setLeafDivider(val, name) {
+  document.getElementById('leafDivide').value = val;
+  if (name) {
+    document.getElementById('leafType').value = name;
+  }
+  calculate();
+}
+
+// Quick Sheet Size Selector
+function setSheetSize(sl, sw) {
+  document.getElementById('sl').value = sl;
+  document.getElementById('sw').value = sw;
+  calculate();
+}
+
+// Quick Batch Pill
+function setBatchQty(qty) {
+  document.getElementById('batchQty').value = qty;
+  calculate();
+}
+
+// Dynamic Chip Highlighting (Keeps UI fully in sync with current state)
+function syncActiveChips() {
+  const sl = n('sl'), sw = n('sw');
+  const gsm = n('gsm');
+  const paperRate = n('paperRate');
+  const lamType = document.getElementById('lamType')?.value;
+  const divide = n('divide');
+  const leafType = document.getElementById('leafType')?.value;
+  const leafDivide = n('leafDivide');
+  const leafBlock = n('leafBlock');
+  const printing = n('printing');
+  const plates = n('plates');
+  const die = n('die');
+  const dieCharges = n('dieCharges');
+  const wastage = n('wastage');
+  const profit = n('profit');
+  const batchQty = n('batchQty');
+
+  // Sheet Size chips
+  document.querySelectorAll('[data-chip-type="size"]').forEach(btn => {
+    const bSl = parseFloat(btn.getAttribute('data-sl'));
+    const bSw = parseFloat(btn.getAttribute('data-sw'));
+    btn.classList.toggle('active', (sl === bSl && sw === bSw) || (sl === bSw && sw === bSl));
+  });
+
+  // GSM chips
+  document.querySelectorAll('[data-chip-type="gsm"]').forEach(btn => {
+    btn.classList.toggle('active', gsm === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Paper Rate chips
+  document.querySelectorAll('[data-chip-type="paperRate"]').forEach(btn => {
+    btn.classList.toggle('active', paperRate === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Lamination Factor chips
+  document.querySelectorAll('[data-chip-type="lamFactor"]').forEach(btn => {
+    const bName = btn.getAttribute('data-name');
+    const bVal = parseFloat(btn.getAttribute('data-val'));
+    btn.classList.toggle('active', lamType === bName && Math.abs(divide - bVal) < 0.01);
+  });
+
+  // Leaf Factor chips
+  document.querySelectorAll('[data-chip-type="leafFactor"]').forEach(btn => {
+    const bName = btn.getAttribute('data-name');
+    const bVal = parseFloat(btn.getAttribute('data-val'));
+    btn.classList.toggle('active', leafType === bName && Math.abs(leafDivide - bVal) < 0.01);
+  });
+
+  // Leaf Block chips
+  document.querySelectorAll('[data-chip-type="leafBlock"]').forEach(btn => {
+    btn.classList.toggle('active', leafBlock === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Printing chips
+  document.querySelectorAll('[data-chip-type="printing"]').forEach(btn => {
+    btn.classList.toggle('active', Math.abs(printing - parseFloat(btn.getAttribute('data-val'))) < 0.01);
+  });
+
+  // Plates chips
+  document.querySelectorAll('[data-chip-type="plates"]').forEach(btn => {
+    btn.classList.toggle('active', plates === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Die Cutting chips
+  document.querySelectorAll('[data-chip-type="die"]').forEach(btn => {
+    btn.classList.toggle('active', Math.abs(die - parseFloat(btn.getAttribute('data-val'))) < 0.01);
+  });
+
+  // Die Charges chips
+  document.querySelectorAll('[data-chip-type="dieCharges"]').forEach(btn => {
+    btn.classList.toggle('active', dieCharges === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Wastage chips
+  document.querySelectorAll('[data-chip-type="wastage"]').forEach(btn => {
+    btn.classList.toggle('active', wastage === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Margin chips
+  document.querySelectorAll('[data-chip-type="profit"]').forEach(btn => {
+    btn.classList.toggle('active', profit === parseFloat(btn.getAttribute('data-val')));
+  });
+
+  // Batch pills
+  document.querySelectorAll('.batch-pill').forEach(btn => {
+    const bQty = parseFloat(btn.getAttribute('data-qty'));
+    btn.classList.toggle('active', batchQty === bQty);
+  });
+}
+
 function syncDimensions() {
   const sl = document.getElementById('sl').value;
   const sw = document.getElementById('sw').value;
@@ -358,30 +521,6 @@ function loadPreset(key) {
   calculate();
 }
 
-function setLaminationDivider(val, name) {
-  document.getElementById('divide').value = val;
-  if (name) {
-    document.getElementById('lamType').value = name;
-  }
-  calculate();
-}
-
-function setLeafDivider(val, name) {
-  document.getElementById('leafDivide').value = val;
-  if (name) {
-    document.getElementById('leafType').value = name;
-  }
-  calculate();
-}
-
-function setBatchQty(qty) {
-  document.getElementById('batchQty').value = qty;
-  document.querySelectorAll('.batch-pill').forEach(el => el.classList.remove('active'));
-  const btn = document.getElementById('batch-' + qty);
-  if (btn) btn.classList.add('active');
-  calculate();
-}
-
 function resetCalculator() {
   document.getElementById('sl').value = 23;
   document.getElementById('sw').value = 18;
@@ -413,6 +552,8 @@ function resetCalculator() {
   document.getElementById('wastage').value = 0;
   document.getElementById('profit').value = 0;
   document.getElementById('batchQty').value = 1000;
+
+  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
 
   showToast('Reset to default values');
   calculate();
@@ -710,11 +851,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const icon = document.getElementById('themeIcon');
   if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
 
+  // Listen to all inputs and selects
   const allInputs = document.querySelectorAll('input, select');
   allInputs.forEach(input => {
     input.addEventListener('input', calculate);
     input.addEventListener('change', calculate);
   });
+
+  // Dedicated Dropdown change listeners for instant factor update
+  const lamTypeSelect = document.getElementById('lamType');
+  if (lamTypeSelect) {
+    lamTypeSelect.addEventListener('change', handleLamTypeChange);
+  }
+
+  const leafTypeSelect = document.getElementById('leafType');
+  if (leafTypeSelect) {
+    leafTypeSelect.addEventListener('change', handleLeafTypeChange);
+  }
 
   calculate();
 });

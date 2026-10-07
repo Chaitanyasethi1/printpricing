@@ -119,12 +119,12 @@
 
           <div class="chips-row">
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Sizes:</span>
-            <button class="chip" onclick="setVal('sl', 18); setVal('sw', 23);">18×23"</button>
-            <button class="chip" onclick="setVal('sl', 20); setVal('sw', 30);">20×30"</button>
-            <button class="chip" onclick="setVal('sl', 23); setVal('sw', 36);">23×36"</button>
-            <button class="chip" onclick="setVal('sl', 25); setVal('sw', 36);">25×36"</button>
-            <button class="chip" onclick="setVal('sl', 28); setVal('sw', 40);">28×40"</button>
-            <button class="chip" onclick="setVal('sl', 12); setVal('sw', 18);">12×18"</button>
+            <button class="chip" data-chip-type="size" data-sl="18" data-sw="23" onclick="setSheetSize(18, 23)">18×23"</button>
+            <button class="chip" data-chip-type="size" data-sl="20" data-sw="30" onclick="setSheetSize(20, 30)">20×30"</button>
+            <button class="chip" data-chip-type="size" data-sl="23" data-sw="36" onclick="setSheetSize(23, 36)">23×36"</button>
+            <button class="chip" data-chip-type="size" data-sl="25" data-sw="36" onclick="setSheetSize(25, 36)">25×36"</button>
+            <button class="chip" data-chip-type="size" data-sl="28" data-sw="40" onclick="setSheetSize(28, 40)">28×40"</button>
+            <button class="chip" data-chip-type="size" data-sl="12" data-sw="18" onclick="setSheetSize(12, 18)">12×18"</button>
           </div>
 
           <div class="grid-2" style="margin-top:10px;">
@@ -135,12 +135,12 @@
                 <span class="input-suffix">gsm</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('gsm', 80)">80g</button>
-                <button class="chip" onclick="setVal('gsm', 130)">130g</button>
-                <button class="chip" onclick="setVal('gsm', 170)">170g</button>
-                <button class="chip" onclick="setVal('gsm', 250)">250g</button>
-                <button class="chip" onclick="setVal('gsm', 300)">300g</button>
-                <button class="chip" onclick="setVal('gsm', 350)">350g</button>
+                <button class="chip" data-chip-type="gsm" data-val="80" onclick="setVal('gsm', 80)">80g</button>
+                <button class="chip" data-chip-type="gsm" data-val="130" onclick="setVal('gsm', 130)">130g</button>
+                <button class="chip" data-chip-type="gsm" data-val="170" onclick="setVal('gsm', 170)">170g</button>
+                <button class="chip" data-chip-type="gsm" data-val="250" onclick="setVal('gsm', 250)">250g</button>
+                <button class="chip" data-chip-type="gsm" data-val="300" onclick="setVal('gsm', 300)">300g</button>
+                <button class="chip" data-chip-type="gsm" data-val="350" onclick="setVal('gsm', 350)">350g</button>
               </div>
             </div>
             <div class="input-field">
@@ -150,11 +150,11 @@
                 <span class="input-suffix">₹/kg</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('paperRate', 65)">₹65</button>
-                <button class="chip" onclick="setVal('paperRate', 75)">₹75</button>
-                <button class="chip" onclick="setVal('paperRate', 85)">₹85</button>
-                <button class="chip" onclick="setVal('paperRate', 95)">₹95</button>
-                <button class="chip" onclick="setVal('paperRate', 110)">₹110</button>
+                <button class="chip" data-chip-type="paperRate" data-val="65" onclick="setVal('paperRate', 65)">₹65</button>
+                <button class="chip" data-chip-type="paperRate" data-val="75" onclick="setVal('paperRate', 75)">₹75</button>
+                <button class="chip" data-chip-type="paperRate" data-val="85" onclick="setVal('paperRate', 85)">₹85</button>
+                <button class="chip" data-chip-type="paperRate" data-val="95" onclick="setVal('paperRate', 95)">₹95</button>
+                <button class="chip" data-chip-type="paperRate" data-val="110" onclick="setVal('paperRate', 110)">₹110</button>
               </div>
             </div>
           </div>
@@ -171,7 +171,7 @@
             <div class="input-field">
               <label for="lamType">Lamination Type</label>
               <div class="input-wrapper">
-                <select id="lamType">
+                <select id="lamType" onchange="handleLamTypeChange()">
                   <option value="None">None (No Lamination)</option>
                   <option value="Matt">Matt Lamination</option>
                   <option value="Gloss">Gloss Lamination</option>
@@ -191,10 +191,10 @@
 
           <div class="chips-row" style="margin-top:8px;">
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Common Factors:</span>
-            <button class="chip" onclick="setLaminationDivider(2.5, 'Gloss')">Gloss (2.5)</button>
-            <button class="chip" onclick="setLaminationDivider(2.2, 'Matt')">Matt (2.2)</button>
-            <button class="chip" onclick="setLaminationDivider(1.8, 'Velvet')">Velvet (1.8)</button>
-            <button class="chip" onclick="setLaminationDivider(2.0, 'Thermal')">Thermal (2.0)</button>
+            <button class="chip" data-chip-type="lamFactor" data-name="Gloss" data-val="2.5" onclick="setLaminationDivider(2.5, 'Gloss')">Gloss (2.5)</button>
+            <button class="chip" data-chip-type="lamFactor" data-name="Matt" data-val="2.2" onclick="setLaminationDivider(2.2, 'Matt')">Matt (2.2)</button>
+            <button class="chip" data-chip-type="lamFactor" data-name="Velvet" data-val="1.8" onclick="setLaminationDivider(1.8, 'Velvet')">Velvet (1.8)</button>
+            <button class="chip" data-chip-type="lamFactor" data-name="Thermal" data-val="2.0" onclick="setLaminationDivider(2.0, 'Thermal')">Thermal (2.0)</button>
           </div>
 
           <div class="grid-2" style="margin-top:10px;">
@@ -226,7 +226,7 @@
             <div class="input-field">
               <label for="leafType">Leaf / Foil Type</label>
               <div class="input-wrapper">
-                <select id="leafType">
+                <select id="leafType" onchange="handleLeafTypeChange()">
                   <option value="None">None (No Leaf / Foil)</option>
                   <option value="Gold Foil">Gold Foil</option>
                   <option value="Silver Foil">Silver Foil</option>
@@ -248,10 +248,10 @@
 
           <div class="chips-row" style="margin-top:8px;">
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Foils:</span>
-            <button class="chip" onclick="setLeafDivider(2.5, 'Gold Foil')">Gold (2.5)</button>
-            <button class="chip" onclick="setLeafDivider(2.5, 'Silver Foil')">Silver (2.5)</button>
-            <button class="chip" onclick="setLeafDivider(2.2, 'Rose Gold')">Rose Gold (2.2)</button>
-            <button class="chip" onclick="setLeafDivider(2.0, 'Holographic')">Holographic (2.0)</button>
+            <button class="chip" data-chip-type="leafFactor" data-name="Gold Foil" data-val="2.5" onclick="setLeafDivider(2.5, 'Gold Foil')">Gold (2.5)</button>
+            <button class="chip" data-chip-type="leafFactor" data-name="Silver Foil" data-val="2.5" onclick="setLeafDivider(2.5, 'Silver Foil')">Silver (2.5)</button>
+            <button class="chip" data-chip-type="leafFactor" data-name="Rose Gold" data-val="2.2" onclick="setLeafDivider(2.2, 'Rose Gold')">Rose Gold (2.2)</button>
+            <button class="chip" data-chip-type="leafFactor" data-name="Holographic" data-val="2.0" onclick="setLeafDivider(2.0, 'Holographic')">Holographic (2.0)</button>
           </div>
 
           <div class="grid-3" style="margin-top:10px;">
@@ -279,9 +279,9 @@
           </div>
           <div class="chips-row" style="margin-top:6px;">
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Block:</span>
-            <button class="chip" onclick="setVal('leafBlock', 250)">₹250 (Small)</button>
-            <button class="chip" onclick="setVal('leafBlock', 450)">₹450 (Medium)</button>
-            <button class="chip" onclick="setVal('leafBlock', 750)">₹750 (Large)</button>
+            <button class="chip" data-chip-type="leafBlock" data-val="250" onclick="setVal('leafBlock', 250)">₹250 (Small)</button>
+            <button class="chip" data-chip-type="leafBlock" data-val="450" onclick="setVal('leafBlock', 450)">₹450 (Medium)</button>
+            <button class="chip" data-chip-type="leafBlock" data-val="750" onclick="setVal('leafBlock', 750)">₹750 (Large)</button>
           </div>
         </section>
 
@@ -300,9 +300,9 @@
                 <span class="input-suffix">₹/sh</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('printing', 0.80)">₹0.80 (1 Color)</button>
-                <button class="chip" onclick="setVal('printing', 1.50)">₹1.50 (4 Color)</button>
-                <button class="chip" onclick="setVal('printing', 2.50)">₹2.50 (6 Color)</button>
+                <button class="chip" data-chip-type="printing" data-val="0.8" onclick="setVal('printing', 0.80)">₹0.80 (1 Color)</button>
+                <button class="chip" data-chip-type="printing" data-val="1.5" onclick="setVal('printing', 1.50)">₹1.50 (4 Color)</button>
+                <button class="chip" data-chip-type="printing" data-val="2.5" onclick="setVal('printing', 2.50)">₹2.50 (6 Color)</button>
               </div>
             </div>
 
@@ -313,10 +313,10 @@
                 <span class="input-suffix">₹</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('plates', 200)">₹200 (1 Plt)</button>
-                <button class="chip" onclick="setVal('plates', 400)">₹400 (2 Plt)</button>
-                <button class="chip" onclick="setVal('plates', 800)">₹800 (4 Plt)</button>
-                <button class="chip" onclick="setVal('plates', 1200)">₹1200 (6 Plt)</button>
+                <button class="chip" data-chip-type="plates" data-val="200" onclick="setVal('plates', 200)">₹200 (1 Plt)</button>
+                <button class="chip" data-chip-type="plates" data-val="400" onclick="setVal('plates', 400)">₹400 (2 Plt)</button>
+                <button class="chip" data-chip-type="plates" data-val="800" onclick="setVal('plates', 800)">₹800 (4 Plt)</button>
+                <button class="chip" data-chip-type="plates" data-val="1200" onclick="setVal('plates', 1200)">₹1200 (6 Plt)</button>
               </div>
             </div>
           </div>
@@ -337,9 +337,9 @@
                 <span class="input-suffix">₹/sh</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('die', 0.30)">₹0.30</button>
-                <button class="chip" onclick="setVal('die', 0.50)">₹0.50</button>
-                <button class="chip" onclick="setVal('die', 0.80)">₹0.80</button>
+                <button class="chip" data-chip-type="die" data-val="0.3" onclick="setVal('die', 0.30)">₹0.30</button>
+                <button class="chip" data-chip-type="die" data-val="0.5" onclick="setVal('die', 0.50)">₹0.50</button>
+                <button class="chip" data-chip-type="die" data-val="0.8" onclick="setVal('die', 0.80)">₹0.80</button>
               </div>
             </div>
 
@@ -350,9 +350,9 @@
                 <span class="input-suffix">₹</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('dieCharges', 350)">₹350 (Std)</button>
-                <button class="chip" onclick="setVal('dieCharges', 600)">₹600 (Laser)</button>
-                <button class="chip" onclick="setVal('dieCharges', 1000)">₹1000 (Complex)</button>
+                <button class="chip" data-chip-type="dieCharges" data-val="350" onclick="setVal('dieCharges', 350)">₹350 (Std)</button>
+                <button class="chip" data-chip-type="dieCharges" data-val="600" onclick="setVal('dieCharges', 600)">₹600 (Laser)</button>
+                <button class="chip" data-chip-type="dieCharges" data-val="1000" onclick="setVal('dieCharges', 1000)">₹1000 (Complex)</button>
               </div>
             </div>
           </div>
@@ -404,10 +404,10 @@
                 <span class="input-suffix">%</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('wastage', 2)">2%</button>
-                <button class="chip" onclick="setVal('wastage', 4)">4%</button>
-                <button class="chip" onclick="setVal('wastage', 5)">5%</button>
-                <button class="chip" onclick="setVal('wastage', 8)">8%</button>
+                <button class="chip" data-chip-type="wastage" data-val="2" onclick="setVal('wastage', 2)">2%</button>
+                <button class="chip" data-chip-type="wastage" data-val="4" onclick="setVal('wastage', 4)">4%</button>
+                <button class="chip" data-chip-type="wastage" data-val="5" onclick="setVal('wastage', 5)">5%</button>
+                <button class="chip" data-chip-type="wastage" data-val="8" onclick="setVal('wastage', 8)">8%</button>
               </div>
             </div>
 
@@ -418,10 +418,10 @@
                 <span class="input-suffix">%</span>
               </div>
               <div class="chips-row">
-                <button class="chip" onclick="setVal('profit', 10)">10%</button>
-                <button class="chip" onclick="setVal('profit', 15)">15%</button>
-                <button class="chip" onclick="setVal('profit', 20)">20%</button>
-                <button class="chip" onclick="setVal('profit', 25)">25%</button>
+                <button class="chip" data-chip-type="profit" data-val="10" onclick="setVal('profit', 10)">10%</button>
+                <button class="chip" data-chip-type="profit" data-val="15" onclick="setVal('profit', 15)">15%</button>
+                <button class="chip" data-chip-type="profit" data-val="20" onclick="setVal('profit', 20)">20%</button>
+                <button class="chip" data-chip-type="profit" data-val="25" onclick="setVal('profit', 25)">25%</button>
               </div>
             </div>
           </div>
@@ -473,11 +473,11 @@
         </div>
 
         <div class="batch-pills">
-          <button class="batch-pill" id="batch-500" onclick="setBatchQty(500)">500</button>
-          <button class="batch-pill active" id="batch-1000" onclick="setBatchQty(1000)">1,000</button>
-          <button class="batch-pill" id="batch-2500" onclick="setBatchQty(2500)">2,500</button>
-          <button class="batch-pill" id="batch-5000" onclick="setBatchQty(5000)">5,000</button>
-          <button class="batch-pill" id="batch-10000" onclick="setBatchQty(10000)">10,000</button>
+          <button class="batch-pill" data-qty="500" id="batch-500" onclick="setBatchQty(500)">500</button>
+          <button class="batch-pill active" data-qty="1000" id="batch-1000" onclick="setBatchQty(1000)">1,000</button>
+          <button class="batch-pill" data-qty="2500" id="batch-2500" onclick="setBatchQty(2500)">2,500</button>
+          <button class="batch-pill" data-qty="5000" id="batch-5000" onclick="setBatchQty(5000)">5,000</button>
+          <button class="batch-pill" data-qty="10000" id="batch-10000" onclick="setBatchQty(10000)">10,000</button>
         </div>
 
         <div class="batch-summary">
