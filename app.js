@@ -520,6 +520,7 @@ function openQuotationModal() {
           </div>
         </div>
 
+        <div class="quote-table-wrapper">
         <table class="quote-table">
           <thead>
             <tr>
@@ -620,6 +621,7 @@ function openQuotationModal() {
             </tr>
           </tbody>
         </table>
+        </div>
 
         <div style="margin-top:1.5rem; font-size:0.75rem; color:#64748b; border-top:1px dashed #cbd5e1; padding-top:10px;">
           <div><b>Terms & Conditions:</b></div>
