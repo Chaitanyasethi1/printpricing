@@ -1930,6 +1930,24 @@ function numberToIndianWords(num) {
 
 
 
+
+function handleGstTypeChange() {
+  const type = document.getElementById('quoteGstType')?.value || 'igst';
+  const percentField = document.getElementById('customGstRateField');
+  const percentInput = document.getElementById('quoteGstPercentInput');
+  
+  if (type === 'exempt') {
+    if (percentInput) percentInput.value = '0';
+  } else if (type === 'extra') {
+    if (percentInput) percentInput.value = '18';
+  } else {
+    if (percentInput && (percentInput.value === '0' || !percentInput.value)) {
+      percentInput.value = '18';
+    }
+  }
+  renderQuotationPreview();
+}
+
 function renderQuotationPreview() {
 
 
@@ -2149,89 +2167,34 @@ function renderQuotationPreview() {
 
 
 
-  // GST Calculation
-
+    // Manual GST % Input Calculation
+  const gstType = document.getElementById('quoteGstType')?.value || 'igst';
+  const enteredGstRate = parseFloat(document.getElementById('quoteGstPercentInput')?.value) || 0;
 
   let cgstRate = 0, cgstAmount = 0;
-
-
   let sgstRate = 0, sgstAmount = 0;
-
-
   let igstRate = 0, igstAmount = 0;
+  let isGstExtra = false;
 
-
-
-
-
-  if (gstOption === 'igst_18') {
-
-
-    igstRate = 18.0;
-
-
-    igstAmount = (batchTotalPrice * 18) / 100;
-
-
-  } else if (gstOption === 'cgst_sgst_18') {
-
-
-    cgstRate = 9.0;
-
-
-    cgstAmount = (batchTotalPrice * 9) / 100;
-
-
-    sgstRate = 9.0;
-
-
-    sgstAmount = (batchTotalPrice * 9) / 100;
-
-
-  } else if (gstOption === 'igst_12') {
-
-
-    igstRate = 12.0;
-
-
-    igstAmount = (batchTotalPrice * 12) / 100;
-
-
-  } else if (gstOption === 'cgst_sgst_12') {
-
-
-    cgstRate = 6.0;
-
-
-    cgstAmount = (batchTotalPrice * 6) / 100;
-
-
-    sgstRate = 6.0;
-
-
-    sgstAmount = (batchTotalPrice * 6) / 100;
-
-
-  } else if (gstOption === 'cgst_sgst_5') {
-
-
-    cgstRate = 2.5;
-
-
-    cgstAmount = (batchTotalPrice * 2.5) / 100;
-
-
-    sgstRate = 2.5;
-
-
-    sgstAmount = (batchTotalPrice * 2.5) / 100;
-
-
+  if (gstType === 'exempt' || enteredGstRate === 0) {
+    // 0% Tax
+    cgstRate = 0; sgstRate = 0; igstRate = 0;
+  } else if (gstType === 'extra') {
+    // GST Extra Note (not added to subtotal invoice)
+    isGstExtra = true;
+    igstRate = enteredGstRate;
+  } else if (gstType === 'cgst_sgst') {
+    // Split into equal halves
+    const halfRate = enteredGstRate / 2;
+    cgstRate = halfRate;
+    cgstAmount = (batchTotalPrice * halfRate) / 100;
+    sgstRate = halfRate;
+    sgstAmount = (batchTotalPrice * halfRate) / 100;
+  } else {
+    // Default IGST
+    igstRate = enteredGstRate;
+    igstAmount = (batchTotalPrice * enteredGstRate) / 100;
   }
-
-
-
-
 
   const totalTaxAmount = cgstAmount + sgstAmount + igstAmount;
 
