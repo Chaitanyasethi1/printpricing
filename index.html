@@ -2036,256 +2036,59 @@
 
 
         <!-- Settings Form (Hidden in Print) -->
-
-
         <div class="no-print" style="background:var(--bg-card-sub); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; margin-bottom:1.25rem;">
-
-
           <div style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-
-
-            <span>⚙️ Quotation & Letterhead Settings</span>
-
-
+            <span>👤 Enter Customer & Job Details</span>
+            <span style="font-size:0.75rem; color:#4f46e5; font-weight:700;">🏢 AS Print Gallery (Letterhead Fixed)</span>
           </div>
 
-
-
-
-
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
-
-
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
             <div class="input-field">
-
-
-              <label>Your Company / Press Name</label>
-
-
+              <label>Customer / M/s Party Name</label>
               <div class="input-wrapper">
-
-
-                <input id="companyNameInput" type="text" value="AS PRINT GALLERY" oninput="renderQuotationPreview()">
-
-
+                <input id="clientNameInput" type="text" placeholder="e.g. M/s Shiv Engineering" value="M/s Shiv Engineering" oninput="renderQuotationPreview()">
               </div>
-
-
             </div>
-
-
             <div class="input-field">
-
-
-              <label>Tagline / Work Scope</label>
-
-
-              <div class="input-wrapper">
-
-
-                <input id="companyTaglineInput" type="text" value="Commercial Printing, Packaging & Box Manufacturing" oninput="renderQuotationPreview()">
-
-
-              </div>
-
-
-            </div>
-
-
-            <div class="input-field">
-
-
-              <label>Your Address & City</label>
-
-
-              <div class="input-wrapper">
-
-
-                <input id="companyAddressInput" type="text" value="Kh No. 2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, Uttar Pradesh - 201102" oninput="renderQuotationPreview()">
-
-
-              </div>
-
-
-            </div>
-
-
-            <div class="input-field">
-
-
-              <label>Phone / Email / Web</label>
-
-
-              <div class="input-wrapper">
-
-
-                <input id="companyContactInput" type="text" value="Mob: +91 9911678386 | Email: asprintgallery742@gmail.com" oninput="renderQuotationPreview()">
-
-
-              </div>
-
-
-            </div>
-
-
-            <div class="input-field">
-
-
-              <label>Your PAN & GSTIN</label>
-
-
-              <div class="input-wrapper">
-
-
-                <input id="companyGstinInput" type="text" value="GSTIN: 09XXXXX0000X1Z5 | PAN: XXXXX0000X" oninput="renderQuotationPreview()">
-
-
-              </div>
-
-
-            </div>
-
-
-            <div class="input-field">
-
-
-              <label>Customer / M/s Name</label>
-
-
-              <div class="input-wrapper">
-
-
-                <input id="clientNameInput" type="text" placeholder="e.g. Acme Corporation" value="M/s Shiv Engineering" oninput="renderQuotationPreview()">
-
-
-              </div>
-
-
-            </div>
-
-
-            <div class="input-field">
-
-
               <label>Customer Address & State</label>
-
-
               <div class="input-wrapper">
-
-
-                <input id="clientAddressInput" type="text" placeholder="e.g. Kochi, Kerala" value="Sumel Business Park 7, Kochi, Kerala - 380023" oninput="renderQuotationPreview()">
-
-
+                <input id="clientAddressInput" type="text" placeholder="e.g. Sumel Business Park 7, Kochi, Kerala - 380023" value="Sumel Business Park 7, Kochi, Kerala - 380023" oninput="renderQuotationPreview()">
               </div>
-
-
             </div>
-
-
             <div class="input-field">
-
-
-              <label>Customer GSTIN & Phone</label>
-
-
+              <label>Customer GSTIN / Phone</label>
               <div class="input-wrapper">
-
-
-                <input id="clientGstinInput" type="text" placeholder="e.g. 32AABBA7890B1ZB" value="GSTIN: 32AABBA7890B1ZB | Ph: 9878789878" oninput="renderQuotationPreview()">
-
-
+                <input id="clientGstinInput" type="text" placeholder="e.g. GSTIN: 32AABBA7890B1ZB | Ph: 9878789878" value="GSTIN: 32AABBA7890B1ZB | Ph: 9878789878" oninput="renderQuotationPreview()">
               </div>
-
-
             </div>
-
-
             <div class="input-field">
-
-
               <label>Job / Item Title</label>
-
-
               <div class="input-wrapper">
-
-
-                <input id="jobTitleInput" type="text" placeholder="e.g. Sweet Box" value="Premium 500g Sweet Box Packaging" oninput="renderQuotationPreview()">
-
-
+                <input id="jobTitleInput" type="text" placeholder="e.g. Premium 500g Sweet Box" value="Premium 500g Sweet Box Packaging" oninput="renderQuotationPreview()">
               </div>
-
-
             </div>
-
-
             <div class="input-field">
-
-
               <label>HSN / SAC Code</label>
-
-
               <div class="input-wrapper">
-
-
                 <input id="hsnInput" type="text" placeholder="e.g. 4819 / 4911" value="4819" oninput="renderQuotationPreview()">
-
-
               </div>
-
-
             </div>
-
-
             <div class="input-field">
-
-
               <label>GST / Tax Option</label>
-
-
               <div class="input-wrapper">
-
-
                 <select id="quoteGstSelect" onchange="renderQuotationPreview()">
-
-
-                  <option value="cgst_sgst_18">CGST 9% + SGST 9% (18% Intra-State)</option>
-
-
                   <option value="igst_18" selected>IGST 18% (Inter-State)</option>
-
-
-                  <option value="cgst_sgst_12">CGST 6% + SGST 6% (12%)</option>
-
-
+                  <option value="cgst_sgst_18">CGST 9% + SGST 9% (18% Intra-State)</option>
                   <option value="igst_12">IGST 12%</option>
-
-
+                  <option value="cgst_sgst_12">CGST 6% + SGST 6% (12%)</option>
                   <option value="cgst_sgst_5">CGST 2.5% + SGST 2.5% (5%)</option>
-
-
                   <option value="0">GST Nil / Exempt (0%)</option>
-
-
                   <option value="extra">GST Extra as applicable</option>
-
-
                 </select>
-
-
               </div>
-
-
             </div>
-
-
           </div>
-
-
         </div>
-
-
-
-
 
         <div id="quotationPreview"></div>
 

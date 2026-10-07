@@ -1954,19 +1954,19 @@ function renderQuotationPreview() {
 
 
 
-  const companyName = document.getElementById('companyNameInput')?.value || 'AS PRINT GALLERY';
+  const companyName = 'AS PRINT GALLERY';
 
 
-  const companyTagline = document.getElementById('companyTaglineInput')?.value || 'Commercial Printing, Packaging & Box Manufacturing';
+  const companyTagline = 'Commercial Printing, Packaging & Box Manufacturing';
 
 
-  const companyAddress = document.getElementById('companyAddressInput')?.value || 'Kh No. 2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, UP - 201102';
+  const companyAddress = 'Kh No. 2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, UP - 201102';
 
 
-  const companyContact = document.getElementById('companyContactInput')?.value || 'Mob: +91 9911678386 | Email: asprintgallery742@gmail.com';
+  const companyContact = 'Mob: +91 9911678386 | Email: asprintgallery742@gmail.com';
 
 
-  const companyGstin = document.getElementById('companyGstinInput')?.value || 'PAN: 26CORPP3939N1';
+  const companyGstin = 'GSTIN: 09XXXXX0000X1Z5 | PAN: XXXXX0000X';
 
 
 
@@ -3514,7 +3514,7 @@ function copyQuoteToClipboard() {
   const jobTitle = document.getElementById('jobTitleInput')?.value || 'Print Job';
 
 
-  const companyName = document.getElementById('companyNameInput')?.value || 'AS Print Gallery';
+  const companyName = 'AS PRINT GALLERY';
 
 
 
@@ -3676,7 +3676,7 @@ function shareWhatsApp() {
   const jobTitle = document.getElementById('jobTitleInput')?.value || 'Print Job';
 
 
-  const companyName = document.getElementById('companyNameInput')?.value || 'AS Print Gallery';
+  const companyName = 'AS PRINT GALLERY';
 
 
 
