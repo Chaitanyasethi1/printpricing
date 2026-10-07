@@ -10,7 +10,7 @@ A modern, full-fledged web application for printing cost estimation, job work, p
   - **Leaf / Foil Stamping**: Length × Width ÷ Divide Factor = Paise → Rupees + Block charges.
   - **Printing Process**: Per-sheet rate + CTP Plate charges.
   - **Finishing & Job Work**: Die Cutting per sheet + Laser Die Making charges, Pasting, UV coating, Embossing, and Other operations.
-  - **Wastage & Profit Margins**: Dynamic percentage calculation.
+  - **Wastage & Margin**: Dynamic percentage calculation.
 - **Batch Quantity Multiplier**: Calculates per-unit cost and total billing amounts for batches (500, 1000, 2500, 5000, 10000+ sheets).
 - **Interactive Visual Scale**: Real-time 2D canvas showing sheet size, lamination, and foil stamp placement.
 - **Printable Quotation & PDF Invoice**: Clean A4 print layout with client and job metadata.
