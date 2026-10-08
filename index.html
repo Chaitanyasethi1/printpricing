@@ -70,7 +70,7 @@
 
 
 
-  <link rel="stylesheet" href="assets/css/style.css?v=2.4">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.5">
 
 
 
@@ -426,396 +426,167 @@
 
 
 
-        <!-- 1. Paper Cost -->
-
-
-
-
-
-        <section class="form-section">
-
-
-
-
-
-          <div class="form-section-title">
-
-
-
-
-
-            <h4><span class="badge">1</span> Paper Substrate Cost</h4>
-
-
-
-
-
-            <span style="font-size:0.75rem; color:var(--text-muted);">Area (m²) × GSM × Rate/Kg</span>
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-          <div class="grid-2">
-
-
-
-
-
-            <div class="input-field">
-
-
-
-
-
-              <label for="sl">Sheet Length <span class="unit">(inch)</span></label>
-
-
-
-
-
-              <div class="input-wrapper">
-
-
-
-
-
-                <input id="sl" type="number" step="any" placeholder="23" value="23">
-
-
-
-
-
-                <span class="input-suffix">in</span>
-
-
-
-
-
-              </div>
-
-
-
-
-
-            </div>
-
-
-
-
-
-            <div class="input-field">
-
-
-
-
-
-              <label for="sw">Sheet Width <span class="unit">(inch)</span></label>
-
-
-
-
-
-              <div class="input-wrapper">
-
-
-
-
-
-                <input id="sw" type="number" step="any" placeholder="18" value="18">
-
-
-
-
-
-                <span class="input-suffix">in</span>
-
-
-
-
-
-              </div>
-
-
-
-
-
-            </div>
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-          <div class="chips-row">
-
-
-
-
-
-            <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Sizes:</span>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="18" data-sw="23" onclick="setSheetSize(18, 23)">18×23"</button>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="20" data-sw="30" onclick="setSheetSize(20, 30)">20×30"</button>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="23" data-sw="36" onclick="setSheetSize(23, 36)">23×36"</button>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="25" data-sw="36" onclick="setSheetSize(25, 36)">25×36"</button>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="28" data-sw="40" onclick="setSheetSize(28, 40)">28×40"</button>
-
-
-
-
-
-            <button class="chip" data-chip-type="size" data-sl="12" data-sw="18" onclick="setSheetSize(12, 18)">12×18"</button>
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-          <div class="grid-2" style="margin-top:10px;">
-
-
-
-
-
-            <div class="input-field">
-
-
-
-
-
-              <label for="gsm">GSM (Paper Thickness)</label>
-
-
-
-
-
-              <div class="input-wrapper">
-
-
-
-
-
-                <input id="gsm" type="number" step="any" placeholder="250" value="250">
-
-
-
-
-
-                <span class="input-suffix">gsm</span>
-
-
-
-
-
-              </div>
-
-
-
-
-
-              <div class="chips-row">
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="80" onclick="setVal('gsm', 80)">80g</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="130" onclick="setVal('gsm', 130)">130g</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="170" onclick="setVal('gsm', 170)">170g</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="250" onclick="setVal('gsm', 250)">250g</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="300" onclick="setVal('gsm', 300)">300g</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="gsm" data-val="350" onclick="setVal('gsm', 350)">350g</button>
-
-
-
-
-
-              </div>
-
-
-
-
-
-            </div>
-
-
-
-
-
-            <div class="input-field">
-
-
-
-
-
-              <label for="paperRate">Paper Rate <span class="unit">(₹ / Kg)</span></label>
-
-
-
-
-
-              <div class="input-wrapper">
-
-
-
-
-
-                <input id="paperRate" type="number" step="any" placeholder="80" value="80">
-
-
-
-
-
-                <span class="input-suffix">₹/kg</span>
-
-
-
-
-
-              </div>
-
-
-
-
-
-              <div class="chips-row">
-
-
-
-
-
-                <button class="chip" data-chip-type="paperRate" data-val="65" onclick="setVal('paperRate', 65)">₹65</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="paperRate" data-val="75" onclick="setVal('paperRate', 75)">₹75</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="paperRate" data-val="85" onclick="setVal('paperRate', 85)">₹85</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="paperRate" data-val="95" onclick="setVal('paperRate', 95)">₹95</button>
-
-
-
-
-
-                <button class="chip" data-chip-type="paperRate" data-val="110" onclick="setVal('paperRate', 110)">₹110</button>
-
-
-
-
-
-              </div>
-
-
-
-
-
-            </div>
-
-
-
-
-
-          </div>
-
-
-
-
-
+                <!-- 1. Substrate Cost (Printed Sheet, Corrugated Sheet, Kappa Board Sheet) -->
+        <section class="form-section" id="substrateSection">
+          <div class="form-section-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <h4><span class="badge">1</span> Sheet Substrates (Printed, Corrugated & Kappa Board)</h4>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button type="button" class="btn-pill" id="btnToggleCorr" style="font-size:11px; padding:4px 8px; background:rgba(37,99,235,0.1); color:var(--primary); font-weight:700;" onclick="toggleSubstrateLayer('corr')">
+                <span>➕</span> Corrugated Sheet
+              </button>
+              <button type="button" class="btn-pill" id="btnToggleKappa" style="font-size:11px; padding:4px 8px; background:rgba(124,58,237,0.1); color:#7c3aed; font-weight:700;" onclick="toggleSubstrateLayer('kappa')">
+                <span>➕</span> Kappa Board
+              </button>
+            </div>
+          </div>
+
+          <!-- 1A. PRIMARY: PRINTED SHEET -->
+          <div class="sheet-layer-card" style="background:var(--bg-card); border:1.5px solid var(--border); border-radius:var(--radius-md); padding:12px; margin-bottom:12px;">
+            <div style="font-size:0.85rem; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+              <span>📄 1A. Printed Sheet (Top Liner / Paper)</span>
+              <span style="font-size:11px; font-weight:700; color:var(--text-muted);">Primary Sheet</span>
+            </div>
+
+            <div class="grid-2">
+              <div class="input-field">
+                <label for="sl">Printed Sheet Length <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="sl" type="number" step="any" placeholder="23" value="23">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="sw">Printed Sheet Width <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="sw" type="number" step="any" placeholder="18" value="18">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chips-row">
+              <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Sizes:</span>
+              <button class="chip" data-chip-type="size" data-sl="18" data-sw="23" onclick="setSheetSize(18, 23)">18×23"</button>
+              <button class="chip" data-chip-type="size" data-sl="20" data-sw="30" onclick="setSheetSize(20, 30)">20×30"</button>
+              <button class="chip" data-chip-type="size" data-sl="23" data-sw="36" onclick="setSheetSize(23, 36)">23×36"</button>
+              <button class="chip" data-chip-type="size" data-sl="25" data-sw="36" onclick="setSheetSize(25, 36)">25×36"</button>
+              <button class="chip" data-chip-type="size" data-sl="28" data-sw="40" onclick="setSheetSize(28, 40)">28×40"</button>
+              <button class="chip" data-chip-type="size" data-sl="12" data-sw="18" onclick="setSheetSize(12, 18)">12×18"</button>
+            </div>
+
+            <div class="grid-2" style="margin-top:10px;">
+              <div class="input-field">
+                <label for="gsm">GSM (Paper Thickness)</label>
+                <div class="input-wrapper">
+                  <input id="gsm" type="number" step="any" placeholder="250" value="250">
+                  <span class="input-suffix">gsm</span>
+                </div>
+                <div class="chips-row">
+                  <button class="chip" data-chip-type="gsm" data-val="80" onclick="setGsm(80)">80g</button>
+                  <button class="chip" data-chip-type="gsm" data-val="130" onclick="setGsm(130)">130g</button>
+                  <button class="chip" data-chip-type="gsm" data-val="170" onclick="setGsm(170)">170g</button>
+                  <button class="chip" data-chip-type="gsm" data-val="250" onclick="setGsm(250)">250g</button>
+                  <button class="chip" data-chip-type="gsm" data-val="300" onclick="setGsm(300)">300g</button>
+                  <button class="chip" data-chip-type="gsm" data-val="350" onclick="setGsm(350)">350g</button>
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label for="pr">Paper Rate <span class="unit">(₹ / Kg)</span></label>
+                <div class="input-wrapper">
+                  <input id="pr" type="number" step="any" placeholder="80" value="80">
+                  <span class="input-suffix">₹/kg</span>
+                </div>
+                <div class="chips-row">
+                  <button class="chip" data-chip-type="paperRate" data-val="65" onclick="setPaperRate(65)">₹65</button>
+                  <button class="chip" data-chip-type="paperRate" data-val="75" onclick="setPaperRate(75)">₹75</button>
+                  <button class="chip" data-chip-type="paperRate" data-val="85" onclick="setPaperRate(85)">₹85</button>
+                  <button class="chip" data-chip-type="paperRate" data-val="95" onclick="setPaperRate(95)">₹95</button>
+                  <button class="chip" data-chip-type="paperRate" data-val="110" onclick="setPaperRate(110)">₹110</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1B. CORRUGATED SHEET (OPTIONAL / TOGGLEABLE) -->
+          <div id="corrugatedSheetBox" class="extra-sheet-box" style="display:none; margin-bottom:12px;">
+            <div style="font-size:0.85rem; font-weight:800; color:#d97706; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+              <span>📦 1B. Corrugated Sheet (Fluting / Craft Backing)</span>
+              <button type="button" class="btn-icon" style="width:24px; height:24px; font-size:11px;" onclick="toggleSubstrateLayer('corr')">✕</button>
+            </div>
+            <div class="grid-2">
+              <div class="input-field">
+                <label for="corrSl">Corrugated Sheet Length <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="corrSl" type="number" step="any" placeholder="23" value="23">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="corrSw">Corrugated Sheet Width <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="corrSw" type="number" step="any" placeholder="18" value="18">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top:10px;">
+              <div class="input-field">
+                <label for="corrGsm">Corrugated GSM / Flute Weight</label>
+                <div class="input-wrapper">
+                  <input id="corrGsm" type="number" step="any" placeholder="150" value="150">
+                  <span class="input-suffix">gsm</span>
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="corrPr">Corrugated Rate <span class="unit">(₹ / Kg)</span></label>
+                <div class="input-wrapper">
+                  <input id="corrPr" type="number" step="any" placeholder="45" value="45">
+                  <span class="input-suffix">₹/kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1C. KAPPA BOARD SHEET (OPTIONAL / TOGGLEABLE) -->
+          <div id="kappaBoardBox" class="extra-sheet-box" style="display:none; margin-bottom:6px;">
+            <div style="font-size:0.85rem; font-weight:800; color:#7c3aed; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+              <span>📑 1C. Kappa Board Sheet (Rigid Hardboard)</span>
+              <button type="button" class="btn-icon" style="width:24px; height:24px; font-size:11px;" onclick="toggleSubstrateLayer('kappa')">✕</button>
+            </div>
+            <div class="grid-2">
+              <div class="input-field">
+                <label for="kappaSl">Kappa Board Length <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="kappaSl" type="number" step="any" placeholder="23" value="23">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="kappaSw">Kappa Board Width <span class="unit">(inch)</span></label>
+                <div class="input-wrapper">
+                  <input id="kappaSw" type="number" step="any" placeholder="18" value="18">
+                  <span class="input-suffix">in</span>
+                </div>
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top:10px;">
+              <div class="input-field">
+                <label for="kappaGsm">Kappa GSM (e.g. 1000g, 1200g, 1400g)</label>
+                <div class="input-wrapper">
+                  <input id="kappaGsm" type="number" step="any" placeholder="1200" value="1200">
+                  <span class="input-suffix">gsm</span>
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="kappaPr">Kappa Board Rate <span class="unit">(₹ / Kg)</span></label>
+                <div class="input-wrapper">
+                  <input id="kappaPr" type="number" step="any" placeholder="55" value="55">
+                  <span class="input-suffix">₹/kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
 
@@ -4111,7 +3882,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=2.4"></script>
+  <script src="assets/js/app.js?v=2.5"></script>
 
 
 

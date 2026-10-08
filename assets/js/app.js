@@ -1,4 +1,33 @@
 
+let isCorrugatedEnabled = false;
+let isKappaEnabled = false;
+
+function toggleSubstrateLayer(type) {
+  if (type === 'corr') {
+    isCorrugatedEnabled = !isCorrugatedEnabled;
+    const box = document.getElementById('corrugatedSheetBox');
+    const btn = document.getElementById('btnToggleCorr');
+    if (box) box.style.display = isCorrugatedEnabled ? 'block' : 'none';
+    if (btn) {
+      btn.innerHTML = isCorrugatedEnabled ? '<span>✕</span> Remove Corrugated' : '<span>➕</span> Corrugated Sheet';
+      btn.style.background = isCorrugatedEnabled ? '#fee2e2' : 'rgba(37,99,235,0.1)';
+      btn.style.color = isCorrugatedEnabled ? '#dc2626' : 'var(--primary)';
+    }
+  } else if (type === 'kappa') {
+    isKappaEnabled = !isKappaEnabled;
+    const box = document.getElementById('kappaBoardBox');
+    const btn = document.getElementById('btnToggleKappa');
+    if (box) box.style.display = isKappaEnabled ? 'block' : 'none';
+    if (btn) {
+      btn.innerHTML = isKappaEnabled ? '<span>✕</span> Remove Kappa' : '<span>➕</span> Kappa Board';
+      btn.style.background = isKappaEnabled ? '#fee2e2' : 'rgba(124,58,237,0.1)';
+      btn.style.color = isKappaEnabled ? '#dc2626' : '#7c3aed';
+    }
+  }
+  if (typeof calculate === 'function') calculate();
+}
+
+
 function extractCleanPhoneNumber(phoneStr) {
   if (!phoneStr) return '';
   let digits = String(phoneStr).replace(/\D/g, '');
@@ -562,24 +591,31 @@ function calculate() {
 
 
 
-  const areaM2 = sl * sw * 0.00064516;
-
-
-
-
-
-  const weightKg = (areaM2 * gsm) / 1000;
-
-
-
-
-
-  const paperCost = weightKg * pr;
-
-
-
-
-
+  const areaM2 = sl * sw * 0.00064516;
+  const weightKg = (areaM2 * gsm) / 1000;
+  const printedPaperCost = weightKg * pr;
+
+  let corrCost = 0;
+  if (isCorrugatedEnabled || (document.getElementById('corrugatedSheetBox') && document.getElementById('corrugatedSheetBox').style.display !== 'none')) {
+    const corrSl = (typeof n === 'function' ? n('corrSl') : 0) || sl;
+    const corrSw = (typeof n === 'function' ? n('corrSw') : 0) || sw;
+    const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0) || 150;
+    const corrPr = (typeof n === 'function' ? n('corrPr') : 0) || 45;
+    const corrAreaM2 = corrSl * corrSw * 0.00064516;
+    corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
+  }
+
+  let kappaCost = 0;
+  if (isKappaEnabled || (document.getElementById('kappaBoardBox') && document.getElementById('kappaBoardBox').style.display !== 'none')) {
+    const kappaSl = (typeof n === 'function' ? n('kappaSl') : 0) || sl;
+    const kappaSw = (typeof n === 'function' ? n('kappaSw') : 0) || sw;
+    const kappaGsm = (typeof n === 'function' ? n('kappaGsm') : 0) || 1200;
+    const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0) || 55;
+    const kappaAreaM2 = kappaSl * kappaSw * 0.00064516;
+    kappaCost = (kappaAreaM2 * kappaGsm / 1000) * kappaPr;
+  }
+
+  const paperCost = printedPaperCost + corrCost + kappaCost;
   const weightGrams = weightKg * 1000;
 
 
@@ -4086,12 +4122,12 @@ function renderQuotationPreview() {
         <table class="bill-items-table">
           <thead>
             <tr>
-              <th style="width:38px;">S.No.</th>
-              <th style="text-align:left;">DESCRIPTION OF GOODS</th>
-              <th style="width:80px;">HSN CODE</th>
-              <th style="width:95px;">QTY.</th>
-              <th style="width:80px; text-align:right;">RATE</th>
-              <th style="width:105px; text-align:right;">Amount</th>
+              <th style="width:38px; text-align:center;">S.No.</th>
+   <th style="text-align:left;">DESCRIPTION OF GOODS</th>
+   <th style="width:75px; text-align:center;">HSN CODE</th>
+   <th style="width:85px; text-align:center;">QTY.</th>
+   <th style="width:140px; text-align:right;">RATE</th>
+   <th style="width:105px; text-align:right;">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -4127,7 +4163,7 @@ function renderQuotationPreview() {
               <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:4px 6px; white-space:nowrap;">Total Amount After Tax</td>
+              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:4px 8px; white-space:nowrap;">Total Amount After Tax</td>
               <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 6px;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           </tbody>
