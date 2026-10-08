@@ -5453,7 +5453,42 @@ function shareCustomBillWhatsApp() {
   const receiverPhone = document.getElementById('custReceiverPhone')?.value || '';
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const items = getInvoiceCustomItemsData();
-  
+  const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
+  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+
+  let sub = 0;
+  items.forEach((it) => { sub += it.amount; });
+  const taxable = Math.max(0, sub - discount + transportCharges);
+  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
+  const tot = Math.round(taxable + gstAmt);
+
+  // Generate shareable link
+  const billPayload = {
+    invoiceNo: invoiceNo,
+    docTitle: docTitle,
+    date: document.getElementById('custInvoiceDate')?.value || '',
+    clientName: receiverName,
+    receiverAddress: document.getElementById('custReceiverAddress')?.value || '',
+    receiverState: document.getElementById('custReceiverState')?.value || '',
+    receiverPhone: receiverPhone,
+    receiverGstin: document.getElementById('custReceiverGstin')?.value || '',
+    transportMode: document.getElementById('custTransportMode')?.value || '',
+    vehicleNo: document.getElementById('custVehicleNo')?.value || '',
+    gstType: gstType,
+    gstPercent: gstRate,
+    transportCharges: transportCharges,
+    discount: discount,
+    items: items
+  };
+
+  let shareableUrl = window.location.origin + window.location.pathname;
+  try {
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(billPayload))));
+    shareableUrl += '?billData=' + encodeURIComponent(b64);
+  } catch(e) {}
+
   let text = `*A S PRINT GALLERY*\n`;
   text += `GSTIN: 09AWKPN5910E1ZG | Phone: 9911678386, 8851627221\n`;
   text += `*${docTitle}* #${invoiceNo}\n`;
@@ -5463,24 +5498,21 @@ function shareCustomBillWhatsApp() {
   }
   text += `-----------------------------------------\n`;
   
-  let sub = 0;
   items.forEach((it, i) => {
-    sub += it.amount;
     text += `▪ *${it.title}*\n   Qty: ${it.qty} ${it.unit} @ ₹${it.rate} = ₹${it.amount.toFixed(2)}\n`;
     if (it.desc) {
       text += `   ${it.desc.replace(/\n/g, '\n   ')}\n`;
     }
   });
 
-  const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
-  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
-  const tot = Math.round(sub + gstAmt);
-
   text += `-----------------------------------------\n`;
-  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
+  text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
+  if (transportCharges > 0) text += `🚚 Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
+  if (discount > 0) text += `🏷️ Discount: -₹${discount.toFixed(2)}\n`;
   if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
   text += `*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
+  text += `-----------------------------------------\n`;
+  text += `📄 *View / Download Official A4 PDF Bill:*\n${shareableUrl}\n`;
   text += `-----------------------------------------\n`;
   text += `Bank: HDFC Bank A/C: 50200098986238 (IFSC: HDFC0004729)\n`;
   text += `Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
@@ -5495,14 +5527,29 @@ function shareCustomBillWhatsApp() {
     }
   }
 
+  // 1. Auto download high-res A4 PDF file directly to computer/phone
+  const filename = `AS_Print_Gallery_Bill_${invoiceNo}_${receiverName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+  const el = document.getElementById('printableInvoice');
+  if (el && typeof html2pdf !== 'undefined') {
+    const opt = {
+      margin: [4, 6, 4, 6],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(el).save();
+  }
+
+  // 2. Open Direct WhatsApp Chat with Bill details & Clickable Online PDF Link
   const url = cleanPhone 
     ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
     : `https://wa.me/?text=${encodeURIComponent(text)}`;
   
   if (cleanPhone) {
-    showToast(`🚀 Opening WhatsApp for +${cleanPhone}...`);
+    showToast(`🚀 WhatsApp chat opened for +${cleanPhone}! PDF downloaded to your device.`);
   } else {
-    showToast(`💬 Opening WhatsApp...`);
+    showToast(`💬 WhatsApp chat opened & PDF downloaded!`);
   }
 
   window.open(url, '_blank');
@@ -5528,6 +5575,7 @@ function showToast(msg) {
 
 document.addEventListener('DOMContentLoaded', () => {
   updateSavedCountBadges();
+  checkAndLoadSharedBillFromURL();
   const builder = document.getElementById('invoiceItemsBuilder');
   if (builder && builder.children.length === 0) {
     addInvoiceItemRow({
@@ -5616,5 +5664,50 @@ function downloadQuotationPDF() {
     });
   } else {
     window.print();
+  }
+}
+
+
+// Shareable Bill URL Handler (Allows customers to view/download A4 PDF bill directly from WhatsApp link)
+function checkAndLoadSharedBillFromURL() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const billDataParam = params.get('billData');
+    if (!billDataParam) return;
+
+    const jsonStr = decodeURIComponent(escape(atob(billDataParam)));
+    const data = JSON.parse(jsonStr);
+
+    if (data && data.invoiceNo) {
+      // Pre-fill fields
+      if (document.getElementById('custInvoiceNo')) document.getElementById('custInvoiceNo').value = data.invoiceNo || '';
+      if (document.getElementById('custDocTitle')) document.getElementById('custDocTitle').value = data.docTitle || 'TAX INVOICE';
+      if (document.getElementById('custInvoiceDate')) document.getElementById('custInvoiceDate').value = data.date || '';
+      if (document.getElementById('custReceiverName')) document.getElementById('custReceiverName').value = data.clientName || '';
+      if (document.getElementById('custReceiverAddress')) document.getElementById('custReceiverAddress').value = data.receiverAddress || '';
+      if (document.getElementById('custReceiverState')) document.getElementById('custReceiverState').value = data.receiverState || '';
+      if (document.getElementById('custReceiverPhone')) document.getElementById('custReceiverPhone').value = data.receiverPhone || '';
+      if (document.getElementById('custReceiverGstin')) document.getElementById('custReceiverGstin').value = data.receiverGstin || '';
+      if (document.getElementById('custTransportMode')) document.getElementById('custTransportMode').value = data.transportMode || '';
+      if (document.getElementById('custVehicleNo')) document.getElementById('custVehicleNo').value = data.vehicleNo || '';
+      if (document.getElementById('custGstType')) document.getElementById('custGstType').value = data.gstType || 'cgst_sgst';
+      if (document.getElementById('custGstRateInput')) document.getElementById('custGstRateInput').value = data.gstPercent || 18;
+      if (document.getElementById('custTransportCharges')) document.getElementById('custTransportCharges').value = data.transportCharges || 0;
+      if (document.getElementById('custDiscount')) document.getElementById('custDiscount').value = data.discount || 0;
+
+      const container = document.getElementById('invoiceItemsBuilder');
+      if (container && data.items && data.items.length > 0) {
+        container.innerHTML = '';
+        data.items.forEach(it => {
+          addInvoiceItemRow(it);
+        });
+      }
+
+      openCustomInvoiceModal(false);
+      renderCustomInvoicePreview();
+      showToast(`📄 Displaying Bill #${data.invoiceNo} for ${data.clientName}`);
+    }
+  } catch (err) {
+    console.warn('Could not parse shared bill URL:', err);
   }
 }
