@@ -87,24 +87,13 @@ function clearJobType() {
 
 
 
-function n(id) {
-
-
-
-
-
-  const el = document.getElementById(id);
-
-
-
-
-
-  return el ? (parseFloat(el.value) || 0) : 0;
-
-
-
-
-
+function n(id) {
+  if (id === 'paperRate' || id === 'pr') {
+    const el = document.getElementById('pr') || document.getElementById('paperRate');
+    return el ? (parseFloat(el.value) || 0) : 0;
+  }
+  const el = document.getElementById(id);
+  return el ? (parseFloat(el.value) || 0) : 0;
 }
 
 
@@ -579,7 +568,7 @@ function calculate() {
 
 
 
-  const pr = n('paperRate');
+  const pr = n('pr') || n('paperRate');
 
 
 
@@ -2994,7 +2983,7 @@ function loadPreset(key) {
 
 
 
-  document.getElementById('paperRate').value = p.pr;
+  if (document.getElementById('pr')) document.getElementById('pr').value = p.pr; if (document.getElementById('paperRate')) document.getElementById('paperRate').value = p.pr;
 
 
 
@@ -3246,7 +3235,7 @@ function resetCalculator() {
 
 
 
-  document.getElementById('paperRate').value = 80;
+  if (document.getElementById('pr')) document.getElementById('pr').value = 80; if (document.getElementById('paperRate')) document.getElementById('paperRate').value = 80;
 
 
 
