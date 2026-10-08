@@ -2206,36 +2206,38 @@ function setLeafDivider(val, name) {
 
 
 
-// Quick Sheet Size Selector
-
-
-
-
-
-function setSheetSize(sl, sw) {
-
-
-
-
-
-  document.getElementById('sl').value = sl;
-
-
-
-
-
-  document.getElementById('sw').value = sw;
-
-
-
-
-
-  calculate();
-
-
-
-
-
+// Quick GSM Chip Handler
+function setGsm(val) {
+  const el = document.getElementById('gsm');
+  if (el) {
+    el.value = val;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  calculate();
+  syncActiveChips();
+}
+
+// Quick Paper Rate Chip Handler
+function setPaperRate(val) {
+  const el = document.getElementById('pr');
+  if (el) {
+    el.value = val;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  calculate();
+  syncActiveChips();
+}
+
+// Quick Sheet Size Selector
+function setSheetSize(sl, sw) {
+  const slEl = document.getElementById('sl');
+  const swEl = document.getElementById('sw');
+  if (slEl) slEl.value = sl;
+  if (swEl) swEl.value = sw;
+  if (slEl) slEl.dispatchEvent(new Event('input', { bubbles: true }));
+  if (swEl) swEl.dispatchEvent(new Event('input', { bubbles: true }));
+  calculate();
+  syncActiveChips();
 }
 
 
@@ -2308,7 +2310,7 @@ function syncActiveChips() {
 
 
 
-  const paperRate = n('paperRate');
+  const paperRate = n('pr') || n('paperRate');
 
 
 
@@ -4829,7 +4831,8 @@ function toggleTheme() {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  syncActiveChips();
 
 
 
