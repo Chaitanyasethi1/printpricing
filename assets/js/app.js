@@ -1,3 +1,19 @@
+
+function handleJobTypeInput(val) {
+  setCustomPresetActive();
+  calculate();
+}
+
+function clearJobType() {
+  const input = document.getElementById('jobType');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
+  setCustomPresetActive();
+  calculate();
+}
+
 // Complete Printing Cost Calculator Web Application Engine
 
 
@@ -2879,7 +2895,12 @@ function loadPreset(key) {
     showToast('✏️ Custom mode active: Type any value directly!');
     return;
   }
-  const p = PRESETS[key];
+  const p = PRESETS[key];
+  const jobTypeInput = document.getElementById('jobType');
+  if (jobTypeInput && p) {
+    const titles = { sweetBox: 'Sweet Box Packaging', visitingCard: 'Visiting Card Sheet', monocarton: 'Monocarton Box', bookCover: 'Book Cover', flyer: 'Flyer / Brochure' };
+    jobTypeInput.value = titles[key] || 'Custom Job';
+  }
 
 
 
