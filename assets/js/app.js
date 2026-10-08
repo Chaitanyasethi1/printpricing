@@ -4118,53 +4118,67 @@ function renderQuotationPreview() {
 
       <!-- Middle Fill Section: Table & Financial Breakdown -->
       <div class="bill-middle-fill">
-        <!-- Goods / Item Table -->
+                <!-- Goods / Item Table with Exact Fixed Column Widths -->
         <table class="bill-items-table">
+          <colgroup>
+            <col style="width:40px;">
+            <col style="width:auto;">
+            <col style="width:78px;">
+            <col style="width:85px;">
+            <col style="width:90px;">
+            <col style="width:105px;">
+          </colgroup>
           <thead>
             <tr>
-              <th style="width:38px; text-align:center;">S.No.</th>
-   <th style="text-align:left;">DESCRIPTION OF GOODS</th>
-   <th style="width:75px; text-align:center;">HSN CODE</th>
-   <th style="width:85px; text-align:center;">QTY.</th>
-   <th style="width:140px; text-align:right;">RATE</th>
-   <th style="width:105px; text-align:right;">Amount</th>
+              <th style="text-align:center;">S.No.</th>
+              <th style="text-align:left; padding-left:8px;">DESCRIPTION OF GOODS</th>
+              <th style="text-align:center;">HSN CODE</th>
+              <th style="text-align:center;">QTY.</th>
+              <th style="text-align:right;">RATE</th>
+              <th style="text-align:right; padding-right:8px;">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style="text-align:center; font-weight:bold; width:38px;">1</td>
-              <td>
-                <div class="bill-item-main-title">${jobTitle}</div>
-                <div class="bill-item-sub-desc">${displayDesc}</div>
-              </td>
-              <td style="text-align:center; font-weight:bold; width:80px;">${hsn || '-'}</td>
-              <td style="text-align:center; font-weight:bold; width:95px;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
-              <td style="text-align:right; width:80px;">${billRate.toFixed(2)}</td>
-              <td style="text-align:right; font-weight:bold; width:105px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
+            ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            <!-- Compact 2-Line Summary & Tax Section -->
+            <!-- Compact Summary Row: Tax & Subtotal -->
             <tr class="bill-summary-row" style="background:#fafafa;">
-              <td colspan="4" style="border-right:1.5px solid #000; font-size:10.5px; padding:3px 6px;">
+              <td colspan="4" style="font-size:10px; padding:3px 6px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
                   <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
                   <span style="font-weight:bold; color:#0f172a;">
-                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} &nbsp;|&nbsp; SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} &nbsp;|&nbsp; Total Tax: ₹${totalTaxAmount.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
                   </span>
                 </div>
               </td>
               <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 6px;">Total Before Tax</td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 6px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
 
-            <!-- Final Grand Total Row -->
+            ${(transportCharges > 0 || discount > 0) ? `
+            <tr class="bill-summary-row" style="background:#fff;">
+              <td colspan="4" style="font-size:10px; padding:2px 6px;">
+                ${transportCharges > 0 ? `🚚 <b>Transport:</b> ₹${transportCharges.toFixed(2)}` : ''}
+                ${(transportCharges > 0 && discount > 0) ? ' &nbsp;|&nbsp; ' : ''}
+                ${discount > 0 ? `🏷️ <b>Discount:</b> -₹${discount.toFixed(2)}` : ''}
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:10px; padding:2px 6px;">Tax Amount</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:2px 8px;">₹${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            <!-- Final Grand Total Row: Colspan 3 + Colspan 2 for Title + 1 Col for Amount -->
             <tr class="bill-total-final-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
+              <td colspan="3" style="font-weight:bold; font-size:10px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:4px 8px; white-space:nowrap;">Total Amount After Tax</td>
-              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 6px;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:4px 8px; white-space:nowrap;">
+                Total Amount After Tax
+              </td>
+              <td style="text-align:right; font-size:12px; font-weight:900; padding:4px 8px; white-space:nowrap;">
+                ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -5259,7 +5273,7 @@ function renderCustomInvoicePreview() {
   }).join('');
 
   // Clean continuous vertical column lines extending to summary (no horizontal empty lines or row numbers)
-  const fillerHeight = Math.max(120, 280 - (items.length * 40));
+  const fillerHeight = Math.max(80, 160 - (items.length * 35));
   const emptyRowsHtml = `
     <tr style="height:${fillerHeight}px;">
       <td style="border-right:1.5px solid #000;"></td>
