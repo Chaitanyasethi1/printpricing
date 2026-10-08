@@ -3903,7 +3903,7 @@ function renderQuotationPreview() {
   const companyMobiles = '9911678386';
   const companyName = 'AS PRINT GALLERY';
   const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
-  const companyAddress = 'Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
+  const companyAddress = 'Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
 
   const clientName = document.getElementById('clientNameInput')?.value || 'M/S MOHIT KUMAR';
   const clientAddress = document.getElementById('clientAddressInput')?.value || 'KHEKRA, BAGHPAT, U.P.';
@@ -5305,7 +5305,7 @@ function renderCustomInvoicePreview() {
           <div class="bill-brand-center-text">
             <div class="bill-brand-name">AS PRINT GALLERY</div>
             <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box</div>
-            <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102</div>
+            <div class="bill-address-tag">Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102</div>
           </div>
           <div class="bill-brand-right-spacer"></div>
         </div>
@@ -5692,7 +5692,7 @@ function copyCustomBillText() {
   text += `*GRAND TOTAL: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
   text += `Bank: HDFC Bank | A/C: 50200098986238 | IFSC: HDFC0004729\n`;
-  text += `Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
+  text += `Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
 
   navigator.clipboard.writeText(text).then(() => {
     showToast('📋 Bill text copied to clipboard!');
@@ -5767,7 +5767,7 @@ function shareCustomBillWhatsApp() {
   text += `📄 *View / Download Official A4 PDF Bill:*\n${shareableUrl}\n`;
   text += `-----------------------------------------\n`;
   text += `Bank: HDFC Bank A/C: 50200098986238 (IFSC: HDFC0004729)\n`;
-  text += `Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
+  text += `Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
   text += `Thank you for your business!`;
 
   let cleanPhone = extractCleanPhoneNumber(receiverPhone);
