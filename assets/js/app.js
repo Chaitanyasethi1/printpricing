@@ -3810,7 +3810,7 @@ function renderQuotationPreview() {
 
   const companyName = 'A S PRINT GALLERY';
 
-  const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Heat Transfer Sticker';
+  const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
 
   const companyAddress = 'Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102';
 
@@ -4078,11 +4078,12 @@ function renderQuotationPreview() {
 
         
 
-        <!-- Top Bar: GSTIN | TITLE | MOBILES | COPIES -->
-
-        <div class="bill-top-bar">
-
-          <div>GSTIN. ${companyGstin}</div>
+        <!-- Top Bar: GSTIN (Left) | TAX INVOICE (Centered, No Border) | MOBILES (Right) -->
+        <div class="bill-top-bar">
+          <div>GSTIN. 09AWKPN5910E1ZG</div>
+          <div class="bill-doc-title">${docTitle}</div>
+          <div style="text-align:right; font-size:11.5px;">M.: 9911678386, 8851627221</div>
+        </div>
 
           <div class="bill-doc-title">${docTitle}</div>
 
