@@ -4055,6 +4055,26 @@ function renderQuotationPreview() {
             </tr>
             ${emptyRowsHtml}
 
+            ${transportCharges > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Freight &amp; Transportation Charges (भाड़ा शुल्क)
+              </td>
+              <td style="text-align:right; font-weight:bold; color:#0369a1;">Transport / Cartage</td>
+              <td style="text-align:right; font-weight:bold; color:#0369a1;">${transportCharges.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${discount > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Special Discount Allowed
+              </td>
+              <td style="text-align:right; font-weight:bold; color:#dc2626;">(-) Discount</td>
+              <td style="text-align:right; font-weight:bold; color:#dc2626;">-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
             <!-- Total Amount Before Tax -->
             <tr class="bill-summary-row">
               <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
@@ -4390,12 +4410,13 @@ function renderCustomInvoicePreview() {
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
   const reverseCharge = document.getElementById('custReverseCharge')?.value || 'No';
   const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
 
   const items = getInvoiceCustomItemsData();
 
   let subtotal = 0;
   items.forEach(it => { subtotal += it.amount; });
-  const taxableTotal = Math.max(0, subtotal - discount);
+  const taxableTotal = Math.max(0, subtotal - discount + transportCharges);
 
   let cgstRate = 0, cgstAmt = 0;
   let sgstRate = 0, sgstAmt = 0;
@@ -4732,6 +4753,9 @@ function saveCustomBillInvoice() {
   const totalGst = gstType === 'exempt' ? 0 : (subtotal * gstRate) / 100;
   const grandTotal = Math.round(subtotal + totalGst);
 
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+
   const billObj = {
     id: 'bill_' + Date.now(),
     invoiceNo: invoiceNo,
@@ -4746,6 +4770,8 @@ function saveCustomBillInvoice() {
     date: invoiceDate,
     items: items,
     jobTitle: items[0]?.title || 'Packaging Item',
+    transportCharges: transportCharges,
+    discount: discount,
     gstType: gstType,
     gstPercent: gstRate,
     grandTotal: grandTotal,
@@ -4787,11 +4813,17 @@ function copyCustomBillText() {
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
-  const tot = Math.round(sub + gstAmt);
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+  
+  const taxable = Math.max(0, sub - discount + transportCharges);
+  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
+  const tot = Math.round(taxable + gstAmt);
 
   text += `-----------------------------------------\n`;
-  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
+  text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
+  if (transportCharges > 0) text += `Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
+  if (discount > 0) text += `Discount: -₹${discount.toFixed(2)}\n`;
   if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
   text += `*GRAND TOTAL: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
@@ -4830,11 +4862,17 @@ function shareCustomBillWhatsApp() {
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
-  const tot = Math.round(sub + gstAmt);
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+  
+  const taxable = Math.max(0, sub - discount + transportCharges);
+  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
+  const tot = Math.round(taxable + gstAmt);
 
   text += `-----------------------------------------\n`;
-  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
+  text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
+  if (transportCharges > 0) text += `🚚 Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
+  if (discount > 0) text += `🏷️ Discount: -₹${discount.toFixed(2)}\n`;
   if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
   text += `*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
