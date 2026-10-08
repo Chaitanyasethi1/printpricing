@@ -3847,7 +3847,7 @@
             <div class="input-field">
               <label style="font-weight:700;">Invoice / Bill No. (बिल नं.)</label>
               <div class="input-wrapper">
-                <input id="custInvoiceNo" type="text" placeholder="071" value="071" oninput="renderCustomInvoicePreview()" style="font-weight:800; font-family:monospace;">
+                <input id="custInvoiceNo" type="text" placeholder="01" value="01" oninput="renderCustomInvoicePreview()" style="font-weight:800; font-family:monospace;">
               </div>
             </div>
             <div class="input-field">
@@ -4038,30 +4038,78 @@
     </div>
   </div>
 
-  <!-- Saved Invoices History Modal -->
-  <div class="modal-backdrop" id="invoiceHistoryModal">
-    <div class="modal-content" style="max-width:800px;">
-      <div class="modal-header">
-        <h3 style="font-size:1.15rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <span>🗂️</span> Saved Invoices & Billing History
-        </h3>
-        <button class="btn-icon" onclick="closeHistoryModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:10px;">
-          <input id="historySearchInput" type="text" placeholder="🔍 Search by Invoice No, Client Name, Item..." style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius-md); flex:1;" oninput="filterHistoryTable()">
-          <button class="btn-pill btn-danger" style="background:#ef4444; color:#fff; font-size:12px;" onclick="clearAllHistory()">🗑️ Clear All</button>
-        </div>
-        <div style="max-height:400px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
-          <div id="historyTableContainer"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-pill primary" onclick="closeHistoryModal()">Done</button>
-      </div>
-    </div>
-  </div>
-
+    <!-- Saved Invoices History & Database Records Modal -->
+  <div class="modal-backdrop" id="invoiceHistoryModal">
+    <div class="modal-content" style="max-width:960px; width:95%;">
+      <div class="modal-header" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding:14px 20px;">
+        <h3 style="font-size:1.2rem; font-weight:800; display:flex; align-items:center; gap:8px; margin:0;">
+          <span>📁</span> AS PRINT GALLERY — Saved Invoices & Billing Database
+        </h3>
+        <button class="btn-icon" onclick="closeHistoryModal()" style="width:34px; height:34px; font-size:16px;">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding:16px;">
+        <!-- Live Stats Summary -->
+        <div class="history-stats-bar">
+          <div class="history-stat-card">
+            <span class="stat-label">Total Saved Records</span>
+            <span class="stat-val" id="statTotalBills">0</span>
+          </div>
+          <div class="history-stat-card">
+            <span class="stat-label">Total Billed Turnover</span>
+            <span class="stat-val" id="statTotalAmount">₹0</span>
+          </div>
+          <div class="history-stat-card">
+            <span class="stat-label">Next Bill Sequence</span>
+            <span class="stat-val" id="statNextSeq">#01</span>
+          </div>
+        </div>
+
+        <!-- Search & Filter Toolbar -->
+        <div class="history-toolbar">
+          <div class="history-search-box">
+            <span class="search-icon">🔍</span>
+            <input id="historySearchInput" type="text" placeholder="Search by Bill No (e.g. 01), Client Name, Phone, Item..." oninput="filterHistoryTable()">
+          </div>
+          <select id="historyTypeFilter" class="history-type-filter" onchange="filterHistoryTable()">
+            <option value="ALL">All Documents</option>
+            <option value="TAX INVOICE">Tax Invoices</option>
+            <option value="QUOTATION">Quotations</option>
+            <option value="ESTIMATE">Estimates</option>
+            <option value="DELIVERY CHALLAN">Delivery Challans</option>
+          </select>
+          <button class="btn-pill" style="background:#2563eb; color:#fff; font-weight:700; font-size:12px;" onclick="openCustomInvoiceModal(false); closeHistoryModal();">
+            <span>➕</span> New Bill (#<span id="nextBillNumBadge">01</span>)
+          </button>
+        </div>
+
+        <!-- Records Table & Cards Container -->
+        <div class="history-table-wrapper">
+          <div id="historyTableContainer"></div>
+        </div>
+
+        <!-- Bottom Data Management Toolbar -->
+        <div class="history-footer-tools no-print">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-pill" style="font-size:11.5px; padding:5px 10px; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1;" onclick="exportHistoryAsJSON()" title="Download JSON backup of all saved records">
+              <span>📥</span> Export Backup (JSON)
+            </button>
+            <label class="btn-pill" style="font-size:11.5px; padding:5px 10px; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; cursor:pointer; margin:0;" title="Restore records from JSON file">
+              <span>📤</span> Restore Data
+              <input type="file" id="importHistoryFileInput" accept=".json" style="display:none;" onchange="importHistoryFromJSON(event)">
+            </label>
+            <button class="btn-pill" style="font-size:11.5px; padding:5px 10px; background:#fee2e2; color:#dc2626; border:1px solid #fecaca;" onclick="clearAllHistory()" title="Clear local records">
+              <span>🗑️</span> Clear All
+            </button>
+          </div>
+          <div>
+            <button class="btn-pill primary" style="padding:7px 20px;" onclick="closeHistoryModal()">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="assets/js/app.js?v=2.3"></script>
 

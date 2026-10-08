@@ -3510,43 +3510,91 @@ function showToast(msg) {
 
 
 
-let currentQuoteMode = 'customer';
+
+let currentQuoteMode = 'customer';
+
+// Unified Sequential Numbering starting from '01'
+function getNextInvoiceNumber() {
+  let stored = localStorage.getItem('as_bill_seq_v5');
+  if (!stored) {
+    let old = parseInt(localStorage.getItem('as_next_invoice_seq') || '', 10);
+    if (!isNaN(old) && old > 0 && old !== 71 && old !== 77) {
+      stored = String(old);
+    } else {
+      const list = getSavedInvoicesList();
+      if (list.length > 0) {
+        let maxNum = 0;
+        list.forEach(item => {
+          let n = parseInt(String(item.invoiceNo || '').replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(n) && n > maxNum && n < 10000) maxNum = n;
+        });
+        stored = String(maxNum > 0 ? maxNum + 1 : 1);
+      } else {
+        stored = '1';
+      }
+    }
+    localStorage.setItem('as_bill_seq_v5', stored);
+  }
+  let num = parseInt(stored, 10);
+  if (isNaN(num) || num <= 0) num = 1;
+  return String(num).padStart(2, '0');
+}
+
+function incrementNextInvoiceNumber() {
+  let current = parseInt(getNextInvoiceNumber(), 10);
+  let next = current + 1;
+  localStorage.setItem('as_bill_seq_v5', String(next));
+  localStorage.setItem('as_next_invoice_seq', String(next));
+  
+  const custInv = document.getElementById('custInvoiceNo');
+  if (custInv) custInv.value = String(next).padStart(2, '0');
+  
+  const quoteInv = document.getElementById('invoiceNoInput');
+  if (quoteInv) quoteInv.value = String(next).padStart(2, '0');
+  
+  const statSeq = document.getElementById('statNextSeq');
+  if (statSeq) statSeq.textContent = '#' + String(next).padStart(2, '0');
+  
+  const nextBadge = document.getElementById('nextBillNumBadge');
+  if (nextBadge) nextBadge.textContent = String(next).padStart(2, '0');
+
+  return String(next).padStart(2, '0');
+}
+
+function updateSavedCountBadges() {
+  try {
+    const history = getSavedInvoicesList();
+    const count = history.length;
+    ['savedCountBadgeNav', 'savedCountBadge2', 'savedCountBadge3', 'savedCountBadge'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = count;
+    });
+    
+    const statTotal = document.getElementById('statTotalBills');
+    if (statTotal) statTotal.textContent = count;
+    
+    let sum = 0;
+    history.forEach(item => {
+      let amt = parseFloat(item.grandTotal || item.totalAmount || item.customRate * item.customQty || 0);
+      if (!isNaN(amt)) sum += amt;
+    });
+    const statAmt = document.getElementById('statTotalAmount');
+    if (statAmt) statAmt.textContent = '₹' + Math.round(sum).toLocaleString('en-IN');
+
+    const statSeq = document.getElementById('statNextSeq');
+    if (statSeq) statSeq.textContent = '#' + getNextInvoiceNumber();
+
+    const nextBadge = document.getElementById('nextBillNumBadge');
+    if (nextBadge) nextBadge.textContent = getNextInvoiceNumber();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function updateSavedCountBadge() {
+  updateSavedCountBadges();
+}
 
-
-
-function getNextInvoiceNumber() {
-
-  let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '77', 10);
-
-  if (isNaN(seq) || seq <= 0) seq = 77;
-
-  return String(seq).padStart(3, '0');
-
-}
-
-
-
-function incrementNextInvoiceNumber() {
-
-  let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '77', 10);
-
-  if (isNaN(seq) || seq <= 0) seq = 77;
-
-  localStorage.setItem('as_next_invoice_seq', String(seq + 1));
-
-}
-
-
-
-function updateSavedCountBadge() {
-
-  const history = getSavedInvoicesList();
-
-  const badge = document.getElementById('savedCountBadge');
-
-  if (badge) badge.textContent = history.length;
-
-}
 
 
 
@@ -4228,241 +4276,335 @@ function saveCurrentInvoice() {
 
 
 
-function openHistoryModal() {
+
+function getSavedInvoicesList() {
+  try {
+    const rawV3 = localStorage.getItem('as_saved_invoices_v3');
+    let list = rawV3 ? JSON.parse(rawV3) : [];
+    
+    // Check if there are legacy invoices in as_saved_invoices
+    const rawLegacy = localStorage.getItem('as_saved_invoices');
+    if (rawLegacy) {
+      try {
+        const legacyList = JSON.parse(rawLegacy);
+        if (Array.isArray(legacyList) && legacyList.length > 0) {
+          legacyList.forEach(leg => {
+            if (!list.some(item => item.id === leg.id || (item.invoiceNo === leg.invoiceNo && item.invoiceDate === leg.invoiceDate))) {
+              list.push({
+                id: leg.id || ('leg_' + Date.now() + Math.random()),
+                invoiceNo: leg.invoiceNo || '01',
+                docTitle: leg.docTitle || 'TAX INVOICE',
+                docType: leg.docTitle || 'TAX INVOICE',
+                date: leg.invoiceDate || leg.date || new Date().toLocaleDateString('en-IN'),
+                invoiceDate: leg.invoiceDate || leg.date || new Date().toLocaleDateString('en-IN'),
+                clientName: leg.clientName || 'Valued Client',
+                buyerName: leg.clientName || 'Valued Client',
+                receiverAddress: leg.clientAddress || leg.receiverAddress || '',
+                receiverState: leg.clientState || leg.receiverState || '',
+                receiverPhone: leg.receiverPhone || '',
+                receiverGstin: leg.clientGstin || leg.receiverGstin || '',
+                transportMode: leg.transportMode || '',
+                vehicleNo: leg.vehicleNo || '',
+                jobTitle: leg.jobTitle || 'Custom Print Job',
+                grandTotal: parseFloat(leg.grandTotal || (leg.customQty && leg.customRate ? leg.customQty * leg.customRate : 0)),
+                items: leg.items || [{
+                  title: leg.jobTitle || 'Print Job',
+                  desc: leg.customDesc || '',
+                  hsn: leg.hsn || '4819',
+                  qty: parseFloat(leg.customQty) || 1000,
+                  unit: leg.billingUnit || 'NOS',
+                  rate: parseFloat(leg.customRate) || 0,
+                  amount: (parseFloat(leg.customQty) || 1000) * (parseFloat(leg.customRate) || 0)
+                }],
+                savedAt: leg.savedAt || new Date().toISOString()
+              });
+            }
+          });
+          localStorage.setItem('as_saved_invoices_v3', JSON.stringify(list));
+        }
+      } catch (err) {}
+    }
+    return Array.isArray(list) ? list : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function openHistoryModal() {
+  const modal = document.getElementById('invoiceHistoryModal');
+  if (modal) {
+    updateSavedCountBadges();
+    renderHistoryTable();
+    modal.classList.add('active');
+  }
+}
+
+function closeHistoryModal() {
+  const modal = document.getElementById('invoiceHistoryModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function filterHistoryTable() {
+  const query = document.getElementById('historySearchInput')?.value || '';
+  const typeFilter = document.getElementById('historyTypeFilter')?.value || 'ALL';
+  renderHistoryTable(query, typeFilter);
+}
+
+function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
+  const container = document.getElementById('historyTableContainer');
+  if (!container) return;
+
+  const history = getSavedInvoicesList();
+
+  const filtered = history.filter(item => {
+    // Type filter
+    if (typeFilter && typeFilter !== 'ALL') {
+      const docType = (item.docTitle || item.docType || '').toUpperCase();
+      if (!docType.includes(typeFilter.toUpperCase())) return false;
+    }
+    // Search query filter
+    if (filterText) {
+      const q = filterText.toLowerCase().trim();
+      const numMatch = (item.invoiceNo || '').toLowerCase().includes(q);
+      const clientMatch = (item.clientName || item.buyerName || '').toLowerCase().includes(q);
+      const phoneMatch = (item.receiverPhone || '').toLowerCase().includes(q);
+      const itemMatch = (item.jobTitle || '').toLowerCase().includes(q) || (item.items && item.items.some(it => (it.title || '').toLowerCase().includes(q)));
+      const dateMatch = (item.date || item.invoiceDate || '').toLowerCase().includes(q);
+      return numMatch || clientMatch || phoneMatch || itemMatch || dateMatch;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="padding:2.5rem 1.5rem; text-align:center; color:var(--text-muted);">
+        <div style="font-size:2.5rem; margin-bottom:10px;">📭</div>
+        <div style="font-size:14px; font-weight:700; color:var(--text); margin-bottom:6px;">No saved records found ${filterText ? 'matching "' + filterText + '"' : ''}</div>
+        <div style="font-size:12.5px;">Click <b>"Save Bill"</b> in Bill Studio to save quotation & GST invoice records!</div>
+        <div style="margin-top:14px;">
+          <button class="btn-pill primary" style="font-size:12px;" onclick="openCustomInvoiceModal(false); closeHistoryModal();">
+            ➕ Create Bill #${getNextInvoiceNumber()}
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th style="width:70px;">Bill #</th>
+          <th style="width:90px;">Date</th>
+          <th style="width:110px;">Doc Type</th>
+          <th>Customer / Client</th>
+          <th>Items Description</th>
+          <th style="text-align:right; width:100px;">Amount (₹)</th>
+          <th style="text-align:right; width:220px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(item => {
+          const docType = item.docTitle || item.docType || 'TAX INVOICE';
+          let badgeClass = 'tax_invoice';
+          if (docType.includes('QUOTE')) badgeClass = 'quotation';
+          else if (docType.includes('ESTIMATE')) badgeClass = 'estimate';
+          else if (docType.includes('CHALLAN')) badgeClass = 'challan';
+
+          const client = item.clientName || item.buyerName || 'Valued Client';
+          const phone = item.receiverPhone || '';
+          const itemsDesc = item.items && item.items.length > 0
+            ? `${item.items[0].title} ${item.items.length > 1 ? '<span style="color:#64748b; font-weight:normal;">(+' + (item.items.length - 1) + ' more)</span>' : ''}`
+            : (item.jobTitle || 'Print Work');
+          const totalAmt = Math.round(item.grandTotal || item.totalAmount || 0);
+
+          return `
+            <tr>
+              <td>
+                <span style="font-family:monospace; font-weight:800; font-size:13px; color:#2563eb;">#${item.invoiceNo || '01'}</span>
+              </td>
+              <td style="font-size:12px; color:#475569; white-space:nowrap;">
+                ${item.date || item.invoiceDate || '—'}
+              </td>
+              <td>
+                <span class="badge-doc-type ${badgeClass}">${docType}</span>
+              </td>
+              <td>
+                <div style="font-weight:700; color:var(--text);">${client}</div>
+                ${phone ? `<div style="font-size:11.5px; color:#16a34a; font-weight:600;">📞 ${phone}</div>` : ''}
+              </td>
+              <td style="font-size:12px;">
+                <div style="font-weight:600;">${itemsDesc}</div>
+                ${item.items && item.items[0] && item.items[0].qty ? `<div style="font-size:11px; color:#64748b;">Qty: ${Number(item.items[0].qty).toLocaleString('en-IN')} ${item.items[0].unit || 'NOS'}</div>` : ''}
+              </td>
+              <td style="text-align:right; font-weight:800; font-size:13px; color:#0f172a; white-space:nowrap;">
+                ₹${totalAmt.toLocaleString('en-IN')}
+              </td>
+              <td>
+                <div class="history-actions-cell">
+                  <button class="btn-act btn-act-load" title="Edit & Open in Bill Studio" onclick="loadSavedInvoiceToStudio('${item.id}')">
+                    ✏️ Load
+                  </button>
+                  <button class="btn-act btn-act-pdf" title="Download High-Res A4 PDF" onclick="downloadSavedInvoicePDF('${item.id}')">
+                    📥 PDF
+                  </button>
+                  <button class="btn-act btn-act-wa" title="Share Bill on WhatsApp" onclick="shareSavedInvoiceWhatsApp('${item.id}')">
+                    💬 WA
+                  </button>
+                  <button class="btn-act btn-act-del" title="Delete Record" onclick="deleteSavedInvoice('${item.id}')">
+                    ✕
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+// Load full saved record back into Custom Invoice Studio
+function loadSavedInvoiceToStudio(id) {
+  const history = getSavedInvoicesList();
+  const record = history.find(item => String(item.id) === String(id));
+  if (!record) {
+    showToast('❌ Record not found');
+    return;
+  }
+
+  // Pre-fill all fields in Custom Bill Studio
+  if (document.getElementById('custInvoiceNo')) document.getElementById('custInvoiceNo').value = record.invoiceNo || '01';
+  if (document.getElementById('custDocTitle')) document.getElementById('custDocTitle').value = record.docTitle || record.docType || 'TAX INVOICE';
+  if (document.getElementById('custInvoiceDate')) document.getElementById('custInvoiceDate').value = record.date || record.invoiceDate || new Date().toLocaleDateString('en-IN');
+  if (document.getElementById('custReceiverName')) document.getElementById('custReceiverName').value = record.clientName || record.buyerName || '';
+  if (document.getElementById('custReceiverAddress')) document.getElementById('custReceiverAddress').value = record.receiverAddress || record.clientAddress || '';
+  if (document.getElementById('custReceiverState')) document.getElementById('custReceiverState').value = record.receiverState || record.clientState || '';
+  if (document.getElementById('custReceiverPhone')) document.getElementById('custReceiverPhone').value = record.receiverPhone || '';
+  if (document.getElementById('custReceiverGstin')) document.getElementById('custReceiverGstin').value = record.receiverGstin || record.clientGstin || '';
+  if (document.getElementById('custTransportMode')) document.getElementById('custTransportMode').value = record.transportMode || '';
+  if (document.getElementById('custVehicleNo')) document.getElementById('custVehicleNo').value = record.vehicleNo || '';
+  if (document.getElementById('custGstType')) document.getElementById('custGstType').value = record.gstType || 'cgst_sgst';
+  if (document.getElementById('custGstRateInput')) document.getElementById('custGstRateInput').value = record.gstPercent !== undefined ? record.gstPercent : (record.gstRate || 18);
+  if (document.getElementById('custTransportCharges')) document.getElementById('custTransportCharges').value = record.transportCharges || 0;
+  if (document.getElementById('custDiscount')) document.getElementById('custDiscount').value = record.discount || 0;
+
+  // Build items rows
+  const container = document.getElementById('invoiceItemsBuilder');
+  if (container) {
+    container.innerHTML = '';
+    if (record.items && record.items.length > 0) {
+      record.items.forEach(it => {
+        addInvoiceItemRow(it);
+      });
+    } else {
+      addInvoiceItemRow({
+        title: record.jobTitle || 'Print Work',
+        desc: record.customDesc || '',
+        hsn: record.hsn || '4819',
+        qty: parseFloat(record.customQty) || 1000,
+        unit: record.billingUnit || 'NOS',
+        rate: parseFloat(record.customRate) || 0
+      });
+    }
+  }
+
+  closeHistoryModal();
+  openCustomInvoiceModal(false);
+  renderCustomInvoicePreview();
+  showToast(`✅ Loaded Bill #${record.invoiceNo} for ${record.clientName || record.buyerName}`);
+}
+
+function loadSavedInvoice(id) {
+  loadSavedInvoiceToStudio(id);
+}
+
+// 1-Click Download PDF from saved record
+function downloadSavedInvoicePDF(id) {
+  loadSavedInvoiceToStudio(id);
+  setTimeout(() => {
+    downloadCustomBillPDF();
+  }, 300);
+}
+
+// 1-Click Share WhatsApp from saved record
+function shareSavedInvoiceWhatsApp(id) {
+  loadSavedInvoiceToStudio(id);
+  setTimeout(() => {
+    shareCustomBillWhatsApp();
+  }, 300);
+}
+
+// Delete single saved record
+function deleteSavedInvoice(id) {
+  if (!confirm('Are you sure you want to delete this bill record from your database?')) return;
+  
+  let history = getSavedInvoicesList();
+  history = history.filter(item => String(item.id) !== String(id));
+  localStorage.setItem('as_saved_invoices_v3', JSON.stringify(history));
+  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
+  
+  updateSavedCountBadges();
+  renderHistoryTable();
+  showToast('🗑️ Record deleted from database');
+}
+
+// Clear all records
+function clearAllHistory() {
+  if (!confirm('⚠️ Are you sure you want to clear all saved invoice records? This cannot be undone.')) return;
+  
+  localStorage.removeItem('as_saved_invoices_v3');
+  localStorage.removeItem('as_saved_invoices');
+  
+  updateSavedCountBadges();
+  renderHistoryTable();
+  showToast('🗑️ All saved records cleared');
+}
+
+// Export full backup as JSON
+function exportHistoryAsJSON() {
+  const history = getSavedInvoicesList();
+  if (history.length === 0) {
+    showToast('⚠️ No records to export.');
+    return;
+  }
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(history, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `AS_Print_Gallery_Billing_Backup_${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  showToast(`📥 Exported ${history.length} records to JSON backup!`);
+}
+
+// Import records from JSON
+function importHistoryFromJSON(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        const current = getSavedInvoicesList();
+        const merged = [...imported, ...current.filter(c => !imported.some(i => i.id === c.id))];
+        localStorage.setItem('as_saved_invoices_v3', JSON.stringify(merged));
+        updateSavedCountBadges();
+        renderHistoryTable();
+        showToast(`✅ Successfully imported ${imported.length} records into database!`);
+      } else {
+        showToast('❌ Invalid JSON file format.');
+      }
+    } catch (err) {
+      showToast('❌ Failed to parse backup file.');
+    }
+  };
+  reader.readAsText(file);
+}
 
-  const modal = document.getElementById('invoiceHistoryModal');
-
-  if (modal) {
-
-    renderHistoryTable();
-
-    modal.classList.add('active');
-
-  }
-
-}
-
-
-
-function closeHistoryModal() {
-
-  const modal = document.getElementById('invoiceHistoryModal');
-
-  if (modal) modal.classList.remove('active');
-
-}
-
-
-
-function renderHistoryTable(filterText = '') {
-
-  const container = document.getElementById('historyTableContainer');
-
-  if (!container) return;
-
-
-
-  const history = getSavedInvoicesList();
-
-  const filtered = filterText ? history.filter(item => {
-
-    const q = filterText.toLowerCase();
-
-    return (item.invoiceNo && item.invoiceNo.toLowerCase().includes(q)) ||
-
-           (item.clientName && item.clientName.toLowerCase().includes(q)) ||
-
-           (item.jobTitle && item.jobTitle.toLowerCase().includes(q)) ||
-
-           (item.docTitle && item.docTitle.toLowerCase().includes(q));
-
-  }) : history;
-
-
-
-  if (filtered.length === 0) {
-
-    container.innerHTML = `
-
-      <div style="padding:2rem; text-align:center; color:var(--text-muted);">
-
-        <div style="font-size:2rem; margin-bottom:8px;">📭</div>
-
-        <div>No saved invoices found. Click <b>"Save Invoice"</b> to store bills!</div>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-
-  container.innerHTML = `
-
-    <table class="history-table">
-
-      <thead>
-
-        <tr>
-
-          <th>Bill No.</th>
-
-          <th>Date</th>
-
-          <th>Type</th>
-
-          <th>Customer (Billed To)</th>
-
-          <th>Item / Job</th>
-
-          <th style="text-align:center;">Actions</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        ${filtered.map(item => `
-
-          <tr>
-
-            <td><b>#${item.invoiceNo}</b></td>
-
-            <td>${item.invoiceDate}</td>
-
-            <td><span style="font-size:10px; background:#eef2ff; color:#4338ca; padding:2px 6px; border-radius:4px; font-weight:bold;">${item.docTitle}</span></td>
-
-            <td><b>${item.clientName}</b></td>
-
-            <td>${item.jobTitle}</td>
-
-            <td style="text-align:center;">
-
-              <button class="btn-pill" style="padding:4px 8px; font-size:11px; margin-right:4px;" onclick="loadSavedInvoice(${item.id})">📂 Open</button>
-
-              <button class="btn-pill btn-danger" style="padding:4px 8px; font-size:11px; background:#ef4444; color:#fff;" onclick="deleteSavedInvoice(${item.id})">✕</button>
-
-            </td>
-
-          </tr>
-
-        `).join('')}
-
-      </tbody>
-
-    </table>
-
-  `;
-
-}
-
-
-
-function filterHistoryTable() {
-
-  const query = document.getElementById('historySearchInput')?.value || '';
-
-  renderHistoryTable(query);
-
-}
-
-
-
-function loadSavedInvoice(id) {
-
-  const history = getSavedInvoicesList();
-
-  const record = history.find(item => item.id === id);
-
-  if (!record) return;
-
-
-
-  if (record.docTitle) document.getElementById('docTitleSelect').value = record.docTitle;
-
-  if (record.invoiceNo) document.getElementById('invoiceNoInput').value = record.invoiceNo;
-
-  if (record.invoiceDate) document.getElementById('invoiceDateInput').value = record.invoiceDate;
-
-  if (record.clientName) document.getElementById('clientNameInput').value = record.clientName;
-
-  if (record.clientAddress) document.getElementById('clientAddressInput').value = record.clientAddress;
-
-  if (record.clientState) document.getElementById('clientStateInput').value = record.clientState;
-
-  if (record.clientGstin) document.getElementById('clientGstinInput').value = record.clientGstin;
-
-  if (record.transportMode) document.getElementById('transportModeInput').value = record.transportMode;
-
-  if (record.vehicleNo) document.getElementById('vehicleNoInput').value = record.vehicleNo;
-
-  if (record.jobTitle) document.getElementById('jobTitleInput').value = record.jobTitle;
-
-  if (record.hsn) document.getElementById('hsnInput').value = record.hsn;
-
-  if (record.billingUnit) document.getElementById('billingUnitSelect').value = record.billingUnit;
-
-  if (record.customQty) document.getElementById('customBillingQty').value = record.customQty;
-
-  if (record.customRate) document.getElementById('customBillingRate').value = record.customRate;
-
-  if (record.customDesc !== undefined) document.getElementById('customItemDescInput').value = record.customDesc;
-
-  if (record.gstType) document.getElementById('quoteGstType').value = record.gstType;
-
-  if (record.gstRate) document.getElementById('quoteGstPercentInput').value = record.gstRate;
-
-  if (record.reverseCharge) document.getElementById('reverseChargeSelect').value = record.reverseCharge;
-
-
-
-  closeHistoryModal();
-
-  renderQuotationPreview();
-
-  showToast(`Loaded Bill #${record.invoiceNo} for ${record.clientName}`);
-
-}
-
-
-
-function deleteSavedInvoice(id) {
-
-  if (!confirm('Are you sure you want to delete this invoice record?')) return;
-
-  let history = getSavedInvoicesList();
-
-  history = history.filter(item => item.id !== id);
-
-  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-
-  renderHistoryTable();
-
-  updateSavedCountBadge();
-
-  showToast('Invoice deleted from history');
-
-}
-
-
-
-function clearAllHistory() {
-
-  if (!confirm('Delete all saved invoices history?')) return;
-
-  localStorage.removeItem('as_saved_invoices');
-
-  renderHistoryTable();
-
-  updateSavedCountBadge();
-
-  showToast('All invoice history cleared');
-
-}
 
 
 
@@ -4796,30 +4938,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let invoiceRowCounter = 0;
 
-function getNextInvoiceNumber() {
-  let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '71', 10);
-  if (isNaN(seq) || seq <= 0) seq = 71;
-  return String(seq).padStart(3, '0');
-}
 
-function incrementNextInvoiceNumber() {
-  let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '71', 10);
-  if (isNaN(seq) || seq <= 0) seq = 71;
-  localStorage.setItem('as_next_invoice_seq', String(seq + 1));
-}
-
-function updateSavedCountBadges() {
-  try {
-    const history = getSavedInvoicesList();
-    const count = history.length;
-    ['savedCountBadgeNav', 'savedCountBadge2', 'savedCountBadge'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = count;
-    });
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 function getSavedInvoicesList() {
   try {
@@ -5090,14 +5209,14 @@ function renderCustomInvoicePreview() {
 
     return `
       <tr>
-        <td style="text-align:center; font-weight:bold; width:38px;">${idx + 1}</td>
-        <td>
-          ${descHtml}
-        </td>
-        <td style="text-align:center; font-weight:bold; width:80px;">${it.hsn || '-'}</td>
-        <td style="text-align:center; font-weight:bold; width:95px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
-        <td style="text-align:right; width:80px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
-        <td style="text-align:right; font-weight:bold; width:105px;">${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="text-align:center; font-weight:bold; width:36px;">${idx + 1}</td>
+   <td style="text-align:left;">
+     ${descHtml}
+   </td>
+   <td style="text-align:center; font-weight:bold; width:75px;">${it.hsn || '-'}</td>
+   <td style="text-align:center; font-weight:bold; width:88px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
+   <td style="text-align:right; width:75px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
+   <td style="text-align:right; font-weight:bold; width:100px;">${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       </tr>
     `;
   }).join('');
@@ -5360,32 +5479,84 @@ function closeCustomInvoiceModal() {
   if (modal) modal.classList.remove('active');
 }
 
+function getDocumentCleanFileName(rawDocTitle, rawInvoiceNo, rawClientName) {
+  let docType = (rawDocTitle || 'Invoice').trim();
+  if (docType.toUpperCase().includes('TAX INVOICE') || docType.toUpperCase() === 'INVOICE') {
+    docType = 'Invoice';
+  } else if (docType.toUpperCase().includes('QUOTE') || docType.toUpperCase().includes('QUOTATION')) {
+    docType = 'Quotation';
+  } else if (docType.toUpperCase().includes('ESTIMATE')) {
+    docType = 'Estimate';
+  } else if (docType.toUpperCase().includes('CHALLAN')) {
+    docType = 'Delivery_Challan';
+  } else {
+    docType = docType.replace(/[^a-zA-Z0-9]/g, '_');
+  }
+
+  let no = String(rawInvoiceNo || '01').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+  if (!no) no = '01';
+
+  let client = (rawClientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_');
+  if (client.length > 30) client = client.substring(0, 30);
+
+  return `AS_Print_Gallery_${docType}_${no}_${client}`;
+}
+
 function printCustomInvoice() {
+  const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
+  const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
+  const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
+  
+  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
+  const originalTitle = document.title;
+  document.title = baseName;
+  
   renderCustomInvoicePreview();
   window.print();
+  
+  setTimeout(() => {
+    document.title = originalTitle;
+  }, 2500);
 }
 
 function printQuotation() {
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'QUOTATION';
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+  
+  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
+  const originalTitle = document.title;
+  document.title = baseName;
+  
   if (typeof renderQuotationPreview === 'function') {
     renderQuotationPreview();
   }
   window.print();
+  
+  setTimeout(() => {
+    document.title = originalTitle;
+  }, 2500);
 }
+
 
 function saveCustomBillInvoice() {
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
-  const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
+  const receiverName = document.getElementById('custReceiverName')?.value || 'Valued Client';
   const invoiceDate = document.getElementById('custInvoiceDate')?.value || new Date().toLocaleDateString('en-IN');
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   
   const items = getInvoiceCustomItemsData();
   let subtotal = 0;
-  items.forEach(it => { subtotal += it.amount; });
+  items.forEach(it => { subtotal += (parseFloat(it.amount) || 0); });
+
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+  const taxableAmt = Math.max(0, subtotal + transportCharges - discount);
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const totalGst = gstType === 'exempt' ? 0 : (subtotal * gstRate) / 100;
-  const grandTotal = Math.round(subtotal + totalGst);
+  const totalGst = gstType === 'exempt' ? 0 : (taxableAmt * gstRate) / 100;
+  const grandTotal = Math.round(taxableAmt + totalGst);
 
   const billObj = {
     id: 'bill_' + Date.now(),
@@ -5398,23 +5569,41 @@ function saveCustomBillInvoice() {
     receiverPhone: document.getElementById('custReceiverPhone')?.value || '',
     receiverGstin: document.getElementById('custReceiverGstin')?.value || '',
     receiverState: document.getElementById('custReceiverState')?.value || '',
+    transportMode: document.getElementById('custTransportMode')?.value || '',
+    vehicleNo: document.getElementById('custVehicleNo')?.value || '',
     date: invoiceDate,
+    invoiceDate: invoiceDate,
     items: items,
     jobTitle: items[0]?.title || 'Packaging Item',
+    transportCharges: transportCharges,
+    discount: discount,
+    subtotal: subtotal,
     gstType: gstType,
     gstPercent: gstRate,
+    totalGst: totalGst,
     grandTotal: grandTotal,
     savedAt: new Date().toISOString()
   };
 
   const list = getSavedInvoicesList();
-  list.unshift(billObj);
+  // If record with same invoiceNo exists, update it, else prepend
+  const existingIdx = list.findIndex(it => it.invoiceNo === invoiceNo);
+  if (existingIdx >= 0) {
+    list[existingIdx] = billObj;
+  } else {
+    list.unshift(billObj);
+  }
+  
   localStorage.setItem('as_saved_invoices_v3', JSON.stringify(list));
+  localStorage.setItem('as_saved_invoices', JSON.stringify(list));
 
-  incrementNextInvoiceNumber();
+  // Advance sequence counter to next number (e.g. 01 -> 02)
+  const nextNum = incrementNextInvoiceNumber();
   updateSavedCountBadges();
-  showToast(`✅ Bill #${invoiceNo} for ${receiverName} saved to Records!`);
+
+  showToast(`✅ Bill #${invoiceNo} for ${receiverName} saved to Records! Next is #${nextNum}`);
 }
+
 
 function copyCustomBillText() {
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || '';
@@ -5629,15 +5818,20 @@ async function generateA4PDFBlob(elementId, filename) {
 }
 
 function downloadCustomBillPDF() {
-  const invoiceNo = document.getElementById('custInvoiceNo')?.value || '071';
-  const receiverName = (document.getElementById('custReceiverName')?.value || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
-  const filename = `AS_Print_Gallery_Invoice_${invoiceNo}_${receiverName}.pdf`;
+  const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
+  const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
+  const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
+  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
+  const filename = `${baseName}.pdf`;
   
+  const originalTitle = document.title;
+  document.title = baseName;
+
   const element = document.getElementById('printableInvoice');
   if (!element) return;
 
   if (typeof html2pdf !== 'undefined') {
-    showToast('⏳ Generating High-Definition A4 PDF...');
+    showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
       margin: [4, 6, 4, 6],
       filename: filename,
@@ -5647,22 +5841,31 @@ function downloadCustomBillPDF() {
     };
     html2pdf().set(opt).from(element).save().then(() => {
       showToast(`✅ PDF downloaded: ${filename}`);
+      document.title = originalTitle;
+    }).catch(() => {
+      document.title = originalTitle;
     });
   } else {
     window.print();
+    setTimeout(() => { document.title = originalTitle; }, 2500);
   }
 }
 
 function downloadQuotationPDF() {
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
-  const clientName = (document.getElementById('clientNameInput')?.value || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
-  const filename = `AS_Print_Gallery_Quote_${invoiceNo}_${clientName}.pdf`;
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'QUOTATION';
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
+  const filename = `${baseName}.pdf`;
   
+  const originalTitle = document.title;
+  document.title = baseName;
+
   const element = document.getElementById('printableQuotation');
   if (!element) return;
 
   if (typeof html2pdf !== 'undefined') {
-    showToast('⏳ Generating Quotation PDF...');
+    showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
       margin: [4, 6, 4, 6],
       filename: filename,
@@ -5672,9 +5875,13 @@ function downloadQuotationPDF() {
     };
     html2pdf().set(opt).from(element).save().then(() => {
       showToast(`✅ PDF downloaded: ${filename}`);
+      document.title = originalTitle;
+    }).catch(() => {
+      document.title = originalTitle;
     });
   } else {
     window.print();
+    setTimeout(() => { document.title = originalTitle; }, 2500);
   }
 }
 
