@@ -3859,11 +3859,19 @@
           </div>
 
           <!-- Receiver & Transport Details Grid -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
+          <div class="custom-bill-form-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
             <div class="input-field">
               <label style="font-weight:700;">Receiver Name (M/S Billed To) *</label>
               <div class="input-wrapper">
                 <input id="custReceiverName" type="text" placeholder="e.g. Labrary Clothing Limited" value="M/S MOHIT KUMAR" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+              </div>
+            </div>
+            <div class="input-field" style="border: 1.5px solid #22c55e; border-radius: 8px; padding: 4px; background: rgba(34, 197, 94, 0.04);">
+              <label style="font-weight:800; color:#15803d; display:flex; align-items:center; gap:4px;">
+                <span>💬</span> Customer WhatsApp No. (व्हाट्सएप्प नं.) *
+              </label>
+              <div class="input-wrapper">
+                <input id="custReceiverPhone" type="tel" placeholder="e.g. 7037442527 (10 digits)" value="7037442527" oninput="renderCustomInvoicePreview()" style="font-weight:800; color:#15803d; font-size:14px;">
               </div>
             </div>
             <div class="input-field">
@@ -3879,9 +3887,9 @@
               </div>
             </div>
             <div class="input-field">
-              <label style="font-weight:700;">GSTIN / Unique ID / Phone</label>
+              <label style="font-weight:700;">GSTIN / Unique ID</label>
               <div class="input-wrapper">
-                <input id="custReceiverGstin" type="text" placeholder="e.g. 09AADCL7286D1ZG / Ph: 7037442527" value="GSTIN: XXXXXXX | Ph: 7037442527" oninput="renderCustomInvoicePreview()">
+                <input id="custReceiverGstin" type="text" placeholder="e.g. 09AADCL7286D1ZG" value="" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
@@ -3968,13 +3976,18 @@
 
         <!-- Live Authentic A4 Bill Preview -->
         <div style="margin-top:10px;">
-          <div class="no-print" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+          <div class="no-print" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
             <span style="font-size:12px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
               📄 A4 Print Preview (A S Print Gallery Authentic Bill Book Format):
             </span>
             <span style="font-size:11px; color:#10b981; font-weight:700;">● Live Updated</span>
           </div>
-          <div id="customInvoicePreview"></div>
+          <div class="mobile-scroll-tip no-print" style="display:none; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; padding:6px 10px; font-size:11.5px; font-weight:600; margin-bottom:8px;">
+            <span>👉</span> <span>Mobile Screen: Swipe / Scroll horizontally to inspect full A4 Bill Book sheet.</span>
+          </div>
+          <div class="bill-preview-scroll-wrapper">
+            <div id="customInvoicePreview"></div>
+          </div>
         </div>
       </div>
 

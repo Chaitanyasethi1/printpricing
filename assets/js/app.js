@@ -1,4 +1,24 @@
 
+function extractCleanPhoneNumber(phoneStr) {
+  if (!phoneStr) return '';
+  let digits = String(phoneStr).replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10) {
+    return '91' + digits;
+  }
+  if (digits.length === 11 && digits.startsWith('0')) {
+    return '91' + digits.substring(1);
+  }
+  if (digits.length === 12 && digits.startsWith('91')) {
+    return digits;
+  }
+  if (digits.length > 10 && !digits.startsWith('91')) {
+    return digits;
+  }
+  return digits;
+}
+
+
 function handleJobTypeInput(val) {
   setCustomPresetActive();
   calculate();
@@ -5490,7 +5510,7 @@ function addInvoiceItemRow(data = null) {
     </div>
 
     <!-- Row Main Fields: Title, HSN, Qty, Unit, Rate, Amount -->
-    <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1.2fr 1.2fr; gap:10px; align-items:flex-end;">
+    <div class="invoice-item-fields-grid">
       <div>
         <label style="font-size:11px; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Product / Item Title *</label>
         <input type="text" class="item-title-input" placeholder="e.g. HANG TAG / BOX / LABEL" value="${titleVal}" oninput="renderCustomInvoicePreview()" style="font-weight:700; padding:8px 10px; font-size:13px; width:100%; border:1px solid var(--border); border-radius:6px;">
@@ -5748,8 +5768,8 @@ function renderCustomInvoicePreview() {
               <span class="bill-field-val">${receiverState}</span>
             </div>
             <div class="bill-field-row">
-              <span class="bill-field-lbl">GSTIN/Unique ID :</span>
-              <span class="bill-field-val" style="font-weight:bold;">${receiverGstin}</span>
+              <span class="bill-field-lbl">GSTIN / Phone :</span>
+              <span class="bill-field-val" style="font-weight:bold;">${[receiverGstin, (document.getElementById('custReceiverPhone')?.value ? ('Mob: ' + document.getElementById('custReceiverPhone')?.value) : '')].filter(Boolean).join(' | ') || '-'}</span>
             </div>
           </div>
 
@@ -5984,6 +6004,7 @@ function saveCustomBillInvoice() {
     clientName: receiverName,
     buyerName: receiverName,
     receiverAddress: document.getElementById('custReceiverAddress')?.value || '',
+    receiverPhone: document.getElementById('custReceiverPhone')?.value || '',
     receiverGstin: document.getElementById('custReceiverGstin')?.value || '',
     receiverState: document.getElementById('custReceiverState')?.value || '',
     date: invoiceDate,
@@ -6049,13 +6070,18 @@ function copyCustomBillText() {
 function shareCustomBillWhatsApp() {
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || '';
   const receiverName = document.getElementById('custReceiverName')?.value || '';
+  const receiverPhone = document.getElementById('custReceiverPhone')?.value || '';
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const items = getInvoiceCustomItemsData();
   
   let text = `*A S PRINT GALLERY*\n`;
   text += `GSTIN: 09AWKPN5910E1ZG | Phone: 9911678386, 8851627221\n`;
   text += `*${docTitle}* #${invoiceNo}\n`;
-  text += `Billed To: *${receiverName}*\n\n`;
+  text += `Billed To: *${receiverName}*\n`;
+  if (receiverPhone) {
+    text += `Customer Mob: *${receiverPhone}*\n`;
+  }
+  text += `-----------------------------------------\n`;
   
   let sub = 0;
   items.forEach((it, i) => {
@@ -6071,11 +6097,34 @@ function shareCustomBillWhatsApp() {
   const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
   const tot = Math.round(sub + gstAmt);
 
-  text += `\n*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
+  text += `-----------------------------------------\n`;
+  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
+  if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
+  text += `*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
+  text += `-----------------------------------------\n`;
   text += `Bank: HDFC Bank A/C: 50200098986238 (IFSC: HDFC0004729)\n`;
+  text += `Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102\n`;
   text += `Thank you for your business!`;
 
-  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  let cleanPhone = extractCleanPhoneNumber(receiverPhone);
+  if (!cleanPhone) {
+    const gstinVal = document.getElementById('custReceiverGstin')?.value || '';
+    const phoneMatch = gstinVal.match(/(\d{10})/);
+    if (phoneMatch) {
+      cleanPhone = extractCleanPhoneNumber(phoneMatch[1]);
+    }
+  }
+
+  const url = cleanPhone 
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
+    : `https://wa.me/?text=${encodeURIComponent(text)}`;
+  
+  if (cleanPhone) {
+    showToast(`🚀 Opening WhatsApp for +${cleanPhone}...`);
+  } else {
+    showToast(`💬 Opening WhatsApp...`);
+  }
+
   window.open(url, '_blank');
 }
 
