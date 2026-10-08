@@ -3949,7 +3949,7 @@ function renderQuotationPreview() {
   let emptyRowsHtml = '';
   for (let i = 0; i < 4; i++) {
     emptyRowsHtml += `
-      <tr style="height:20px;">
+      <tr style="height:28px;">
         <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${i + 2}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
@@ -5100,10 +5100,10 @@ function renderCustomInvoicePreview() {
 
   // Proportional empty rows to gracefully fill full A4 height
   let emptyRowsHtml = '';
-  const emptyNeeded = Math.max(0, 2 - items.length);
+  const emptyNeeded = Math.max(0, 5 - items.length);
   for (let i = 0; i < emptyNeeded; i++) {
     emptyRowsHtml += `
-      <tr style="height:32px;">
+      <tr style="height:28px;">
         <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${items.length + i + 1}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
