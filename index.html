@@ -1,109 +1,217 @@
 <!DOCTYPE html>
 
 
+
+
+
 <html lang="en" data-theme="light">
+
+
+
 
 
 <head>
 
 
+
+
+
   <meta charset="UTF-8">
+
+
+
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
+
+
+
   <title>Complete Printing Cost Calculator & Estimation Studio</title>
+
+
+
 
 
   <meta name="description" content="Professional printing cost and job work estimation calculator with Leaf foil, Plates, Die charges, and instant quotes.">
 
 
+
+
+
   
+
+
+
 
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 
 
+
+
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+
 
 
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 
+
+
+
   
+
+
+
 
 
   <link rel="stylesheet" href="style.css?v=2.2">
 
 
+
+
+
   <style>
+
+
+
 
 
     .visual-leaf-overlay {
 
 
+
+
+
       position: absolute;
+
+
+
 
 
       top: 10%;
 
 
+
+
+
       left: 10%;
+
+
+
 
 
       background: linear-gradient(135deg, rgba(234, 179, 8, 0.4), rgba(245, 158, 11, 0.5));
 
 
+
+
+
       border: 1.5px dashed #f59e0b;
+
+
+
 
 
       backdrop-filter: blur(1px);
 
 
+
+
+
       transition: all 0.3s ease;
+
+
+
 
 
       display: flex;
 
 
+
+
+
       align-items: center;
+
+
+
 
 
       justify-content: center;
 
 
+
+
+
       font-size: 0.65rem;
+
+
+
 
 
       font-weight: 800;
 
 
+
+
+
       color: #b45309;
+
+
+
 
 
       border-radius: 3px;
 
 
+
+
+
       z-index: 2;
 
 
+
+
+
     }
+
+
+
 
 
     [data-theme="dark"] .visual-leaf-overlay {
 
 
+
+
+
       color: #fef08a;
+
+
+
 
 
     }
 
 
+
+
+
   </style>
 
 
+
+
+
 </head>
+
+
+
 
 
 <body>
@@ -112,73 +220,52 @@
 
 
 
+
+
+
+
+
+
   <!-- Top Navigation Bar -->
 
 
-  <header class="app-header">
 
 
+
+    <header class="app-header">
     <div class="header-container">
-
-
       <div class="logo-badge">
-
-
-        <div class="logo-icon" style="background:#fff; border-radius:50%; overflow:hidden; padding:2px;"><img src="logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;"></div>
-
-
-        <div class="logo-text">
-
-
-          <h1>PrintCalc Pro</h1>
-
-
-          <p>Complete Printing, Foil & Finishing Cost Engine</p>
-
-
+        <div class="logo-icon" style="background:#fff; border-radius:50%; overflow:hidden; padding:2px; display:flex; align-items:center; justify-content:center;">
+          <img src="logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;">
         </div>
-
-
+        <div class="logo-text">
+          <h1 style="font-weight:800; letter-spacing:0.5px;">A S PRINT GALLERY</h1>
+          <p>Packaging & Printing Cost Engine &amp; GST Bill Studio</p>
+        </div>
       </div>
-
-
-      <div class="header-actions">
-
-
+      
+      <div class="header-nav-tabs" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <button class="btn-pill" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:var(--text);" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+          <span>🧮</span> Calculator
+        </button>
+        <button class="btn-pill primary" style="background:linear-gradient(135deg, #2563eb, #7c3aed); color:#fff; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.35);" onclick="openCustomInvoiceModal(false)">
+          <span>🧾</span> Invoice Studio (अलग बिल)
+        </button>
+        <button class="btn-pill" style="background:#0284c7; color:#fff; font-weight:600;" onclick="openHistoryModal()">
+          <span>🗂️</span> Saved Invoices (<span id="savedCountBadgeNav">0</span>)
+        </button>
         <button class="btn-icon" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-
-
           <span id="themeIcon">🌙</span>
-
-
         </button>
-
-
-        <button class="btn-pill" onclick="resetCalculator()">
-
-
-          <span>🔄</span> Reset
-
-
-        </button>
-
-
-        <button class="btn-pill primary" onclick="openQuotationModal()">
-
-
-          <span>📄</span> Generate Quote
-
-
-        </button>
-
-
       </div>
-
-
     </div>
-
-
   </header>
+
+
+
+
+
+
 
 
 
@@ -187,49 +274,100 @@
   <!-- Main Grid -->
 
 
+
+
+
   <main class="main-wrapper">
+
+
+
 
 
     
 
 
+
+
+
     <!-- Input Section Column -->
+
+
+
 
 
     <div class="calc-card">
 
 
+
+
+
       <div class="section-header">
+
+
+
 
 
         <div class="section-title">
 
 
+
+
+
           <span class="badge">⚙️</span>
+
+
+
 
 
           <span>Job Parameters & Finishing Costs</span>
 
 
+
+
+
         </div>
+
+
+
 
 
         <div style="display:flex; gap:10px;">
 
 
+
+
+
           <button class="action-link" onclick="syncDimensions()">⚡ Sync Size to Lam</button>
+
+
+
 
 
           <span style="color:var(--border);">|</span>
 
 
+
+
+
           <button class="action-link" onclick="syncLeafDimensions()">🌟 Sync to Leaf</button>
+
+
+
 
 
         </div>
 
 
+
+
+
       </div>
+
+
+
+
+
+
 
 
 
@@ -238,46 +376,94 @@
       <div class="card-body">
 
 
+
+
+
         
+
+
+
 
 
         <!-- Presets -->
 
 
+
+
+
         <div class="form-section" style="padding:0.9rem; background:linear-gradient(to right, var(--bg-card-sub), var(--bg-main));">
+
+
+
 
 
           <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">
 
 
+
+
+
             ⚡ Quick Industry Presets
 
 
+
+
+
           </div>
+
+
+
 
 
           <div class="presets-container" style="margin-bottom:0; padding-bottom:0;">
 
 
+
+
+
             <button class="preset-chip" id="preset-sweetBox" onclick="loadPreset('sweetBox')">🍬 Sweet Box</button>
+
+
+
 
 
             <button class="preset-chip" id="preset-visitingCard" onclick="loadPreset('visitingCard')">💳 Visiting Card Sheet</button>
 
 
+
+
+
             <button class="preset-chip" id="preset-monocarton" onclick="loadPreset('monocarton')">📦 Monocarton Box</button>
+
+
+
 
 
             <button class="preset-chip" id="preset-bookCover" onclick="loadPreset('bookCover')">📚 Book Cover</button>
 
 
+
+
+
             <button class="preset-chip" id="preset-flyer" onclick="loadPreset('flyer')">📄 Flyer / Brochure</button>
+
+
+
 
 
           </div>
 
 
+
+
+
         </div>
+
+
+
+
+
+
 
 
 
@@ -286,19 +472,40 @@
         <!-- 1. Paper Cost -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge">1</span> Paper Substrate Cost</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">Area (m²) × GSM × Rate/Kg</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -307,49 +514,100 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="sl">Sheet Length <span class="unit">(inch)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="sl" type="number" step="any" placeholder="23" value="23">
 
 
+
+
+
                 <span class="input-suffix">in</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="sw">Sheet Width <span class="unit">(inch)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="sw" type="number" step="any" placeholder="18" value="18">
+
+
+
 
 
                 <span class="input-suffix">in</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -358,28 +616,58 @@
           <div class="chips-row">
 
 
+
+
+
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Sizes:</span>
+
+
+
 
 
             <button class="chip" data-chip-type="size" data-sl="18" data-sw="23" onclick="setSheetSize(18, 23)">18×23"</button>
 
 
+
+
+
             <button class="chip" data-chip-type="size" data-sl="20" data-sw="30" onclick="setSheetSize(20, 30)">20×30"</button>
+
+
+
 
 
             <button class="chip" data-chip-type="size" data-sl="23" data-sw="36" onclick="setSheetSize(23, 36)">23×36"</button>
 
 
+
+
+
             <button class="chip" data-chip-type="size" data-sl="25" data-sw="36" onclick="setSheetSize(25, 36)">25×36"</button>
+
+
+
 
 
             <button class="chip" data-chip-type="size" data-sl="28" data-sw="40" onclick="setSheetSize(28, 40)">28×40"</button>
 
 
+
+
+
             <button class="chip" data-chip-type="size" data-sl="12" data-sw="18" onclick="setSheetSize(12, 18)">12×18"</button>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -388,97 +676,196 @@
           <div class="grid-2" style="margin-top:10px;">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="gsm">GSM (Paper Thickness)</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="gsm" type="number" step="any" placeholder="250" value="250">
 
 
+
+
+
                 <span class="input-suffix">gsm</span>
+
+
+
 
 
               </div>
 
 
+
+
+
               <div class="chips-row">
+
+
+
 
 
                 <button class="chip" data-chip-type="gsm" data-val="80" onclick="setVal('gsm', 80)">80g</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="gsm" data-val="130" onclick="setVal('gsm', 130)">130g</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="gsm" data-val="170" onclick="setVal('gsm', 170)">170g</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="gsm" data-val="250" onclick="setVal('gsm', 250)">250g</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="gsm" data-val="300" onclick="setVal('gsm', 300)">300g</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="gsm" data-val="350" onclick="setVal('gsm', 350)">350g</button>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="paperRate">Paper Rate <span class="unit">(₹ / Kg)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="paperRate" type="number" step="any" placeholder="80" value="80">
+
+
+
 
 
                 <span class="input-suffix">₹/kg</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="paperRate" data-val="65" onclick="setVal('paperRate', 65)">₹65</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="paperRate" data-val="75" onclick="setVal('paperRate', 75)">₹75</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="paperRate" data-val="85" onclick="setVal('paperRate', 85)">₹85</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="paperRate" data-val="95" onclick="setVal('paperRate', 95)">₹95</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="paperRate" data-val="110" onclick="setVal('paperRate', 110)">₹110</button>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
           </div>
 
 
+
+
+
         </section>
+
+
+
+
+
+
 
 
 
@@ -487,19 +874,40 @@
         <!-- 2. Lamination -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge">2</span> Lamination Coating</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">(L × W ÷ Div) ÷ 100</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -508,64 +916,130 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="lamType">Lamination Type</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <select id="lamType" onchange="handleLamTypeChange()">
 
 
+
+
+
                   <option value="None">None (No Lamination)</option>
+
+
+
 
 
                   <option value="Matt">Matt Lamination</option>
 
 
+
+
+
                   <option value="Gloss">Gloss Lamination</option>
+
+
+
 
 
                   <option value="Velvet">Velvet / Soft Touch</option>
 
 
+
+
+
                   <option value="Thermal">Thermal Lamination</option>
+
+
+
 
 
                 </select>
 
 
+
+
+
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="divide">Divide Factor <span class="unit">(Paise Divisor)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="divide" type="number" step="any" placeholder="2.5" value="2.5">
+
+
+
 
 
                 <span class="input-suffix">div</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -574,22 +1048,46 @@
           <div class="chips-row" style="margin-top:8px;">
 
 
+
+
+
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Common Factors:</span>
+
+
+
 
 
             <button class="chip" data-chip-type="lamFactor" data-name="Gloss" data-val="2.5" onclick="setLaminationDivider(2.5, 'Gloss')">Gloss (2.5)</button>
 
 
+
+
+
             <button class="chip" data-chip-type="lamFactor" data-name="Matt" data-val="2.2" onclick="setLaminationDivider(2.2, 'Matt')">Matt (2.2)</button>
+
+
+
 
 
             <button class="chip" data-chip-type="lamFactor" data-name="Velvet" data-val="1.8" onclick="setLaminationDivider(1.8, 'Velvet')">Velvet (1.8)</button>
 
 
+
+
+
             <button class="chip" data-chip-type="lamFactor" data-name="Thermal" data-val="2.0" onclick="setLaminationDivider(2.0, 'Thermal')">Thermal (2.0)</button>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -598,52 +1096,106 @@
           <div class="grid-2" style="margin-top:10px;">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="ll">Lamination Length <span class="unit">(inch)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="ll" type="number" step="any" placeholder="18" value="18">
 
 
+
+
+
                 <span class="input-suffix">in</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="lw">Lamination Width <span class="unit">(inch)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="lw" type="number" step="any" placeholder="23" value="23">
+
+
+
 
 
                 <span class="input-suffix">in</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
 
 
+
+
+
         </section>
+
+
+
+
+
+
 
 
 
@@ -652,19 +1204,40 @@
         <!-- 3. Leaf / Foil Stamping (Lamination ki tarah) -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge" style="background:#f59e0b;">3</span> Leaf / Foil Stamping (Hot Foil)</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">(L × W ÷ Div) ÷ 100 + Block</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -673,70 +1246,142 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="leafType">Leaf / Foil Type</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <select id="leafType" onchange="handleLeafTypeChange()">
 
 
+
+
+
                   <option value="None">None (No Leaf / Foil)</option>
+
+
+
 
 
                   <option value="Gold Foil">Gold Foil</option>
 
 
+
+
+
                   <option value="Silver Foil">Silver Foil</option>
+
+
+
 
 
                   <option value="Copper Foil">Copper / Bronze Foil</option>
 
 
+
+
+
                   <option value="Rose Gold">Rose Gold Foil</option>
+
+
+
 
 
                   <option value="Holographic">Holographic Foil</option>
 
 
+
+
+
                   <option value="Red Foil">Red / Metallic Color Foil</option>
+
+
+
 
 
                 </select>
 
 
+
+
+
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="leafDivide">Leaf Divide Factor <span class="unit">(Paise Divisor)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="leafDivide" type="number" step="any" placeholder="2.5" value="2.5">
+
+
+
 
 
                 <span class="input-suffix">div</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -745,22 +1390,46 @@
           <div class="chips-row" style="margin-top:8px;">
 
 
+
+
+
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Foils:</span>
+
+
+
 
 
             <button class="chip" data-chip-type="leafFactor" data-name="Gold Foil" data-val="2.5" onclick="setLeafDivider(2.5, 'Gold Foil')">Gold (2.5)</button>
 
 
+
+
+
             <button class="chip" data-chip-type="leafFactor" data-name="Silver Foil" data-val="2.5" onclick="setLeafDivider(2.5, 'Silver Foil')">Silver (2.5)</button>
+
+
+
 
 
             <button class="chip" data-chip-type="leafFactor" data-name="Rose Gold" data-val="2.2" onclick="setLeafDivider(2.2, 'Rose Gold')">Rose Gold (2.2)</button>
 
 
+
+
+
             <button class="chip" data-chip-type="leafFactor" data-name="Holographic" data-val="2.0" onclick="setLeafDivider(2.0, 'Holographic')">Holographic (2.0)</button>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -769,91 +1438,184 @@
           <div class="grid-3" style="margin-top:10px;">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="leafL">Foil Length <span class="unit">(inch)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="leafL" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">in</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="leafW">Foil Width <span class="unit">(inch)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="leafW" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">in</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="leafBlock">Foil Block Charges <span class="unit">(₹ Total)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="leafBlock" type="number" step="any" placeholder="0" value="0">
+
+
+
 
 
                 <span class="input-suffix">₹</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
 
 
           <div class="chips-row" style="margin-top:6px;">
 
 
+
+
+
             <span style="font-size:0.72rem; color:var(--text-muted); line-height:22px;">Quick Block:</span>
+
+
+
 
 
             <button class="chip" data-chip-type="leafBlock" data-val="250" onclick="setVal('leafBlock', 250)">₹250 (Small)</button>
 
 
+
+
+
             <button class="chip" data-chip-type="leafBlock" data-val="450" onclick="setVal('leafBlock', 450)">₹450 (Medium)</button>
+
+
+
 
 
             <button class="chip" data-chip-type="leafBlock" data-val="750" onclick="setVal('leafBlock', 750)">₹750 (Large)</button>
 
 
+
+
+
           </div>
 
 
+
+
+
         </section>
+
+
+
+
+
+
 
 
 
@@ -862,19 +1624,40 @@
         <!-- 4. Printing Cost & Plates Charges -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge">4</span> Printing Process & Plates</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">Offset / Digital + CTP Plates</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -883,40 +1666,82 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="printing">Printing Cost / Sheet <span class="unit">(₹)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="printing" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">₹/sh</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="printing" data-val="0.8" onclick="setVal('printing', 0.80)">₹0.80 (1 Color)</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="printing" data-val="1.5" onclick="setVal('printing', 1.50)">₹1.50 (4 Color)</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="printing" data-val="2.5" onclick="setVal('printing', 2.50)">₹2.50 (6 Color)</button>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -925,46 +1750,94 @@
             <div class="input-field">
 
 
+
+
+
               <label for="plates">Plates Charges <span class="unit">(₹ Total Job)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="plates" type="number" step="any" placeholder="0" value="0">
+
+
+
 
 
                 <span class="input-suffix">₹</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="plates" data-val="200" onclick="setVal('plates', 200)">₹200 (1 Plt)</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="plates" data-val="400" onclick="setVal('plates', 400)">₹400 (2 Plt)</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="plates" data-val="800" onclick="setVal('plates', 800)">₹800 (4 Plt)</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="plates" data-val="1200" onclick="setVal('plates', 1200)">₹1200 (6 Plt)</button>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
 
 
+
+
+
         </section>
+
+
+
+
+
+
 
 
 
@@ -973,19 +1846,40 @@
         <!-- 5. Finishing & Job Work (with Die Charges) -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge">5</span> Finishing, Die Work & Operations</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">Die cutting, Die making & Job work</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -994,40 +1888,82 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="die">Die Cutting Cost <span class="unit">(₹ / Sheet)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="die" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">₹/sh</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="die" data-val="0.3" onclick="setVal('die', 0.30)">₹0.30</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="die" data-val="0.5" onclick="setVal('die', 0.50)">₹0.50</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="die" data-val="0.8" onclick="setVal('die', 0.80)">₹0.80</button>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1036,40 +1972,82 @@
             <div class="input-field">
 
 
+
+
+
               <label for="dieCharges">Die Charges (Die Making) <span class="unit">(₹ Total)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="dieCharges" type="number" step="any" placeholder="0" value="0">
+
+
+
 
 
                 <span class="input-suffix">₹</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="dieCharges" data-val="350" onclick="setVal('dieCharges', 350)">₹350 (Std)</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="dieCharges" data-val="600" onclick="setVal('dieCharges', 600)">₹600 (Laser)</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="dieCharges" data-val="1000" onclick="setVal('dieCharges', 1000)">₹1000 (Complex)</button>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -1078,94 +2056,190 @@
           <div class="grid-4" style="margin-top:12px;">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="pasting">Pasting (₹)</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="pasting" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">₹</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="uv">UV (₹)</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="uv" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">₹</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="embossed">Embossed (₹)</label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="embossed" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">₹</span>
+
+
+
 
 
               </div>
 
 
+
+
+
             </div>
+
+
+
 
 
             <div class="input-field">
 
 
+
+
+
               <label for="other">Other (₹)</label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="other" type="number" step="any" placeholder="0" value="0">
+
+
+
 
 
                 <span class="input-suffix">₹</span>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
 
 
+
+
+
         </section>
+
+
+
+
+
+
 
 
 
@@ -1174,19 +2248,40 @@
         <!-- 6. Wastage & Margin -->
 
 
+
+
+
         <section class="form-section">
+
+
+
 
 
           <div class="form-section-title">
 
 
+
+
+
             <h4><span class="badge">6</span> Wastage & Margin</h4>
+
+
+
 
 
             <span style="font-size:0.75rem; color:var(--text-muted);">Percentage additions</span>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -1195,43 +2290,88 @@
           <div class="grid-2">
 
 
+
+
+
             <div class="input-field">
+
+
+
 
 
               <label for="wastage">Wastage Allowance <span class="unit">(%)</span></label>
 
 
+
+
+
               <div class="input-wrapper">
+
+
+
 
 
                 <input id="wastage" type="number" step="any" placeholder="0" value="0">
 
 
+
+
+
                 <span class="input-suffix">%</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="wastage" data-val="2" onclick="setVal('wastage', 2)">2%</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="wastage" data-val="4" onclick="setVal('wastage', 4)">4%</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="wastage" data-val="5" onclick="setVal('wastage', 5)">5%</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="wastage" data-val="8" onclick="setVal('wastage', 8)">8%</button>
 
 
+
+
+
               </div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1240,43 +2380,85 @@
             <div class="input-field">
 
 
+
+
+
               <label for="profit">Margin <span class="unit">(%)</span></label>
+
+
+
 
 
               <div class="input-wrapper">
 
 
+
+
+
                 <input id="profit" type="number" step="any" placeholder="0" value="0">
+
+
+
 
 
                 <span class="input-suffix">%</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="chips-row">
 
 
+
+
+
                 <button class="chip" data-chip-type="profit" data-val="10" onclick="setVal('profit', 10)">10%</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="profit" data-val="15" onclick="setVal('profit', 15)">15%</button>
 
 
+
+
+
                 <button class="chip" data-chip-type="profit" data-val="20" onclick="setVal('profit', 20)">20%</button>
+
+
+
 
 
                 <button class="chip" data-chip-type="profit" data-val="25" onclick="setVal('profit', 25)">25%</button>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
 
 
         </section>
@@ -1285,7 +2467,16 @@
 
 
 
+
+
+
+
+
+
       </div>
+
+
+
 
 
     </div>
@@ -1294,37 +2485,79 @@
 
 
 
+
+
+
+
+
+
     <!-- Right Side: Results & Quotation Output -->
+
+
+
 
 
     <div class="sticky-results">
 
 
+
+
+
       
+
+
+
 
 
       <div class="hero-price-card">
 
 
+
+
+
         <div class="hero-top">
+
+
+
 
 
           <div>
 
 
+
+
+
             <div class="hero-label">Final Sale Price / Sheet</div>
+
+
+
 
 
             <div class="hero-main-price" id="heroFinalPrice">₹0.00</div>
 
 
+
+
+
           </div>
+
+
+
 
 
           <div class="hero-badge">Production Ready</div>
 
 
+
+
+
         </div>
+
+
+
+
+
+
 
 
 
@@ -1333,46 +2566,94 @@
         <div class="hero-grid">
 
 
+
+
+
           <div class="hero-item">
+
+
+
 
 
             <span class="title">Net Cost / Sheet</span>
 
 
+
+
+
             <span class="val" id="heroUnitCost">₹0.00</span>
+
+
+
 
 
           </div>
 
 
+
+
+
           <div class="hero-item">
+
+
+
 
 
             <span class="title">Net Margin / Sheet</span>
 
 
+
+
+
             <span class="val" id="heroUnitProfit">₹0.00</span>
 
 
+
+
+
           </div>
+
+
+
 
 
           <div class="hero-item">
 
 
+
+
+
             <span class="title">Paper Weight</span>
+
+
+
 
 
             <span class="val" id="heroWeight">0.00 g</span>
 
 
+
+
+
           </div>
+
+
+
 
 
         </div>
 
 
+
+
+
       </div>
+
+
+
+
+
+
 
 
 
@@ -1381,40 +2662,82 @@
       <!-- Batch Quantity Multiplier -->
 
 
+
+
+
       <div class="batch-card">
+
+
+
 
 
         <div class="batch-header">
 
 
+
+
+
           <span class="batch-title">📦 Total Job Batch Calculator</span>
+
+
+
 
 
           <span style="font-size:0.75rem; color:var(--text-muted);" id="batchQuantityDisplay">1,000 Sheets</span>
 
 
+
+
+
         </div>
+
+
+
 
 
         
 
 
+
+
+
         <div class="input-field">
+
+
+
 
 
           <div class="input-wrapper">
 
 
+
+
+
             <input id="batchQty" type="number" min="1" step="100" placeholder="1000" value="1000">
+
+
+
 
 
             <span class="input-suffix">Sheets</span>
 
 
+
+
+
           </div>
 
 
+
+
+
         </div>
+
+
+
+
+
+
 
 
 
@@ -1423,22 +2746,46 @@
         <div class="batch-pills">
 
 
+
+
+
           <button class="batch-pill" data-qty="500" id="batch-500" onclick="setBatchQty(500)">500</button>
+
+
+
 
 
           <button class="batch-pill active" data-qty="1000" id="batch-1000" onclick="setBatchQty(1000)">1,000</button>
 
 
+
+
+
           <button class="batch-pill" data-qty="2500" id="batch-2500" onclick="setBatchQty(2500)">2,500</button>
+
+
+
 
 
           <button class="batch-pill" data-qty="5000" id="batch-5000" onclick="setBatchQty(5000)">5,000</button>
 
 
+
+
+
           <button class="batch-pill" data-qty="10000" id="batch-10000" onclick="setBatchQty(10000)">10,000</button>
 
 
+
+
+
         </div>
+
+
+
+
+
+
 
 
 
@@ -1447,28 +2794,55 @@
         <div class="batch-summary">
 
 
+
+
+
           <div>
+
+
+
 
 
             <div class="label">Total Job Billing Amount:</div>
 
 
+
+
+
             <div style="font-size:0.75rem; color:var(--text-muted);">
+
+
+
 
 
               Total Cost: <b id="batchTotalCost">₹0.00</b> | Margin: <b id="batchTotalProfit" style="color:var(--success);">₹0.00</b>
 
 
+
+
+
             </div>
+
+
+
 
 
           </div>
 
 
+
+
+
           <div class="price" id="batchTotalPrice">₹0.00</div>
 
 
+
+
+
         </div>
+
+
+
 
 
       </div>
@@ -1477,22 +2851,46 @@
 
 
 
+
+
+
+
+
+
       <!-- Itemized Cost Breakdown List -->
+
+
+
 
 
       <div class="calc-card">
 
 
+
+
+
         <div class="section-header" style="padding:0.9rem 1.25rem;">
+
+
+
 
 
           <div class="section-title" style="font-size:0.95rem;">
 
 
+
+
+
             <span>📊</span> Itemized Cost Breakdown
 
 
+
+
+
           </div>
+
+
+
 
 
         </div>
@@ -1501,43 +2899,91 @@
 
 
 
+
+
+
+
+
+
         <div class="card-body" style="padding:1.2rem;">
+
+
+
 
 
           <div class="breakdown-list">
 
 
+
+
+
             
+
+
+
 
 
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#3b82f6;"></span>
 
 
+
+
+
                 <div>
+
+
+
 
 
                   <div class="name">Paper Substrate</div>
 
 
+
+
+
                   <div class="sub-text">Weight: <b id="weight">0 g</b></div>
+
+
+
 
 
                 </div>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="paperCost">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1546,31 +2992,64 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#06b6d4;"></span>
 
 
+
+
+
                 <div>
+
+
+
 
 
                   <div class="name" id="lamName">Lamination</div>
 
 
+
+
+
                   <div class="sub-text">Surface protection</div>
+
+
+
 
 
                 </div>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="lamCost">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1579,31 +3058,64 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#eab308;"></span>
 
 
+
+
+
                 <div>
+
+
+
 
 
                   <div class="name" id="leafName">Leaf / Foil Stamping</div>
 
 
+
+
+
                   <div class="sub-text">Hot stamping & block</div>
+
+
+
 
 
                 </div>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="leafCost">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1612,31 +3124,64 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#8b5cf6;"></span>
 
 
+
+
+
                 <div>
+
+
+
 
 
                   <div class="name">Printing & Plates</div>
 
 
+
+
+
                   <div class="sub-text" id="rPrintingSub">Offset / Digital</div>
+
+
+
 
 
                 </div>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="rPrinting">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1645,31 +3190,64 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#ec4899;"></span>
 
 
+
+
+
                 <div>
+
+
+
 
 
                   <div class="name">Die Cutting & Die</div>
 
 
+
+
+
                   <div class="sub-text" id="rDieSub">Punching & laser die</div>
+
+
+
 
 
                 </div>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="rDie">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1678,22 +3256,46 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#f97316;"></span>
 
 
+
+
+
                 <span class="name">Pasting / Assembly</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="rPasting">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1702,22 +3304,46 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#14b8a6;"></span>
 
 
+
+
+
                 <span class="name">UV Coating</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="rUv">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1726,22 +3352,46 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#a855f7;"></span>
 
 
+
+
+
                 <span class="name">Embossing</span>
 
 
+
+
+
               </div>
+
+
+
 
 
               <div class="amount" id="rEmbossed">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1750,22 +3400,46 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#64748b;"></span>
 
 
+
+
+
                 <span class="name">Other Charges</span>
+
+
+
 
 
               </div>
 
 
+
+
+
               <div class="amount" id="rOther">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1774,22 +3448,46 @@
             <div class="breakdown-row">
 
 
+
+
+
               <div class="row-meta">
+
+
+
 
 
                 <span class="dot" style="background:#ef4444;"></span>
 
 
+
+
+
                 <span class="name">Wastage Allowance</span>
+
+
+
 
 
               </div>
 
 
+
+
+
               <div class="amount" id="rWastage">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1801,16 +3499,37 @@
 
 
 
+
+
+
+
+
+
             <div class="breakdown-row highlight">
+
+
+
 
 
               <div class="name">Total Production Cost</div>
 
 
+
+
+
               <div class="amount" id="total">₹0.00</div>
 
 
+
+
+
             </div>
+
+
+
+
+
+
 
 
 
@@ -1819,10 +3538,19 @@
             <div class="breakdown-row highlight" style="background:var(--primary-light); border-color:var(--primary);">
 
 
+
+
+
               <div class="name" style="font-size:1.05rem;">Final Sale Price</div>
 
 
+
+
+
               <div class="amount" id="final" style="font-size:1.35rem;">₹0.00</div>
+
+
+
 
 
             </div>
@@ -1831,7 +3559,19 @@
 
 
 
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -1840,22 +3580,46 @@
           <!-- Formula Info Pills -->
 
 
+
+
+
           <div class="formula-pill" id="formula">
+
+
+
 
 
             <span>ℹ️</span> Lamination formula: Length × Width ÷ Divide By = Paise
 
 
+
+
+
           </div>
+
+
+
 
 
           <div class="formula-pill" id="leafFormula" style="background:rgba(234, 179, 8, 0.1); border-color:rgba(234, 179, 8, 0.3); color:#d97706; margin-top:6px;">
 
 
+
+
+
             <span>ℹ️</span> Leaf formula: Length × Width ÷ Divide By = Paise
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -1864,46 +3628,94 @@
           <!-- Sheet Visual Preview Box -->
 
 
+
+
+
           <div class="visual-preview-box" style="margin-top:14px;">
+
+
+
 
 
             <div style="font-size:0.78rem; font-weight:700; color:var(--text-sub); width:100%; text-align:left;">
 
 
+
+
+
               📐 Sheet, Lamination & Leaf Visual Scale
 
 
+
+
+
             </div>
+
+
+
 
 
             
 
 
+
+
+
             <div class="sheet-canvas-container">
+
+
+
 
 
               <div class="sheet-visual" id="visualSheet" style="width: 140px; height: 100px;">
 
 
+
+
+
                 <div class="lam-visual-overlay" id="visualLam" style="width: 100%; height: 100%;">None</div>
+
+
+
 
 
                 <div class="visual-leaf-overlay" id="visualLeaf" style="display:none;">✨ Gold Foil</div>
 
 
+
+
+
                 <div class="visual-dim-label dim-width" id="visualDimW">23" L</div>
+
+
+
 
 
                 <div class="visual-dim-label dim-height" id="visualDimH">18" W</div>
 
 
+
+
+
               </div>
+
+
+
 
 
             </div>
 
 
+
+
+
           </div>
+
+
+
+
+
+
 
 
 
@@ -1912,25 +3724,49 @@
           <!-- Action Buttons Grid -->
 
 
+
+
+
           <div class="action-grid">
+
+
+
 
 
             <button class="btn-full btn-secondary" onclick="copyQuoteToClipboard()">
 
 
+
+
+
               <span>📋</span> Copy Breakdown
 
 
+
+
+
             </button>
+
+
+
 
 
             <button class="btn-full btn-success" onclick="shareWhatsApp()">
 
 
+
+
+
               <span>💬</span> WhatsApp Quote
 
 
+
+
+
             </button>
+
+
+
 
 
           </div>
@@ -1939,10 +3775,22 @@
 
 
 
+
+
+
+
+
+
           <button class="btn-full" style="margin-top:10px; background:linear-gradient(135deg, var(--primary), #6366f1); color:#fff;" onclick="openQuotationModal()">
 
 
+
+
+
             <span>📄</span> Generate Printable PDF / Invoice
+
+
+
 
 
           </button>
@@ -1951,10 +3799,25 @@
 
 
 
+
+
+
+
+
+
         </div>
 
 
+
+
+
       </div>
+
+
+
+
+
+
 
 
 
@@ -1966,7 +3829,19 @@
 
 
 
+
+
+
+
+
+
   </main>
+
+
+
+
+
+
 
 
 
@@ -1975,45 +3850,33 @@
   <!-- Quotation Generation Modal -->
 
 
-    <!-- Quotation & Tax Invoice Generation Modal -->
-  <div class="modal-backdrop" id="quotationModal">
-    <div class="modal-content" style="max-width:860px;">
+
+
+
+      <!-- Dedicated Custom Bill / Tax Invoice Modal (Fully Customizable Multi-Item Bill Book) -->
+  <div class="modal-backdrop" id="customInvoiceModal">
+    <div class="modal-content" style="max-width:920px;">
       <div class="modal-header">
         <h3 style="font-size:1.15rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <span>📄</span> AS Print Gallery - Invoice & Quotation Studio
+          <span>🧾</span> A S PRINT GALLERY — Custom Bill & Tax Invoice Studio
         </h3>
         <div style="display:flex; gap:8px; align-items:center;">
           <button class="btn-pill" style="padding:6px 12px; font-size:12px;" onclick="openHistoryModal()">
-            <span>🗂️</span> Saved Invoices (<span id="savedCountBadge">0</span>)
+            <span>🗂️</span> Saved Bills (<span id="savedCountBadge2">0</span>)
           </button>
-          <button class="btn-icon" onclick="closeQuotationModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
+          <button class="btn-icon" onclick="closeCustomInvoiceModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
         </div>
       </div>
       
       <div class="modal-body">
-        <!-- View Mode Switch -->
-        <div class="quote-mode-toggle no-print">
-          <button type="button" class="quote-mode-btn active" id="modeCustomerBtn" onclick="setQuoteMode('customer')">
-            <span>🧾</span> Official Bill / Quotation (ग्राहकी बिल बुक)
-          </button>
-          <button type="button" class="quote-mode-btn" id="modeInternalBtn" onclick="setQuoteMode('internal')">
-            <span>🏭</span> Internal Job Card & Costing (आंतरिक जॉब शीट)
-          </button>
-        </div>
-
-        <!-- Customization Controls (Hidden in Print) -->
+        <!-- Document Type & Meta Row -->
         <div class="no-print" style="background:var(--bg-card-sub); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; margin-bottom:1.25rem;">
-          <div style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-            <span>⚙️ Bill Details & Customization (बिल/कोटेशन की सेटिंग्स)</span>
-            <span style="font-size:0.75rem; color:#4f46e5; font-weight:700;">🏢 AS Print Gallery</span>
-          </div>
-
-          <!-- Top Document Meta Row -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md); border:1px solid var(--border);">
+          
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px; background:var(--bg-card); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border);">
             <div class="input-field">
               <label>Document Title</label>
               <div class="input-wrapper">
-                <select id="docTitleSelect" onchange="renderQuotationPreview()">
+                <select id="custDocTitle" onchange="renderCustomInvoicePreview()">
                   <option value="TAX INVOICE" selected>TAX INVOICE</option>
                   <option value="QUOTATION">QUOTATION</option>
                   <option value="ESTIMATE / JOB SHEET">ESTIMATE / JOB SHEET</option>
@@ -2025,7 +3888,7 @@
             <div class="input-field">
               <label>Copy For</label>
               <div class="input-wrapper">
-                <select id="copyTypeSelect" onchange="renderQuotationPreview()">
+                <select id="custCopyType" onchange="renderCustomInvoicePreview()">
                   <option value="Original For Buyer" selected>Original For Buyer</option>
                   <option value="Duplicate For Supplier">Duplicate For Supplier</option>
                   <option value="Triplicate For Supplier">Triplicate For Supplier</option>
@@ -2035,121 +3898,113 @@
             <div class="input-field">
               <label>Invoice / Bill No.</label>
               <div class="input-wrapper">
-                <input id="invoiceNoInput" type="text" placeholder="e.g. 077" value="077" oninput="renderQuotationPreview()">
+                <input id="custInvoiceNo" type="text" placeholder="077" value="077" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
-              <label>Invoice Dated</label>
+              <label>Invoice Date</label>
               <div class="input-wrapper">
-                <input id="invoiceDateInput" type="text" placeholder="e.g. 08-Oct-2026" oninput="renderQuotationPreview()">
+                <input id="custInvoiceDate" type="text" placeholder="08-Oct-2026" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
           </div>
 
-          <!-- Customer & Transport Grid -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:12px;">
+          <!-- Receiver & Transport Details Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
             <div class="input-field">
-              <label>Customer Name (Billed To)</label>
+              <label>Receiver Name (Billed To)</label>
               <div class="input-wrapper">
-                <input id="clientNameInput" type="text" placeholder="e.g. MOHIT KUMAR / Shiv Engg" value="M/S MOHIT KUMAR" oninput="renderQuotationPreview()">
+                <input id="custReceiverName" type="text" placeholder="e.g. MOHIT KUMAR" value="M/S MOHIT KUMAR" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
-              <label>Customer Address</label>
+              <label>Receiver Address</label>
               <div class="input-wrapper">
-                <input id="clientAddressInput" type="text" placeholder="e.g. KHEKRA, BAGHPAT" value="KHEKRA, BAGHPAT, U.P." oninput="renderQuotationPreview()">
+                <input id="custReceiverAddress" type="text" placeholder="e.g. KHEKRA, BAGHPAT" value="KHEKRA, BAGHPAT, U.P." oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
               <label>State & State Code</label>
               <div class="input-wrapper">
-                <input id="clientStateInput" type="text" placeholder="e.g. Uttar Pradesh (09)" value="Uttar Pradesh (09)" oninput="renderQuotationPreview()">
+                <input id="custReceiverState" type="text" placeholder="e.g. Uttar Pradesh (09)" value="Uttar Pradesh (09)" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
-              <label>Customer GSTIN / Unique ID</label>
+              <label>GSTIN / Unique ID / Phone</label>
               <div class="input-wrapper">
-                <input id="clientGstinInput" type="text" placeholder="e.g. 09XXXXX / Ph: 9878..." value="GSTIN: XXXXXXX | Ph: 7037442527" oninput="renderQuotationPreview()">
+                <input id="custReceiverGstin" type="text" placeholder="e.g. GSTIN: XXXXXXX | Ph: 7037442527" value="GSTIN: XXXXXXX | Ph: 7037442527" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
-              <label>Transport Mode</label>
+              <label>Transportation Mode</label>
               <div class="input-wrapper">
-                <input id="transportModeInput" type="text" placeholder="e.g. Direct / Tempo / Courier" value="Direct Dispatch / By Hand" oninput="renderQuotationPreview()">
+                <input id="custTransportMode" type="text" placeholder="e.g. Direct Dispatch / Tempo" value="Direct Dispatch / By Hand" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
             <div class="input-field">
               <label>Vehicle Number</label>
               <div class="input-wrapper">
-                <input id="vehicleNoInput" type="text" placeholder="e.g. UP-14-XX-1234" value="" oninput="renderQuotationPreview()">
+                <input id="custVehicleNo" type="text" placeholder="e.g. UP-14-XX-1234" value="" oninput="renderCustomInvoicePreview()">
               </div>
             </div>
           </div>
 
-          <!-- Item & Billing Details (Customizable Title, Unit & Kg Billing) -->
-          <div style="background:var(--bg-card); padding:10px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;">
-            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
-              📦 Item / Goods Description & Billing Unit (Kg / Nos / Pcs)
+          <!-- Multi-Item Goods Rows Builder -->
+          <div style="background:var(--bg-card); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:0.85rem; font-weight:800; text-transform:uppercase; color:var(--text-main);">
+                📦 Description of Goods & Items (आइटम्स लिस्ट)
+              </span>
+              <button type="button" class="btn-pill" style="padding:4px 10px; font-size:12px; background:var(--primary); color:#fff;" onclick="addInvoiceItemRow()">
+                <span>➕</span> Add Item Row
+              </button>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
-              <div class="input-field" style="grid-column: span 2;">
-                <label>Main Product Title (e.g. LIFAFA / Sweet Box)</label>
-                <div class="input-wrapper">
-                  <input id="jobTitleInput" type="text" placeholder="e.g. LIFAFA" value="LIFAFA" oninput="renderQuotationPreview()">
+
+            <div id="invoiceItemsBuilder">
+              <!-- Item Row 1 -->
+              <div class="invoice-item-row" id="itemRow_0" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1.2fr auto; gap:8px; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--border);">
+                <div>
+                  <label style="font-size:11px; font-weight:700;">Item Title & Description</label>
+                  <input type="text" class="item-title-input" placeholder="e.g. LIFAFA / Sweet Box" value="LIFAFA" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+                  <input type="text" class="item-desc-input" placeholder="e.g. Material: 23x18 | 250 GSM Board" value="Material: 23x18 | 250 GSM Board | Printing: Multi-Color Offset" oninput="renderCustomInvoicePreview()" style="font-size:11px; margin-top:3px;">
                 </div>
-              </div>
-              <div class="input-field">
-                <label>HSN / SAC Code</label>
-                <div class="input-wrapper">
-                  <input id="hsnInput" type="text" placeholder="e.g. 4819 / 4911" value="4819" oninput="renderQuotationPreview()">
+                <div>
+                  <label style="font-size:11px; font-weight:700;">HSN Code</label>
+                  <input type="text" class="item-hsn-input" placeholder="4819" value="4819" oninput="renderCustomInvoicePreview()">
                 </div>
-              </div>
-              <div class="input-field">
-                <label>Billing Quantity</label>
-                <div class="input-wrapper">
-                  <input id="customBillingQty" type="number" step="any" placeholder="1000" oninput="renderQuotationPreview()">
+                <div>
+                  <label style="font-size:11px; font-weight:700;">Qty</label>
+                  <input type="number" step="any" class="item-qty-input" placeholder="1000" value="1000" oninput="renderCustomInvoicePreview()">
                 </div>
-              </div>
-              <div class="input-field">
-                <label>Billing Unit</label>
-                <div class="input-wrapper">
-                  <select id="billingUnitSelect" onchange="handleUnitChange()">
-                    <option value="NOS" selected>NOS (Pieces / Units)</option>
-                    <option value="KGS">KGS (Kilograms - वजन के हिसाब से)</option>
-                    <option value="SHEETS">SHEETS (शीट्स)</option>
-                    <option value="PCS">PCS (Pieces)</option>
-                    <option value="BOXES">BOXES (बॉक्सेस)</option>
-                    <option value="SETS">SETS (सेट्स)</option>
-                    <option value="ROLLS">ROLLS (रोल्स)</option>
+                <div>
+                  <label style="font-size:11px; font-weight:700;">Unit</label>
+                  <select class="item-unit-select" onchange="renderCustomInvoicePreview()">
+                    <option value="NOS" selected>NOS</option>
+                    <option value="KGS">KGS (किलो)</option>
+                    <option value="SHEETS">SHEETS</option>
+                    <option value="PCS">PCS</option>
+                    <option value="BOXES">BOXES</option>
+                    <option value="SETS">SETS</option>
+                    <option value="ROLLS">ROLLS</option>
                   </select>
                 </div>
-              </div>
-              <div class="input-field">
-                <label>Custom Rate (₹ per Unit/Kg)</label>
-                <div class="input-wrapper">
-                  <input id="customBillingRate" type="number" step="any" placeholder="Auto from Calc" oninput="renderQuotationPreview()">
+                <div>
+                  <label style="font-size:11px; font-weight:700;">Rate (₹)</label>
+                  <input type="number" step="any" class="item-rate-input" placeholder="5.34" value="5.34" oninput="renderCustomInvoicePreview()">
+                </div>
+                <div style="padding-top:16px;">
+                  <button type="button" class="btn-icon" style="color:#ef4444; width:28px; height:28px;" onclick="removeInvoiceItemRow(0)" title="Delete Row">✕</button>
                 </div>
               </div>
             </div>
-
-            <!-- Custom Description Text Area -->
-            <div class="input-field" style="margin-top:8px;">
-              <label>Item Sub-Description (Technical Specs / Material Details)</label>
-              <div class="input-wrapper">
-                <input id="customItemDescInput" type="text" placeholder="Auto-generated or custom text" value="" oninput="renderQuotationPreview()">
-              </div>
-              <span style="font-size:11px; color:var(--text-muted); margin-top:3px; display:block;">
-                💡 <i>Leave blank to auto-generate specs (Material, Printing, Lamination, Foil, Punching), or write custom text (e.g. "Material: 23x18 | 250 GSM Board | Printing: Multi-Color Offset").</i>
-              </span>
-            </div>
           </div>
 
-          <!-- GST & Tax Settings -->
+          <!-- Tax Options Grid -->
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
             <div class="input-field">
-              <label>GST Tax Option</label>
+              <label>GST Tax Type</label>
               <div class="input-wrapper">
-                <select id="quoteGstType" onchange="handleGstTypeChange()">
+                <select id="custGstType" onchange="handleCustGstTypeChange()">
                   <option value="cgst_sgst" selected>CGST + SGST (Local UP State)</option>
                   <option value="igst">IGST (Inter-State / Other State)</option>
                   <option value="extra">GST Extra as applicable</option>
@@ -2157,34 +4012,58 @@
                 </select>
               </div>
             </div>
-            <div class="input-field" id="customGstRateField">
-              <label>Total GST Rate (%)</label>
+            <div class="input-field">
+              <label>GST Rate (%)</label>
               <div class="input-wrapper">
-                <input id="quoteGstPercentInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 18" value="18" oninput="renderQuotationPreview()">
+                <input id="custGstRateInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 18" value="18" oninput="renderCustomInvoicePreview()">
                 <span class="input-suffix">%</span>
               </div>
             </div>
             <div class="input-field">
               <label>Reverse Charge Applicable?</label>
               <div class="input-wrapper">
-                <select id="reverseChargeSelect" onchange="renderQuotationPreview()">
+                <select id="custReverseCharge" onchange="renderCustomInvoicePreview()">
                   <option value="No" selected>No</option>
                   <option value="Yes">Yes</option>
                 </select>
               </div>
             </div>
           </div>
+
         </div>
 
-        <!-- Live Bill Preview -->
+        <!-- Live Custom Bill Preview -->
+        <div id="customInvoicePreview"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-pill" onclick="closeCustomInvoiceModal()">Close</button>
+        <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save Bill</button>
+        <button class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
+        <button class="btn-pill btn-success" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill</button>
+        <button class="btn-pill primary" onclick="printCustomInvoice()"><span>🖨️</span> Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quotation Generation Modal (From Calc) -->
+  <div class="modal-backdrop" id="quotationModal">
+    <div class="modal-content" style="max-width:860px;">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <span>📄</span> A S PRINT GALLERY — Estimation & Quotation
+        </h3>
+        <button class="btn-icon" onclick="closeQuotationModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
+      </div>
+      
+      <div class="modal-body">
         <div id="quotationPreview"></div>
       </div>
 
       <div class="modal-footer">
         <button class="btn-pill" onclick="closeQuotationModal()">Close</button>
-        <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCurrentInvoice()"><span>💾</span> Save Invoice</button>
         <button class="btn-pill" onclick="copyQuoteToClipboard()"><span>📋</span> Copy Text</button>
-        <button class="btn-pill btn-success" onclick="shareWhatsApp()"><span>💬</span> WhatsApp Bill</button>
+        <button class="btn-pill btn-success" onclick="shareWhatsApp()"><span>💬</span> WhatsApp Quote</button>
         <button class="btn-pill primary" onclick="printQuotation()"><span>🖨️</span> Print / Save as PDF</button>
       </div>
     </div>
@@ -2201,7 +4080,7 @@
       </div>
       <div class="modal-body">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:10px;">
-          <input id="historySearchInput" type="text" placeholder="🔍 Search by Invoice No, Client Name, Job..." style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius-md); flex:1;" oninput="filterHistoryTable()">
+          <input id="historySearchInput" type="text" placeholder="🔍 Search by Invoice No, Client Name, Item..." style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius-md); flex:1;" oninput="filterHistoryTable()">
           <button class="btn-pill btn-danger" style="background:#ef4444; color:#fff; font-size:12px;" onclick="clearAllHistory()">🗑️ Clear All</button>
         </div>
         <div style="max-height:400px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
@@ -2217,9 +4096,18 @@
   <script src="app.js?v=2.2"></script>
 
 
+
+
+
 </body>
 
 
+
+
+
 </html>
+
+
+
 
 
