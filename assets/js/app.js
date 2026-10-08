@@ -1,4 +1,32 @@
 
+// Universal Cache Clearing Function
+function clearAppBrowserCache() {
+  if (confirm('🔄 Clear browser cache, reload app, and fetch fresh updates? (Your saved invoice records will be preserved)')) {
+    // 1. Clear Service Worker caches if any
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        names.forEach(name => caches.delete(name));
+      });
+    }
+    // 2. Clear sessionStorage
+    sessionStorage.clear();
+    
+    // 3. Remove obsolete legacy keys from localStorage
+    try {
+      localStorage.removeItem('as_calc_cache');
+      localStorage.removeItem('as_form_temp');
+      localStorage.removeItem('as_temp_draft');
+    } catch(e) {}
+
+    showToast('🔄 Cache cleared! Reloading fresh version...');
+    setTimeout(() => {
+      // Force hard reload bypassing cache
+      window.location.href = window.location.origin + window.location.pathname + '?nocache=' + Date.now();
+    }, 600);
+  }
+}
+
+
 let isCorrugatedEnabled = false;
 let isKappaEnabled = false;
 
