@@ -3142,27 +3142,22 @@ body {
 
 
 
-/* ============================================================
-
-
-   PRINT RULES - 100% RELIABLE & CLEAN A4 PDF EXPORT
-
-
-   ============================================================ */
-
-
+
+/* ============================================================
+   PRINT RULES - 100% RELIABLE & CLEAN A4 PDF EXPORT
+   ============================================================ */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 6mm 8mm;
+    margin: 5mm 6mm;
   }
 
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
     font-size: 10pt !important;
-    height: auto !important;
-    min-height: 0 !important;
+    height: 100% !important;
+    min-height: 100% !important;
     overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -3195,7 +3190,7 @@ body {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
     min-height: 0 !important;
     overflow: visible !important;
   }
@@ -3207,7 +3202,7 @@ body {
     max-width: 100% !important;
     width: 100% !important;
     max-height: none !important;
-    height: auto !important;
+    height: 100% !important;
     overflow: visible !important;
     transform: none !important;
     padding: 0 !important;
@@ -3218,23 +3213,37 @@ body {
     padding: 0 !important;
     margin: 0 !important;
     overflow: visible !important;
+    height: 100% !important;
   }
 
-  /* Printable Sheet Styles */
-  .billbook-container,
-  .billbook-sheet,
-  .quotation-sheet {
-    display: block !important;
+  /* Printable Sheet Styles - Full A4 Fit */
+  .billbook-container {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
     visibility: visible !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: 282mm !important;
+    min-height: 282mm !important;
     margin: 0 auto !important;
-    padding: 10px !important;
+    padding: 0 !important;
     box-shadow: none !important;
     border: 2px solid #000000 !important;
     background: #ffffff !important;
     page-break-inside: avoid !important;
     box-sizing: border-box !important;
+  }
+
+  .bill-middle-fill {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .bill-items-table {
+    flex: 1 !important;
+    height: 100% !important;
   }
 
   .billbook-container *,
@@ -3255,7 +3264,6 @@ body {
   }
 }
 
-
 /* ============================================================
    A S PRINT GALLERY - AUTHENTIC BILL BOOK & INVOICE STYLING (A4 FORMAT)
    ============================================================ */
@@ -3268,37 +3276,42 @@ body {
   line-height: 1.35;
   width: 100%;
   max-width: 820px;
+  min-height: 980px;
   box-sizing: border-box;
   margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .bill-top-bar {
   display: grid;
-  grid-template-columns: 1.8fr 1.4fr 1.8fr 1.5fr;
+  grid-template-columns: 1.6fr 1.3fr 1.6fr 1.6fr;
   align-items: center;
   border-bottom: 1.5px solid #000000;
   padding: 4px 8px;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: bold;
 }
 
 .bill-doc-title {
   text-align: center;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   background: #f1f5f9;
-  padding: 3px 6px;
-  border: 1px solid #000;
+  padding: 3px 8px;
+  border: 1.5px solid #000;
   border-radius: 3px;
 }
 
 .bill-copies-box {
-  border: 1px solid #000000;
-  padding: 3px 5px;
-  font-size: 9px;
-  line-height: 1.25;
+  border: 1.5px solid #000000;
+  padding: 3px 6px;
+  font-size: 9.5px;
+  line-height: 1.3;
 }
 
 .bill-header-center {
@@ -3308,36 +3321,36 @@ body {
 }
 
 .bill-brand-name {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   color: #000000;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   font-family: 'Arial Black', Arial, sans-serif;
   margin: 0;
   line-height: 1.1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .bill-brand-logo {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
   border-radius: 50%;
   border: 1px solid #000;
 }
 
 .bill-mfd-tag {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: bold;
   color: #111;
-  margin: 3px 0 2px;
+  margin: 4px 0 2px;
 }
 
 .bill-address-tag {
-  font-size: 10.5px;
+  font-size: 11px;
   color: #222;
 }
 
@@ -3345,9 +3358,9 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-bottom: 1.5px solid #000000;
-  padding: 4px 8px;
+  padding: 5px 8px;
   font-weight: bold;
-  font-size: 11.5px;
+  font-size: 12px;
   background: #fafafa;
 }
 
@@ -3358,8 +3371,8 @@ body {
 }
 
 .bill-party-box {
-  padding: 5px 8px;
-  font-size: 11px;
+  padding: 6px 8px;
+  font-size: 11.5px;
 }
 
 .bill-party-box.right {
@@ -3368,19 +3381,19 @@ body {
 
 .bill-party-title {
   font-weight: 900;
-  font-size: 10.5px;
+  font-size: 11px;
   text-decoration: underline;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .bill-field-row {
   display: flex;
-  margin-bottom: 2px;
-  line-height: 1.3;
+  margin-bottom: 3px;
+  line-height: 1.35;
 }
 
 .bill-field-lbl {
-  width: 110px;
+  width: 115px;
   font-weight: bold;
   flex-shrink: 0;
 }
@@ -3389,16 +3402,23 @@ body {
   flex: 1;
 }
 
+.bill-middle-fill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .bill-items-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 11.5px;
+  height: 100%;
 }
 
 .bill-items-table th {
   border-bottom: 1.5px solid #000000;
   border-right: 1.5px solid #000000;
-  padding: 5px 4px;
+  padding: 6px 5px;
   background: #f1f5f9;
   font-weight: bold;
   text-align: center;
@@ -3411,7 +3431,7 @@ body {
 .bill-items-table td {
   border-bottom: 1px solid #000000;
   border-right: 1.5px solid #000000;
-  padding: 5px 6px;
+  padding: 6px 6px;
   vertical-align: top;
 }
 
@@ -3421,61 +3441,63 @@ body {
 
 .bill-item-main-title {
   font-weight: 900;
-  font-size: 12px;
+  font-size: 12.5px;
   color: #000;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .bill-item-sub-desc {
-  font-size: 10.5px;
+  font-size: 11px;
   color: #1e293b;
-  line-height: 1.4;
+  line-height: 1.45;
   white-space: pre-wrap;
   font-family: inherit;
 }
 
 .bill-summary-row td {
-  padding: 3px 6px;
-  font-size: 10.5px;
+  padding: 4px 6px;
+  font-size: 11px;
 }
 
 .bill-total-final-row td {
   border-top: 1.5px solid #000000;
   border-bottom: 1.5px solid #000000;
   font-weight: 900;
-  font-size: 12px;
+  font-size: 13px;
   background: #f8fafc;
 }
 
 .bill-words-section {
   border-bottom: 1.5px solid #000000;
-  padding: 4px 8px;
-  font-size: 10.5px;
+  padding: 5px 8px;
+  font-size: 11px;
+  background: #fff;
 }
 
 .bill-footer-section {
   display: grid;
   grid-template-columns: 1.4fr 1.3fr 1fr;
-  font-size: 10px;
+  font-size: 10.5px;
+  background: #fff;
 }
 
 .bill-terms-box {
-  padding: 5px 8px;
+  padding: 6px 8px;
   border-right: 1.5px solid #000000;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .bill-bank-box {
-  padding: 5px 8px;
+  padding: 6px 8px;
   border-right: 1.5px solid #000000;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .bill-sign-box {
-  padding: 5px 8px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: right;
-  min-height: 70px;
+  min-height: 75px;
 }

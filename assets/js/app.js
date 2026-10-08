@@ -5593,7 +5593,7 @@ function renderCustomInvoicePreview() {
     day: '2-digit', month: '2-digit', year: 'numeric'
   });
 
-  const receiverName = document.getElementById('custReceiverName')?.value || 'Labrary Clothing Limited';
+  const receiverName = document.getElementById('custReceiverName')?.value || 'M/S MOHIT KUMAR';
   const receiverAddress = document.getElementById('custReceiverAddress')?.value || '';
   const receiverState = document.getElementById('custReceiverState')?.value || 'Uttar Pradesh (09)';
   const receiverGstin = document.getElementById('custReceiverGstin')?.value || '';
@@ -5638,7 +5638,6 @@ function renderCustomInvoicePreview() {
   const taxWordsText = totalGst > 0 ? numberToIndianWords(Math.round(totalGst)) : 'Zero Rupees Only';
 
   const itemRowsHtml = items.map((it, idx) => {
-    // Format multi-line description
     let descHtml = '';
     if (it.title && it.desc) {
       descHtml = `<div class="bill-item-main-title">${it.title}</div><div class="bill-item-sub-desc">${it.desc}</div>`;
@@ -5650,25 +5649,25 @@ function renderCustomInvoicePreview() {
 
     return `
       <tr>
-        <td style="text-align:center; font-weight:bold; width:36px;">${idx + 1}</td>
+        <td style="text-align:center; font-weight:bold; width:38px;">${idx + 1}</td>
         <td>
           ${descHtml}
         </td>
-        <td style="text-align:center; font-weight:bold; width:75px;">${it.hsn || '-'}</td>
-        <td style="text-align:center; font-weight:bold; width:85px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
-        <td style="text-align:right; width:75px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
-        <td style="text-align:right; font-weight:bold; width:95px;">${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="text-align:center; font-weight:bold; width:80px;">${it.hsn || '-'}</td>
+        <td style="text-align:center; font-weight:bold; width:95px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
+        <td style="text-align:right; width:80px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
+        <td style="text-align:right; font-weight:bold; width:105px;">${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       </tr>
     `;
   }).join('');
 
-  // Pad empty rows for classic bill book look if fewer than 5 items
+  // Proportional empty rows to gracefully fill full A4 height
   let emptyRowsHtml = '';
-  const emptyNeeded = Math.max(0, 5 - items.length);
+  const emptyNeeded = Math.max(0, 6 - items.length);
   for (let i = 0; i < emptyNeeded; i++) {
     emptyRowsHtml += `
-      <tr style="height:26px;">
-        <td style="text-align:center; color:#cbd5e1;">${items.length + i + 1}</td>
+      <tr style="height:36px;">
+        <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${items.length + i + 1}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
     `;
@@ -5677,163 +5676,172 @@ function renderCustomInvoicePreview() {
   previewEl.innerHTML = `
     <div class="billbook-container" id="printableInvoice">
       
-      <!-- Top Bar: GSTIN | TITLE | MOBILES | COPIES -->
-      <div class="bill-top-bar">
-        <div>GSTIN. 09AWKPN5910E1ZG</div>
-        <div class="bill-doc-title">${docTitle}</div>
-        <div style="text-align:right; font-size:10px;">M.: 9911678386<br>8851627221</div>
-        <div class="bill-copies-box">
-          <div>${copyType === 'Original For Buyer' ? '[✓]' : '[ ]'} Original For Buyer</div>
-          <div>${copyType === 'Duplicate For Supplier' ? '[✓]' : '[ ]'} Duplicate For Supplier</div>
-          <div>${copyType === 'Triplicate For Supplier' ? '[✓]' : '[ ]'} Triplicate For Supplier</div>
+      <!-- Top Section: Header, Branding, Receiver -->
+      <div class="bill-top-section">
+        <!-- Top Bar: GSTIN | TITLE | MOBILES | COPIES -->
+        <div class="bill-top-bar">
+          <div>GSTIN. 09AWKPN5910E1ZG</div>
+          <div class="bill-doc-title">${docTitle}</div>
+          <div style="text-align:right; font-size:10.5px; line-height:1.25;">M.: 9911678386<br>8851627221</div>
+          <div class="bill-copies-box">
+            <div>${copyType === 'Original For Buyer' ? '[✓]' : '[ ]'} Original For Buyer</div>
+            <div>${copyType === 'Duplicate For Supplier' ? '[✓]' : '[ ]'} Duplicate For Supplier</div>
+            <div>${copyType === 'Triplicate For Supplier' ? '[✓]' : '[ ]'} Triplicate For Supplier</div>
+          </div>
+        </div>
+
+        <!-- Main Header: Brand & Address -->
+        <div class="bill-header-center">
+          <div class="bill-brand-name">
+            <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo" onerror="this.style.display='none'">
+            <span>A S PRINT GALLERY</span>
+          </div>
+          <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Heat Transfer Sticker</div>
+          <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102</div>
+        </div>
+
+        <!-- Invoice No & Date Bar -->
+        <div class="bill-meta-bar">
+          <div><b>Invoice No. :</b> <span style="font-size:14px; font-weight:900; margin-left:4px;">${invoiceNo}</span></div>
+          <div style="text-align:right;"><b>Invoice Dated :</b> <span style="margin-left:4px;">${invoiceDate}</span></div>
+        </div>
+
+        <!-- Receiver & Transport Grid -->
+        <div class="bill-parties-grid">
+          <div class="bill-party-box">
+            <div class="bill-party-title">DETAILS OF RECEIVER (BILLED TO)</div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Name :</span>
+              <span class="bill-field-val" style="font-weight:bold; font-size:12.5px;">${receiverName}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Address :</span>
+              <span class="bill-field-val">${receiverAddress}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">State :</span>
+              <span class="bill-field-val">${receiverState}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">GSTIN/Unique ID :</span>
+              <span class="bill-field-val" style="font-weight:bold;">${receiverGstin}</span>
+            </div>
+          </div>
+
+          <div class="bill-party-box right">
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Transportation Mode. :</span>
+              <span class="bill-field-val">${transportMode}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Vehicle Number :</span>
+              <span class="bill-field-val">${vehicleNo || '-'}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Date Of Supply :</span>
+              <span class="bill-field-val">${invoiceDate}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Place Of Supply :</span>
+              <span class="bill-field-val">${receiverState}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Main Header: Brand & Address -->
-      <div class="bill-header-center">
-        <div class="bill-brand-name">
-          <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo" onerror="this.style.display='none'">
-          <span>A S PRINT GALLERY</span>
-        </div>
-        <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Heat Transfer Sticker</div>
-        <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102</div>
+      <!-- Middle Fill Section: Table & Financial Breakdown -->
+      <div class="bill-middle-fill">
+        <!-- Goods / Item Table -->
+        <table class="bill-items-table">
+          <thead>
+            <tr>
+              <th style="width:38px;">S.No.</th>
+              <th style="text-align:left;">DESCRIPTION OF GOODS</th>
+              <th style="width:80px;">HSN CODE</th>
+              <th style="width:95px;">QTY.</th>
+              <th style="width:80px; text-align:right;">RATE</th>
+              <th style="width:105px; text-align:right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemRowsHtml}
+            ${emptyRowsHtml}
+
+            <!-- Total Amount Before Tax -->
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
+              </td>
+              <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
+              <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+
+            ${cgstAmt > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${igstAmt > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${totalGst > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
+              <td style="text-align:right; font-weight:bold;">${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            <!-- Grand Total Row -->
+            <tr class="bill-total-final-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; text-align:right;">GST Total Amount After Tax :</td>
+              <td style="text-align:right; font-weight:bold;">₹</td>
+              <td style="text-align:right; font-weight:900; font-size:14px;">${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- Invoice No & Date Bar -->
-      <div class="bill-meta-bar">
-        <div><b>Invoice No. :</b> <span style="font-size:14px; font-weight:900; margin-left:4px;">${invoiceNo}</span></div>
-        <div style="text-align:right;"><b>Invoice Dated :</b> <span style="margin-left:4px;">${invoiceDate}</span></div>
-      </div>
-
-      <!-- Receiver & Transport Grid -->
-      <div class="bill-parties-grid">
-        <div class="bill-party-box">
-          <div class="bill-party-title">DETAILS OF RECEIVER (BILLED TO)</div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Name :</span>
-            <span class="bill-field-val" style="font-weight:bold; font-size:12px;">${receiverName}</span>
-          </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Address :</span>
-            <span class="bill-field-val">${receiverAddress}</span>
-          </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">State :</span>
-            <span class="bill-field-val">${receiverState}</span>
-          </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">GSTIN/Unique ID :</span>
-            <span class="bill-field-val" style="font-weight:bold;">${receiverGstin}</span>
-          </div>
+      <!-- Bottom Section: Words, Terms, Bank & Signatures -->
+      <div class="bill-bottom-section">
+        <!-- Words Section -->
+        <div class="bill-words-section">
+          <div><b>Amount in Words :</b> <span style="font-weight:bold; margin-left:4px;">${wordsText}</span></div>
+          ${totalGst > 0 ? `<div style="margin-top:2px;"><b>Total Tax Amount in words. :</b> <span style="font-weight:bold; margin-left:4px;">${taxWordsText}</span></div>` : ''}
         </div>
 
-        <div class="bill-party-box right">
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Transportation Mode. :</span>
-            <span class="bill-field-val">${transportMode}</span>
+        <!-- Footer: Terms, Bank Details & Signature -->
+        <div class="bill-footer-section">
+          <div class="bill-terms-box">
+            <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">TERMS & CONDITIONS</div>
+            <div>Goods once sold will not be taken back.</div>
+            <div>All disputes are subject to Ghaziabad Jurisdiction only.</div>
           </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Vehicle Number :</span>
-            <span class="bill-field-val">${vehicleNo || '-'}</span>
+
+          <div class="bill-bank-box">
+            <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">Bank Details.:</div>
+            <div>Bank Name : <b>HDFC</b></div>
+            <div>BANK A/C : <b>50200098986238</b></div>
+            <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
           </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Date Of Supply :</span>
-            <span class="bill-field-val">${invoiceDate}</span>
+
+          <div class="bill-sign-box">
+            <div style="font-size:10.5px; font-weight:bold; text-transform:uppercase;">For: A S PRINT GALLERY</div>
+            <div style="border-top:1px solid #000; padding-top:2px; font-size:9.5px; margin-top:30px;">Signature</div>
           </div>
-          <div class="bill-field-row">
-            <span class="bill-field-lbl">Place Of Supply :</span>
-            <span class="bill-field-val">${receiverState}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Goods / Item Table -->
-      <table class="bill-items-table">
-        <thead>
-          <tr>
-            <th style="width:36px;">S.No.</th>
-            <th style="text-align:left;">DESCRIPTION OF GOODS</th>
-            <th style="width:75px;">HSN CODE</th>
-            <th style="width:85px;">QTY.</th>
-            <th style="width:75px; text-align:right;">RATE</th>
-            <th style="width:95px; text-align:right;">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${itemRowsHtml}
-          ${emptyRowsHtml}
-
-          <!-- Total Amount Before Tax -->
-          <tr class="bill-summary-row">
-            <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px;">
-              Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
-            </td>
-            <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
-            <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-
-          ${cgstAmt > 0 ? `
-          <tr class="bill-summary-row">
-            <td colspan="4" style="border-right:1.5px solid #000;"></td>
-            <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(1)} %</td>
-            <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-          <tr class="bill-summary-row">
-            <td colspan="4" style="border-right:1.5px solid #000;"></td>
-            <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(1)} %</td>
-            <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-          ` : ''}
-
-          ${igstAmt > 0 ? `
-          <tr class="bill-summary-row">
-            <td colspan="4" style="border-right:1.5px solid #000;"></td>
-            <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(1)} %</td>
-            <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-          ` : ''}
-
-          ${totalGst > 0 ? `
-          <tr class="bill-summary-row">
-            <td colspan="4" style="border-right:1.5px solid #000;"></td>
-            <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
-            <td style="text-align:right; font-weight:bold;">${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-          ` : ''}
-
-          <!-- Grand Total Row -->
-          <tr class="bill-total-final-row">
-            <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; text-align:right;">GST Total Amount After Tax :</td>
-            <td style="text-align:right; font-weight:bold;">₹</td>
-            <td style="text-align:right; font-weight:900; font-size:13px;">${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Words Section -->
-      <div class="bill-words-section">
-        <div><b>Amount in Words :</b> <span style="font-weight:bold; margin-left:4px;">${wordsText}</span></div>
-        ${totalGst > 0 ? `<div style="margin-top:2px;"><b>Total Tax Amount in words. :</b> <span style="font-weight:bold; margin-left:4px;">${taxWordsText}</span></div>` : ''}
-      </div>
-
-      <!-- Footer: Terms, Bank Details & Signature -->
-      <div class="bill-footer-section">
-        <div class="bill-terms-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">TERMS & CONDITIONS</div>
-          <div>Goods once sold will not be taken back.</div>
-          <div>All disputes are subject to Ghaziabad Jurisdiction only.</div>
-        </div>
-
-        <div class="bill-bank-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">Bank Details.:</div>
-          <div>Bank Name : <b>HDFC</b></div>
-          <div>BANK A/C : <b>50200098986238</b></div>
-          <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
-        </div>
-
-        <div class="bill-sign-box">
-          <div style="font-size:10px; font-weight:bold; text-transform:uppercase;">For: A S PRINT GALLERY</div>
-          <div style="border-top:1px solid #000; padding-top:2px; font-size:9.5px; margin-top:24px;">Signature</div>
         </div>
       </div>
 
