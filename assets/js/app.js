@@ -3808,1598 +3808,339 @@ function numberToIndianWords(num) {
 
 
 
-function renderQuotationPreview() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const copyType = document.getElementById('copyTypeSelect')?.value || 'Original For Buyer';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-
-  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN', {
-
-    day: '2-digit', month: 'short', year: 'numeric'
-
-  });
-
-
-
-  const companyGstin = '09AWKPN5910E1ZG';
-
-  const companyMobiles = '9911678386, 8851627221';
-
-  const companyName = 'A S PRINT GALLERY';
-
-  const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
-
-  const companyAddress = 'Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102';
-
-
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'M/S MOHIT KUMAR';
-
-  const clientAddress = document.getElementById('clientAddressInput')?.value || 'KHEKRA, BAGHPAT, U.P.';
-
-  const clientState = document.getElementById('clientStateInput')?.value || 'Uttar Pradesh (09)';
-
-  const clientGstin = document.getElementById('clientGstinInput')?.value || 'GSTIN: XXXXXXX | Ph: 7037442527';
-
-  
-
-  const transportMode = document.getElementById('transportModeInput')?.value || 'Direct Dispatch / By Hand';
-
-  const vehicleNo = document.getElementById('vehicleNoInput')?.value || '-';
-
-
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
-
-  const hsn = document.getElementById('hsnInput')?.value || '4819';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const customDesc = document.getElementById('customItemDescInput')?.value?.trim() || '';
-
-
-
-  const sl = n('sl'), sw = n('sw'), gsm = n('gsm'), pr = n('paperRate');
-
-  const ll = n('ll'), lw = n('lw'), d = n('divide');
-
-  const lamType = document.getElementById('lamType').value;
-
-
-
-  const leafL = n('leafL'), leafW = n('leafW'), leafDivide = n('leafDivide');
-
-  const leafType = document.getElementById('leafType').value;
-
-  const leafBlock = n('leafBlock');
-
-
-
-  const calcBatchQty = n('batchQty') || 1000;
-
-
-
-  // Paper Weight & Cost
-
-  const areaM2 = sl * sw * 0.00064516;
-
-  const weightKg = (areaM2 * gsm) / 1000;
-
-  const paperCost = weightKg * pr;
-
-  const totalWeightAllSheets = weightKg * calcBatchQty;
-
-
-
-  // Lamination
-
-  let lamPaise = (d && lamType !== 'None') ? (ll * lw / d) : 0;
-
-  const lamCost = lamPaise / 100;
-
-
-
-  // Leaf Foil
-
-  let leafPaise = (leafDivide && leafType !== 'None') ? (leafL * leafW / leafDivide) : 0;
-
-  const leafCost = leafPaise / 100;
-
-  const leafBlockPerSheet = calcBatchQty > 0 ? (leafBlock / calcBatchQty) : 0;
-
-  const totalLeafPerSheet = leafCost + leafBlockPerSheet;
-
-
-
-  // Printing & Plates
-
-  const printing = n('printing');
-
-  const plates = n('plates');
-
-  const plateCostPerSheet = calcBatchQty > 0 ? (plates / calcBatchQty) : 0;
-
-  const totalPrintingPerSheet = printing + plateCostPerSheet;
-
-
-
-  // Die & Die Charges
-
-  const die = n('die');
-
-  const dieCharges = n('dieCharges');
-
-  const dieCostPerSheet = calcBatchQty > 0 ? (dieCharges / calcBatchQty) : 0;
-
-  const totalDiePerSheet = die + dieCostPerSheet;
-
-
-
-  const pasting = n('pasting');
-
-  const uv = n('uv');
-
-  const embossed = n('embossed');
-
-  const other = n('other');
-
-
-
-  const direct = paperCost + lamCost + totalLeafPerSheet + totalPrintingPerSheet + totalDiePerSheet + pasting + uv + embossed + other;
-
-  const wastage = n('wastage');
-
-  const wastageCost = direct * wastage / 100;
-
-  const cost = direct + wastageCost;
-
-  const profit = n('profit');
-
-  const profitAmount = cost * profit / 100;
-
-  const calcFinalPricePerSheet = cost + profitAmount;
-
-
-
-  // Manual Billing Qty & Rate overrides
-
-  let billQty = parseFloat(document.getElementById('customBillingQty')?.value);
-
-  if (isNaN(billQty) || billQty <= 0) {
-
-    billQty = (billingUnit === 'KGS' && totalWeightAllSheets > 0) ? parseFloat(totalWeightAllSheets.toFixed(2)) : calcBatchQty;
-
-  }
-
-
-
-  let billRate = parseFloat(document.getElementById('customBillingRate')?.value);
-
-  if (isNaN(billRate) || billRate <= 0) {
-
-    if (billingUnit === 'KGS') {
-
-      billRate = (totalWeightAllSheets > 0) ? (calcFinalPricePerSheet * calcBatchQty / totalWeightAllSheets) : calcFinalPricePerSheet;
-
-    } else {
-
-      billRate = calcFinalPricePerSheet;
-
-    }
-
-  }
-
-
-
-  const taxableTotal = billQty * billRate;
-
-
-
-  // GST Calculations
-
-  const gstType = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
-
-  const gstRatePercent = parseFloat(document.getElementById('quoteGstPercentInput')?.value) || 0;
-
-  const reverseCharge = document.getElementById('reverseChargeSelect')?.value || 'No';
-
-
-
-  let cgstRate = 0, cgstAmt = 0;
-
-  let sgstRate = 0, sgstAmt = 0;
-
-  let igstRate = 0, igstAmt = 0;
-
-
-
-  if (gstType === 'cgst_sgst' && gstRatePercent > 0) {
-
-    const half = gstRatePercent / 2;
-
-    cgstRate = half;
-
-    cgstAmt = (taxableTotal * half) / 100;
-
-    sgstRate = half;
-
-    sgstAmt = (taxableTotal * half) / 100;
-
-  } else if (gstType === 'igst' && gstRatePercent > 0) {
-
-    igstRate = gstRatePercent;
-
-    igstAmt = (taxableTotal * gstRatePercent) / 100;
-
-  }
-
-
-
-  const totalTaxAmount = cgstAmt + sgstAmt + igstAmt;
-
-  const grandTotal = taxableTotal + totalTaxAmount;
-
-
-
-  const previewEl = document.getElementById('quotationPreview');
-
-  if (!previewEl) return;
-
-
-
-  if (currentQuoteMode === 'customer') {
-
-    // -------------------------------------------------------------
-
-    // AUTHENTIC PHYSICAL BILL BOOK LAYOUT OF A S PRINT GALLERY
-
-    // -------------------------------------------------------------
-
-    
-
-    // Construct auto-specs if custom description is empty
-
-    let displayDesc = customDesc;
-
-    if (!displayDesc) {
-
-      const specs = [];
-
-      if (sl && sw) specs.push(`Material: ${sl}" × ${sw}" | ${gsm} GSM Board`);
-
-      specs.push(`Printing: Multi-Color High-Definition Offset Printing`);
-
-      if (lamType !== 'None') specs.push(`Lamination: ${lamType} Lamination`);
-
-      if (leafType !== 'None') specs.push(`Foil: ${leafType} Foil / Leaf Stamping`);
-
-      if (die > 0 || dieCharges > 0) specs.push(`Die-Cutting & Creasing`);
-
-      if (pasting > 0) specs.push(`Pasting & Box Fabrication`);
-
-      if (uv > 0) specs.push(`UV Coating`);
-
-      if (embossed > 0) specs.push(`Embossing Texture`);
-
-      if (other > 0) specs.push(`Finishing`);
-
-      displayDesc = specs.join(' | ');
-
-    }
-
-
-
-    previewEl.innerHTML = `
-
-      <div class="billbook-container" id="printableInvoice">
-
-        
-
-        <!-- Top Bar: GSTIN (Left) | TAX INVOICE (Centered, No Border) | MOBILES (Right) -->
-        <div class="bill-top-bar">
-          <div>GSTIN. 09AWKPN5910E1ZG</div>
-          <div class="bill-doc-title">${docTitle}</div>
-          <div style="text-align:right; font-size:11.5px;">M.: 9911678386, 8851627221</div>
-        </div>
-
-          <div class="bill-doc-title">${docTitle}</div>
-
-          <div style="text-align:right;">M.: ${companyMobiles}</div>
-
-          <div class="bill-copies-box">
-
-            <div>${copyType === 'Original For Buyer' ? '[✓]' : '[ ]'} Original For Buyer</div>
-
-            <div>${copyType === 'Duplicate For Supplier' ? '[✓]' : '[ ]'} Duplicate For Supplier</div>
-
-            <div>${copyType === 'Triplicate For Supplier' ? '[✓]' : '[ ]'} Triplicate For Supplier</div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Main Header: Brand & Address -->
-
-        <div class="bill-header-center">
-
-          <div class="bill-brand-name">
-
-            <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo">
-
-            <span>${companyName}</span>
-
-          </div>
-
-          <div class="bill-mfd-tag">${companyMfd}</div>
-
-          <div class="bill-address-tag">${companyAddress}</div>
-
-        </div>
-
-
-
-        <!-- Invoice No & Date Bar -->
-
-        <div class="bill-meta-bar">
-
-          <div><b>Invoice No. :</b> <span style="font-size:14px; font-weight:900;">${invoiceNo}</span></div>
-
-          <div style="text-align:right;"><b>Invoice Dated :</b> <span>${invoiceDate}</span></div>
-
-        </div>
-
-
-
-        <!-- Receiver & Transport Grid -->
-
-        <div class="bill-parties-grid">
-
-          <div class="bill-party-box">
-
-            <div class="bill-party-title">DETAILS OF RECEIVER (BILLED TO)</div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Name :</span>
-
-              <span class="bill-field-val" style="font-weight:bold; font-size:12px;">${clientName}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Address :</span>
-
-              <span class="bill-field-val">${clientAddress}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">State :</span>
-
-              <span class="bill-field-val">${clientState}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">GSTIN/Unique ID :</span>
-
-              <span class="bill-field-val" style="font-weight:bold;">${clientGstin}</span>
-
-            </div>
-
-          </div>
-
-
-
-          <div class="bill-party-box right">
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Transportation Mode :</span>
-
-              <span class="bill-field-val">${transportMode}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Vehicle Number :</span>
-
-              <span class="bill-field-val">${vehicleNo || '-'}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Date Of Supply :</span>
-
-              <span class="bill-field-val">${invoiceDate}</span>
-
-            </div>
-
-            <div class="bill-field-row">
-
-              <span class="bill-field-lbl">Place Of Supply :</span>
-
-              <span class="bill-field-val">${clientState}</span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Goods / Item Table -->
-
-        <table class="bill-items-table">
-
-          <thead>
-
-            <tr>
-
-              <th style="width:38px;">S No.</th>
-
-              <th style="text-align:left;">DESCRIPTION OF GOODS</th>
-
-              <th style="width:80px;">HSN CODE</th>
-
-              <th style="width:90px;">QTY.</th>
-
-              <th style="width:90px; text-align:right;">RATE</th>
-
-              <th style="width:115px; text-align:right;">Amount (₹)</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            <tr>
-
-              <td style="text-align:center; font-weight:bold;">1</td>
-
-              <td>
-
-                <div class="bill-item-main-title">${jobTitle}</div>
-
-                <div class="bill-item-sub-desc">${displayDesc}</div>
-
-              </td>
-
-              <td style="text-align:center; font-weight:bold;">${hsn}</td>
-
-              <td style="text-align:center; font-weight:bold;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
-
-              <td style="text-align:right;">${billRate.toFixed(2)}</td>
-
-              <td style="text-align:right; font-weight:bold;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-
-
-            <!-- Total Amount Before Tax -->
-
-            <tr class="bill-summary-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold;">
-
-                Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
-
-              </td>
-
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
-
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-
-
-            <!-- CGST / SGST / IGST Rows -->
-
-            ${cgstAmt > 0 ? `
-
-            <tr class="bill-summary-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-
-              <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(2)} %</td>
-
-              <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-            <tr class="bill-summary-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-
-              <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(2)} %</td>
-
-              <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-            ` : ''}
-
-
-
-            ${igstAmt > 0 ? `
-
-            <tr class="bill-summary-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-
-              <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(2)} %</td>
-
-              <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-            ` : ''}
-
-
-
-            <tr class="bill-summary-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-
-              <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
-
-              <td style="text-align:right; font-weight:bold;">${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-
-
-            <!-- GST Total Amount After Tax -->
-
-            <tr class="bill-total-final-row">
-
-              <td colspan="4" style="border-right:1.5px solid #000; text-align:right; font-weight:bold; padding-right:10px;">Total Quantity: ${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
-
-              <td style="text-align:right; font-weight:900;">GST Total Amount After Tax</td>
-
-              <td style="text-align:right; font-weight:900; font-size:14px;">₹ ${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-
-
-        <!-- Amount In Words Section -->
-
-        <div class="bill-words-section">
-
-          <div><b>Amount In Words :</b> &nbsp; <span style="font-weight:900;">${numberToIndianWords(grandTotal)}</span></div>
-
-          <div style="margin-top:2px;"><b>Total Tax Amount in words :</b> &nbsp; <span>${numberToIndianWords(totalTaxAmount)}</span></div>
-
-        </div>
-
-
-
-        <!-- Footer: Terms | Bank Details | Signatory -->
-
-        <div class="bill-footer-section">
-
-          <div class="bill-terms-box">
-
-            <div><b>TERMS & CONDITIONS</b></div>
-
-            <div style="margin-top:2px;">1. Goods once sold will not be taken back.</div>
-
-            <div>2. 50% Advance with Purchase Order.</div>
-
-            <div>3. All disputes are subject to Ghaziabad Jurisdiction only.</div>
-
-          </div>
-
-
-
-          <div class="bill-bank-box">
-
-            <div><b>Bank Details.:</b></div>
-
-            <div>Bank Name : <b>HDFC</b></div>
-
-            <div>BANK A/C : <b>50200098986238</b></div>
-
-            <div>RTGS/NEFT/IFSC : <b>HDFC0004729</b></div>
-
-          </div>
-
-
-
-          <div class="bill-sign-box">
-
-            <div style="font-weight:bold;">For: ${companyName}</div>
-
-            <div style="border-top:1px solid #000; padding-top:3px; font-weight:bold; font-size:10.5px; margin-top:30px;">
-
-              Authorized Signature
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-      </div>
-
-    `;
-
-  } else {
-
-    // -------------------------------------------------------------
-
-    // INTERNAL COSTING & JOB SHEET: Full technical breakdown
-
-    // -------------------------------------------------------------
-
-    previewEl.innerHTML = `
-
-      <div class="quotation-sheet" id="printableInvoice">
-
-        <div class="quote-header">
-
-          <div>
-
-            <div class="quote-title">🏭 INTERNAL JOB CARD & PRODUCTION COSTING</div>
-
-            <div style="font-size:0.85rem; color:#e11d48; font-weight:700; margin-top:4px;">⚠️ Confidential Internal Cost Breakdown (For Press/Factory Use Only)</div>
-
-          </div>
-
-          <div style="text-align:right;">
-
-            <div style="font-weight:700; color:#0f172a;">Job Sheet #${invoiceNo}</div>
-
-            <div style="font-size:0.85rem; color:#64748b;">Date: ${invoiceDate}</div>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="quote-meta-grid">
-
-          <div>
-
-            <div style="font-weight:700; color:#334155; margin-bottom:4px;">CLIENT / JOB:</div>
-
-            <div style="font-size:1.05rem; font-weight:700; color:#0f172a;">${clientName}</div>
-
-            <div style="color:#64748b;">Title: <b>${jobTitle}</b></div>
-
-          </div>
-
-          <div>
-
-            <div style="font-weight:700; color:#334155; margin-bottom:4px;">PRODUCTION SPECS:</div>
-
-            <div>Sheet Size: <b>${sl}" × ${sw}"</b> (${gsm} GSM) | Wt: <b>${(weightKg * 1000).toFixed(1)}g / sheet</b></div>
-
-            <div>Total Batch Wt: <b>${totalWeightAllSheets.toFixed(2)} Kgs</b></div>
-
-            <div>Lamination: <b>${lamType}</b> ${lamType !== 'None' ? `(${ll}" × ${lw}")` : ''}</div>
-
-            ${leafType !== 'None' ? `<div>Leaf / Foil: <b>${leafType}</b> (${leafL}" × ${leafW}")</div>` : ''}
-
-            <div>Batch Run: <b>${calcBatchQty.toLocaleString('en-IN')} Sheets</b></div>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="quote-table-wrapper">
-
-        <table class="quote-table">
-
-          <thead>
-
-            <tr>
-
-              <th>Item / Process</th>
-
-              <th>Technical Cost Basis</th>
-
-              <th style="text-align:right;">Cost / Sheet</th>
-
-              <th style="text-align:right;">Total (${calcBatchQty.toLocaleString('en-IN')} Qty)</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            <tr>
-
-              <td><b>Paper Substrate</b></td>
-
-              <td>${sl}" × ${sw}" | ${gsm} GSM @ ₹${pr}/Kg (${(weightKg * 1000).toFixed(1)}g)</td>
-
-              <td style="text-align:right;">${money(paperCost)}</td>
-
-              <td style="text-align:right;">${money(paperCost * calcBatchQty)}</td>
-
-            </tr>
-
-            ${lamType !== 'None' ? `
-
-            <tr>
-
-              <td><b>${lamType} Lamination</b></td>
-
-              <td>${ll}" × ${lw}" ÷ ${d} = ${lamPaise.toFixed(2)}p</td>
-
-              <td style="text-align:right;">${money(lamCost)}</td>
-
-              <td style="text-align:right;">${money(lamCost * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${leafType !== 'None' ? `
-
-            <tr>
-
-              <td><b>${leafType} Stamping</b></td>
-
-              <td>${leafL}" × ${leafW}" ÷ ${leafDivide} = ${leafPaise.toFixed(2)}p ${leafBlock > 0 ? `+ Block ₹${leafBlock}` : ''}</td>
-
-              <td style="text-align:right;">${money(totalLeafPerSheet)}</td>
-
-              <td style="text-align:right;">${money(totalLeafPerSheet * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${(printing > 0 || plates > 0) ? `
-
-            <tr>
-
-              <td><b>Printing & Plates</b></td>
-
-              <td>Imp: ${money(printing)} ${plates > 0 ? `| Plate Charges: ₹${plates}` : ''}</td>
-
-              <td style="text-align:right;">${money(totalPrintingPerSheet)}</td>
-
-              <td style="text-align:right;">${money(totalPrintingPerSheet * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${(die > 0 || dieCharges > 0) ? `
-
-            <tr>
-
-              <td><b>Die Cutting & Die</b></td>
-
-              <td>Punch: ${money(die)} ${dieCharges > 0 ? `| Die Charges: ₹${dieCharges}` : ''}</td>
-
-              <td style="text-align:right;">${money(totalDiePerSheet)}</td>
-
-              <td style="text-align:right;">${money(totalDiePerSheet * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${pasting > 0 ? `
-
-            <tr>
-
-              <td><b>Pasting / Fabrication</b></td>
-
-              <td>Assembly & Glue</td>
-
-              <td style="text-align:right;">${money(pasting)}</td>
-
-              <td style="text-align:right;">${money(pasting * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${uv > 0 ? `
-
-            <tr>
-
-              <td><b>Spot / Full UV Coating</b></td>
-
-              <td>UV Enhancement</td>
-
-              <td style="text-align:right;">${money(uv)}</td>
-
-              <td style="text-align:right;">${money(uv * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${embossed > 0 ? `
-
-            <tr>
-
-              <td><b>Embossing / Debossing</b></td>
-
-              <td>Texture Relief Work</td>
-
-              <td style="text-align:right;">${money(embossed)}</td>
-
-              <td style="text-align:right;">${money(embossed * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${other > 0 ? `
-
-            <tr>
-
-              <td><b>Other Job Work</b></td>
-
-              <td>Auxiliary Finishing</td>
-
-              <td style="text-align:right;">${money(other)}</td>
-
-              <td style="text-align:right;">${money(other * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            ${wastage > 0 ? `
-
-            <tr>
-
-              <td><b>Wastage & Setup Allowance</b></td>
-
-              <td>${wastage}% allowance on direct costs</td>
-
-              <td style="text-align:right;">${money(wastageCost)}</td>
-
-              <td style="text-align:right;">${money(wastageCost * calcBatchQty)}</td>
-
-            </tr>
-
-            ` : ''}
-
-            <tr class="total-row">
-
-              <td colspan="2"><b>Net Production Cost (Factory Cost)</b></td>
-
-              <td style="text-align:right;"><b>${money(cost)}</b></td>
-
-              <td style="text-align:right;"><b>${money(cost * calcBatchQty)}</b></td>
-
-            </tr>
-
-            <tr class="sale-row">
-
-              <td colspan="2"><b>SELLING QUOTATION PRICE (Inc. ${profit}% Profit Margin)</b></td>
-
-              <td style="text-align:right;"><b>${money(calcFinalPricePerSheet)}</b></td>
-
-              <td style="text-align:right;"><b>${money(calcFinalPricePerSheet * calcBatchQty)}</b></td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-
-// Save Invoice to History
-
-function saveCurrentInvoice() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-
-  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN');
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'Job Work';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const customQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const customRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const history = getSavedInvoicesList();
-
-  
-
-  const record = {
-
-    id: Date.now(),
-
-    invoiceNo: invoiceNo,
-
-    docTitle: docTitle,
-
-    invoiceDate: invoiceDate,
-
-    clientName: clientName,
-
-    clientAddress: document.getElementById('clientAddressInput')?.value || '',
-
-    clientState: document.getElementById('clientStateInput')?.value || '',
-
-    clientGstin: document.getElementById('clientGstinInput')?.value || '',
-
-    transportMode: document.getElementById('transportModeInput')?.value || '',
-
-    vehicleNo: document.getElementById('vehicleNoInput')?.value || '',
-
-    jobTitle: jobTitle,
-
-    hsn: document.getElementById('hsnInput')?.value || '4819',
-
-    billingUnit: billingUnit,
-
-    customQty: customQty,
-
-    customRate: customRate,
-
-    customDesc: document.getElementById('customItemDescInput')?.value || '',
-
-    gstType: document.getElementById('quoteGstType')?.value || 'cgst_sgst',
-
-    gstRate: document.getElementById('quoteGstPercentInput')?.value || '18',
-
-    reverseCharge: document.getElementById('reverseChargeSelect')?.value || 'No'
-
-  };
-
-
-
-  // Check if invoice with same number already exists, update or add
-
-  const existingIdx = history.findIndex(item => item.invoiceNo === invoiceNo);
-
-  if (existingIdx >= 0) {
-
-    history[existingIdx] = record;
-
-  } else {
-
-    history.unshift(record);
-
-  }
-
-
-
-  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-
-  incrementNextInvoiceNumber();
-
-  
-
-  // Set next number in input for convenience
-
-  const invInput = document.getElementById('invoiceNoInput');
-
-  if (invInput) invInput.value = getNextInvoiceNumber();
-
-
-
-  updateSavedCountBadge();
-
-  showToast(`Bill #${invoiceNo} saved successfully!`);
-
-}
-
-
-
-function openHistoryModal() {
-
-  const modal = document.getElementById('invoiceHistoryModal');
-
-  if (modal) {
-
-    renderHistoryTable();
-
-    modal.classList.add('active');
-
-  }
-
-}
-
-
-
-function closeHistoryModal() {
-
-  const modal = document.getElementById('invoiceHistoryModal');
-
-  if (modal) modal.classList.remove('active');
-
-}
-
-
-
-function renderHistoryTable(filterText = '') {
-
-  const container = document.getElementById('historyTableContainer');
-
-  if (!container) return;
-
-
-
-  const history = getSavedInvoicesList();
-
-  const filtered = filterText ? history.filter(item => {
-
-    const q = filterText.toLowerCase();
-
-    return (item.invoiceNo && item.invoiceNo.toLowerCase().includes(q)) ||
-
-           (item.clientName && item.clientName.toLowerCase().includes(q)) ||
-
-           (item.jobTitle && item.jobTitle.toLowerCase().includes(q)) ||
-
-           (item.docTitle && item.docTitle.toLowerCase().includes(q));
-
-  }) : history;
-
-
-
-  if (filtered.length === 0) {
-
-    container.innerHTML = `
-
-      <div style="padding:2rem; text-align:center; color:var(--text-muted);">
-
-        <div style="font-size:2rem; margin-bottom:8px;">📭</div>
-
-        <div>No saved invoices found. Click <b>"Save Invoice"</b> to store bills!</div>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-
-  container.innerHTML = `
-
-    <table class="history-table">
-
-      <thead>
-
-        <tr>
-
-          <th>Bill No.</th>
-
-          <th>Date</th>
-
-          <th>Type</th>
-
-          <th>Customer (Billed To)</th>
-
-          <th>Item / Job</th>
-
-          <th style="text-align:center;">Actions</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        ${filtered.map(item => `
-
-          <tr>
-
-            <td><b>#${item.invoiceNo}</b></td>
-
-            <td>${item.invoiceDate}</td>
-
-            <td><span style="font-size:10px; background:#eef2ff; color:#4338ca; padding:2px 6px; border-radius:4px; font-weight:bold;">${item.docTitle}</span></td>
-
-            <td><b>${item.clientName}</b></td>
-
-            <td>${item.jobTitle}</td>
-
-            <td style="text-align:center;">
-
-              <button class="btn-pill" style="padding:4px 8px; font-size:11px; margin-right:4px;" onclick="loadSavedInvoice(${item.id})">📂 Open</button>
-
-              <button class="btn-pill btn-danger" style="padding:4px 8px; font-size:11px; background:#ef4444; color:#fff;" onclick="deleteSavedInvoice(${item.id})">✕</button>
-
-            </td>
-
-          </tr>
-
-        `).join('')}
-
-      </tbody>
-
-    </table>
-
-  `;
-
-}
-
-
-
-function filterHistoryTable() {
-
-  const query = document.getElementById('historySearchInput')?.value || '';
-
-  renderHistoryTable(query);
-
-}
-
-
-
-function loadSavedInvoice(id) {
-
-  const history = getSavedInvoicesList();
-
-  const record = history.find(item => item.id === id);
-
-  if (!record) return;
-
-
-
-  if (record.docTitle) document.getElementById('docTitleSelect').value = record.docTitle;
-
-  if (record.invoiceNo) document.getElementById('invoiceNoInput').value = record.invoiceNo;
-
-  if (record.invoiceDate) document.getElementById('invoiceDateInput').value = record.invoiceDate;
-
-  if (record.clientName) document.getElementById('clientNameInput').value = record.clientName;
-
-  if (record.clientAddress) document.getElementById('clientAddressInput').value = record.clientAddress;
-
-  if (record.clientState) document.getElementById('clientStateInput').value = record.clientState;
-
-  if (record.clientGstin) document.getElementById('clientGstinInput').value = record.clientGstin;
-
-  if (record.transportMode) document.getElementById('transportModeInput').value = record.transportMode;
-
-  if (record.vehicleNo) document.getElementById('vehicleNoInput').value = record.vehicleNo;
-
-  if (record.jobTitle) document.getElementById('jobTitleInput').value = record.jobTitle;
-
-  if (record.hsn) document.getElementById('hsnInput').value = record.hsn;
-
-  if (record.billingUnit) document.getElementById('billingUnitSelect').value = record.billingUnit;
-
-  if (record.customQty) document.getElementById('customBillingQty').value = record.customQty;
-
-  if (record.customRate) document.getElementById('customBillingRate').value = record.customRate;
-
-  if (record.customDesc !== undefined) document.getElementById('customItemDescInput').value = record.customDesc;
-
-  if (record.gstType) document.getElementById('quoteGstType').value = record.gstType;
-
-  if (record.gstRate) document.getElementById('quoteGstPercentInput').value = record.gstRate;
-
-  if (record.reverseCharge) document.getElementById('reverseChargeSelect').value = record.reverseCharge;
-
-
-
-  closeHistoryModal();
-
-  renderQuotationPreview();
-
-  showToast(`Loaded Bill #${record.invoiceNo} for ${record.clientName}`);
-
-}
-
-
-
-function deleteSavedInvoice(id) {
-
-  if (!confirm('Are you sure you want to delete this invoice record?')) return;
-
-  let history = getSavedInvoicesList();
-
-  history = history.filter(item => item.id !== id);
-
-  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-
-  renderHistoryTable();
-
-  updateSavedCountBadge();
-
-  showToast('Invoice deleted from history');
-
-}
-
-
-
-function clearAllHistory() {
-
-  if (!confirm('Delete all saved invoices history?')) return;
-
-  localStorage.removeItem('as_saved_invoices');
-
-  renderHistoryTable();
-
-  updateSavedCountBadge();
-
-  showToast('All invoice history cleared');
-
-}
-
-
-
-function copyQuoteToClipboard() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const billQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const billRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const text = `🧾 *${docTitle} #${invoiceNo}*\n` +
-
-    `🏢 *A S PRINT GALLERY*\n` +
-
-    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
-
-    `--------------------------------\n` +
-
-    `👤 *Billed To:* ${clientName}\n` +
-
-    `📦 *Item / Goods:* ${jobTitle}\n` +
-
-    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
-
-    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
-
-    `--------------------------------\n` +
-
-    `*GSTIN:* 09AWKPN5910E1ZG\n` +
-
-    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
-
-    `Thank you for your business!`;
-
-
-
-  navigator.clipboard.writeText(text).then(() => {
-
-    showToast('Bill details copied to clipboard!');
-
-  }).catch(() => {
-
-    showToast('Failed to copy');
-
-  });
-
-}
-
-
-
-function shareWhatsApp() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const billQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const billRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
-
-    `🏢 *A S PRINT GALLERY*\n` +
-
-    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
-
-    `--------------------------------\n` +
-
-    `👤 *Billed To:* ${clientName}\n` +
-
-    `📦 *Item / Goods:* ${jobTitle}\n` +
-
-    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
-
-    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
-
-    `--------------------------------\n` +
-
-    `*GSTIN:* 09AWKPN5910E1ZG\n` +
-
-    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
-
-    `Thank you for your business!`;
-
-
-
-  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-
-  window.open(url, '_blank');
-
-}
-
-
-
-function toggleTheme() {
-
-
-
-
-
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-
-
-
-
-
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-
-
-
-
-  document.documentElement.setAttribute('data-theme', newTheme);
-
-
-
-
-
-  localStorage.setItem('calc_theme', newTheme);
-
-
-
-
-
-  
-
-
-
-
-
-  const icon = document.getElementById('themeIcon');
-
-
-
-
-
-  if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
-
-
-
-
-  const savedTheme = localStorage.getItem('calc_theme') || 'light';
-
-
-
-
-
-  document.documentElement.setAttribute('data-theme', savedTheme);
-
-
-
-
-
-  const icon = document.getElementById('themeIcon');
-
-
-
-
-
-  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
-
-
-
-
-
-
-
-
-
-
-
-  // Listen to all inputs and selects
-
-
-
-
-
-  const allInputs = document.querySelectorAll('input, select');
-
-
-
-
-
-  allInputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      setCustomPresetActive();
-      calculate();
-    });
-    input.addEventListener('change', (e) => {
-      setCustomPresetActive();
-      calculate();
-    });
-    if (input.tagName === 'INPUT') {
-      input.addEventListener('focus', function() {
-        this.select();
-      });
-    }
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Dedicated Dropdown change listeners for instant factor update
-
-
-
-
-
-  const lamTypeSelect = document.getElementById('lamType');
-
-
-
-
-
-  if (lamTypeSelect) {
-
-
-
-
-
-    lamTypeSelect.addEventListener('change', handleLamTypeChange);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  const leafTypeSelect = document.getElementById('leafType');
-
-
-
-
-
-  if (leafTypeSelect) {
-
-
-
-
-
-    leafTypeSelect.addEventListener('change', handleLeafTypeChange);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  calculate();
-
-
-
-
-
-});
-
-
-
-
-
-
-
-// =========================================================================
-// A S PRINT GALLERY - DEDICATED CUSTOM GST BILL & INVOICE STUDIO
-// =========================================================================
+function renderQuotationPreview() {
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN', {
+    day: '2-digit', month: '2-digit', year: 'numeric'
+  });
 
-let invoiceRowCounter = 0;
+  const companyGstin = '09AWKPN5910E1ZG';
+  const companyMobiles = '9911678386, 8851627221';
+  const companyName = 'A S PRINT GALLERY';
+  const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
+  const companyAddress = 'Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
+
+  const clientName = document.getElementById('clientNameInput')?.value || 'M/S MOHIT KUMAR';
+  const clientAddress = document.getElementById('clientAddressInput')?.value || 'KHEKRA, BAGHPAT, U.P.';
+  const clientState = document.getElementById('clientStateInput')?.value || 'Uttar Pradesh (09)';
+  const clientPhone = document.getElementById('clientPhoneInput')?.value || '7037442527';
+  const clientGstin = document.getElementById('clientGstinInput')?.value || '';
+  
+  const transportMode = document.getElementById('transportModeInput')?.value || 'Direct Dispatch / By Hand';
+  const vehicleNo = document.getElementById('vehicleNoInput')?.value || '-';
+
+  const jobTitle = document.getElementById('jobTitleInput')?.value || 'PRINTED PACKAGING BOX';
+  const hsn = document.getElementById('hsnInput')?.value || '4819';
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+  const customDesc = document.getElementById('customItemDescInput')?.value?.trim() || '';
+
+  const sl = n('sl'), sw = n('sw'), gsm = n('gsm'), pr = n('paperRate');
+  const ll = n('ll'), lw = n('lw'), d = n('divide');
+  const lamType = document.getElementById('lamType')?.value || 'None';
+
+  const leafL = n('leafL'), leafW = n('leafW'), leafDivide = n('leafDivide');
+  const leafType = document.getElementById('leafType')?.value || 'None';
+  const leafBlock = n('leafBlock');
+
+  const calcBatchQty = n('batchQty') || 1000;
+
+  // Paper Weight & Cost
+  const areaM2 = sl * sw * 0.00064516;
+  const weightKg = (areaM2 * gsm) / 1000;
+  const paperCost = weightKg * pr;
+  const totalWeightAllSheets = weightKg * calcBatchQty;
+
+  // Lamination
+  let lamPaise = (d && lamType !== 'None') ? (ll * lw / d) : 0;
+  const lamCost = lamPaise / 100;
+
+  // Leaf Foil
+  let leafPaise = (leafDivide && leafType !== 'None') ? (leafL * leafW / leafDivide) : 0;
+  const leafCost = leafPaise / 100;
+  const leafBlockPerSheet = calcBatchQty > 0 ? (leafBlock / calcBatchQty) : 0;
+  const totalLeafPerSheet = leafCost + leafBlockPerSheet;
+
+  // Printing & Plates
+  const printing = n('printing');
+  const plates = n('plates');
+  const plateCostPerSheet = calcBatchQty > 0 ? (plates / calcBatchQty) : 0;
+  const totalPrintingPerSheet = printing + plateCostPerSheet;
+
+  // Die & Die Charges
+  const die = n('die');
+  const dieCharges = n('dieCharges');
+  const dieCostPerSheet = calcBatchQty > 0 ? (dieCharges / calcBatchQty) : 0;
+  const totalDiePerSheet = die + dieCostPerSheet;
+
+  const pasting = n('pasting');
+  const uv = n('uv');
+  const embossed = n('embossed');
+  const other = n('other');
+
+  const direct = paperCost + lamCost + totalLeafPerSheet + totalPrintingPerSheet + totalDiePerSheet + pasting + uv + embossed + other;
+  const wastage = n('wastage');
+  const wastageCost = direct * wastage / 100;
+  const cost = direct + wastageCost;
+  const profit = n('profit');
+  const profitAmount = cost * profit / 100;
+  const calcFinalPricePerSheet = cost + profitAmount;
+
+  // Manual Billing Qty & Rate overrides
+  let billQty = parseFloat(document.getElementById('customBillingQty')?.value);
+  if (isNaN(billQty) || billQty <= 0) {
+    billQty = (billingUnit === 'KGS' && totalWeightAllSheets > 0) ? parseFloat(totalWeightAllSheets.toFixed(2)) : calcBatchQty;
+  }
+
+  let billRate = parseFloat(document.getElementById('customBillingRate')?.value);
+  if (isNaN(billRate) || billRate <= 0) {
+    if (billingUnit === 'KGS') {
+      billRate = (totalWeightAllSheets > 0) ? (calcFinalPricePerSheet * calcBatchQty / totalWeightAllSheets) : calcFinalPricePerSheet;
+    } else {
+      billRate = calcFinalPricePerSheet;
+    }
+  }
+
+  const taxableTotal = billQty * billRate;
+
+  // GST Calculations
+  const gstType = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
+  const gstRatePercent = parseFloat(document.getElementById('quoteGstPercentInput')?.value) || 0;
+  const reverseCharge = document.getElementById('reverseChargeSelect')?.value || 'No';
+
+  let cgstRate = 0, cgstAmt = 0;
+  let sgstRate = 0, sgstAmt = 0;
+  let igstRate = 0, igstAmt = 0;
+
+  if (gstType === 'cgst_sgst' && gstRatePercent > 0) {
+    const half = gstRatePercent / 2;
+    cgstRate = half;
+    cgstAmt = (taxableTotal * half) / 100;
+    sgstRate = half;
+    sgstAmt = (taxableTotal * half) / 100;
+  } else if (gstType === 'igst' && gstRatePercent > 0) {
+    igstRate = gstRatePercent;
+    igstAmt = (taxableTotal * gstRatePercent) / 100;
+  }
+
+  const totalTaxAmount = cgstAmt + sgstAmt + igstAmt;
+  const grandTotal = Math.round(taxableTotal + totalTaxAmount);
+  const wordsText = numberToIndianWords(grandTotal);
+  const taxWordsText = totalTaxAmount > 0 ? numberToIndianWords(Math.round(totalTaxAmount)) : 'Zero Rupees Only';
+
+  const previewEl = document.getElementById('quotationPreview');
+  if (!previewEl) return;
+
+  // Construct auto-specs if custom description is empty
+  let displayDesc = customDesc;
+  if (!displayDesc) {
+    const specs = [];
+    if (sl && sw) specs.push(`Material: ${sl}" × ${sw}" | ${gsm} GSM Board`);
+    specs.push(`Printing: Multi-Color High-Definition Offset`);
+    if (lamType && lamType !== 'None') specs.push(`Lamination: ${lamType}`);
+    if (leafType && leafType !== 'None') specs.push(`Foil: ${leafType} Leaf`);
+    if (die > 0 || dieCharges > 0) specs.push(`Die-Cutting & Creasing`);
+    if (pasting > 0) specs.push(`Fabrication`);
+    if (uv > 0) specs.push(`UV Coating`);
+    if (embossed > 0) specs.push(`Embossing`);
+    displayDesc = specs.join(' | ');
+  }
+
+  let emptyRowsHtml = '';
+  for (let i = 0; i < 5; i++) {
+    emptyRowsHtml += `
+      <tr style="height:36px;">
+        <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${i + 2}</td>
+        <td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    `;
+  }
+
+  previewEl.innerHTML = `
+    <div class="billbook-container" id="printableQuotation">
+      
+      <!-- Top Section: Header, Branding, Receiver -->
+      <div class="bill-top-section">
+        <!-- Top Bar: GSTIN | TITLE | MOBILES -->
+        <div class="bill-top-bar">
+          <div>GSTIN. ${companyGstin}</div>
+          <div class="bill-doc-title">${docTitle}</div>
+          <div style="text-align:right; font-size:11.5px;">M.: ${companyMobiles}</div>
+        </div>
+
+        <!-- Main Header: Brand & Address -->
+        <div class="bill-header-center">
+          <div class="bill-brand-name">
+            <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo" onerror="this.style.display='none'">
+            <span>${companyName}</span>
+          </div>
+          <div class="bill-mfd-tag">${companyMfd}</div>
+          <div class="bill-address-tag">${companyAddress}</div>
+        </div>
+
+        <!-- Invoice No & Date Bar -->
+        <div class="bill-meta-bar">
+          <div><b>Quotation / Doc No. :</b> <span style="font-size:14px; font-weight:900; margin-left:4px;">${invoiceNo}</span></div>
+          <div style="text-align:right;"><b>Date :</b> <span style="margin-left:4px;">${invoiceDate}</span></div>
+        </div>
+
+        <!-- Receiver & Transport Grid -->
+        <div class="bill-parties-grid">
+          <div class="bill-party-box">
+            <div class="bill-party-title">DETAILS OF RECEIVER (QUOTED TO)</div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Name :</span>
+              <span class="bill-field-val" style="font-weight:bold; font-size:12.5px;">${clientName}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Address :</span>
+              <span class="bill-field-val">${clientAddress}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">State :</span>
+              <span class="bill-field-val">${clientState}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">GSTIN / Phone :</span>
+              <span class="bill-field-val" style="font-weight:bold;">${[clientGstin, (clientPhone ? ('Mob: ' + clientPhone) : '')].filter(Boolean).join(' | ') || '-'}</span>
+            </div>
+          </div>
+
+          <div class="bill-party-box right">
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Transportation Mode :</span>
+              <span class="bill-field-val">${transportMode}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Vehicle Number :</span>
+              <span class="bill-field-val">${vehicleNo || '-'}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Date Of Supply :</span>
+              <span class="bill-field-val">${invoiceDate}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Place Of Supply :</span>
+              <span class="bill-field-val">${clientState}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle Fill Section: Table & Financial Breakdown -->
+      <div class="bill-middle-fill">
+        <!-- Goods / Item Table -->
+        <table class="bill-items-table">
+          <thead>
+            <tr>
+              <th style="width:38px;">S.No.</th>
+              <th style="text-align:left;">DESCRIPTION OF GOODS</th>
+              <th style="width:80px;">HSN CODE</th>
+              <th style="width:95px;">QTY.</th>
+              <th style="width:80px; text-align:right;">RATE</th>
+              <th style="width:105px; text-align:right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center; font-weight:bold; width:38px;">1</td>
+              <td>
+                <div class="bill-item-main-title">${jobTitle}</div>
+                <div class="bill-item-sub-desc">${displayDesc}</div>
+              </td>
+              <td style="text-align:center; font-weight:bold; width:80px;">${hsn || '-'}</td>
+              <td style="text-align:center; font-weight:bold; width:95px;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
+              <td style="text-align:right; width:80px;">${billRate.toFixed(2)}</td>
+              <td style="text-align:right; font-weight:bold; width:105px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ${emptyRowsHtml}
+
+            <!-- Total Amount Before Tax -->
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
+              </td>
+              <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
+              <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+
+            ${cgstAmt > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${igstAmt > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(1)} %</td>
+              <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${totalTaxAmount > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000;"></td>
+              <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
+              <td style="text-align:right; font-weight:bold;">${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            <!-- Grand Total Row -->
+            <tr class="bill-total-final-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11.5px;">
+                GST on Reverse Charge: ₹0.00
+              </td>
+              <td style="text-align:right; font-size:13.5px; font-weight:900;">Total Amount After Tax</td>
+              <td style="text-align:right; font-size:13.5px; font-weight:900;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Amount In Words Box -->
+        <div class="bill-words-section">
+          <div style="margin-bottom:3px;">
+            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
+          </div>
+          <div>
+            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Section: Terms, Bank Details & Signature -->
+      <div class="bill-footer-section">
+        <div class="bill-terms-box">
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
+          <div>1. Goods once sold will not be taken back.</div>
+          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
+          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
+        </div>
+
+        <div class="bill-bank-box">
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
+          <div>Bank : <b>HDFC BANK</b></div>
+          <div>A/c No. : <b>50200098986238</b></div>
+          <div>IFSC : <b>HDFC0004729</b></div>
+          <div>Branch : <b>LONI GHAZIABAD</b></div>
+        </div>
+
+        <div class="bill-sign-box">
+          <div style="font-weight:bold; font-size:11px;">For ${companyName}</div>
+          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
 
 function getNextInvoiceNumber() {
   let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '71', 10);
@@ -5723,16 +4464,11 @@ function renderCustomInvoicePreview() {
       
       <!-- Top Section: Header, Branding, Receiver -->
       <div class="bill-top-section">
-        <!-- Top Bar: GSTIN | TITLE | MOBILES | COPIES -->
+        <!-- Top Bar: GSTIN | TITLE | MOBILES -->
         <div class="bill-top-bar">
           <div>GSTIN. 09AWKPN5910E1ZG</div>
           <div class="bill-doc-title">${docTitle}</div>
-          <div style="text-align:right; font-size:10.5px; line-height:1.25;">M.: 9911678386<br>8851627221</div>
-          <div class="bill-copies-box">
-            <div>${copyType === 'Original For Buyer' ? '[✓]' : '[ ]'} Original For Buyer</div>
-            <div>${copyType === 'Duplicate For Supplier' ? '[✓]' : '[ ]'} Duplicate For Supplier</div>
-            <div>${copyType === 'Triplicate For Supplier' ? '[✓]' : '[ ]'} Triplicate For Supplier</div>
-          </div>
+          <div style="text-align:right; font-size:11.5px;">M.: 9911678386, 8851627221</div>
         </div>
 
         <!-- Main Header: Brand & Address -->
@@ -5741,7 +4477,7 @@ function renderCustomInvoicePreview() {
             <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo" onerror="this.style.display='none'">
             <span>A S PRINT GALLERY</span>
           </div>
-          <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Heat Transfer Sticker</div>
+          <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box</div>
           <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102</div>
         </div>
 
