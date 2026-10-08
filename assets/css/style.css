@@ -4100,3 +4100,53 @@ body {
   text-align: right !important;
   min-height: 70px !important;
 }
+
+
+/* Brand Header Layout: Larger Logo on Top Left + Big Swiss Bold AS PRINT GALLERY */
+.bill-header-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 14px 6px !important;
+  border-bottom: 1.5px solid #000000 !important;
+  background: #ffffff !important;
+}
+
+.bill-brand-logo-box {
+  width: 80px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.bill-brand-logo {
+  width: 72px !important;
+  height: 72px !important;
+  object-fit: contain !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: block !important;
+}
+
+.bill-brand-center-text {
+  flex: 1 !important;
+  text-align: center !important;
+  padding: 0 6px !important;
+}
+
+.bill-brand-name {
+  font-size: 38px !important;
+  font-weight: 900 !important;
+  color: #000000 !important;
+  letter-spacing: 0.04em !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'Arial Black', sans-serif !important;
+  margin: 0 !important;
+  line-height: 1.05 !important;
+  text-transform: uppercase !important;
+}
+
+.bill-brand-right-spacer {
+  width: 80px !important;
+  flex-shrink: 0 !important;
+}

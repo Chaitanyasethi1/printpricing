@@ -3504,7 +3504,7 @@ function showToast(msg) {
 
 // ============================================================
 
-// A S PRINT GALLERY - OFFICIAL BILLING, INVOICE & HISTORY SYSTEM
+// AS PRINT GALLERY - OFFICIAL BILLING, INVOICE & HISTORY SYSTEM
 
 // ============================================================
 
@@ -3816,8 +3816,8 @@ function renderQuotationPreview() {
   });
 
   const companyGstin = '09AWKPN5910E1ZG';
-  const companyMobiles = '9911678386, 8851627221';
-  const companyName = 'A S PRINT GALLERY';
+  const companyMobiles = '9911678386';
+  const companyName = 'AS PRINT GALLERY';
   const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
   const companyAddress = 'Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
 
@@ -4001,8 +4001,12 @@ function renderQuotationPreview() {
               <span class="bill-field-val">${clientState}</span>
             </div>
             <div class="bill-field-row">
-              <span class="bill-field-lbl">GSTIN / Phone :</span>
-              <span class="bill-field-val" style="font-weight:bold;">${[clientGstin, (clientPhone ? ('Mob: ' + clientPhone) : '')].filter(Boolean).join(' | ') || '-'}</span>
+              <span class="bill-field-lbl">GSTIN/Unique ID :</span>
+              <span class="bill-field-val" style="font-weight:bold;">${clientGstin || '-'}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Customer Mobile :</span>
+              <span class="bill-field-val" style="font-weight:bold; color:#000;">${clientPhone || '-'}</span>
             </div>
           </div>
 
@@ -4482,9 +4486,9 @@ function copyQuoteToClipboard() {
 
   const text = `🧾 *${docTitle} #${invoiceNo}*\n` +
 
-    `🏢 *A S PRINT GALLERY*\n` +
+    `🏢 *AS PRINT GALLERY*\n` +
 
-    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
+    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
 
     `--------------------------------\n` +
 
@@ -4540,9 +4544,9 @@ function shareWhatsApp() {
 
   const msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
 
-    `🏢 *A S PRINT GALLERY*\n` +
+    `🏢 *AS PRINT GALLERY*\n` +
 
-    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
+    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
 
     `--------------------------------\n` +
 
@@ -4787,7 +4791,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // =========================================================================
-// A S PRINT GALLERY - DEDICATED CUSTOM GST BILL & INVOICE STUDIO
+// AS PRINT GALLERY - DEDICATED CUSTOM GST BILL & INVOICE STUDIO
 // =========================================================================
 
 let invoiceRowCounter = 0;
@@ -5119,17 +5123,20 @@ function renderCustomInvoicePreview() {
         <div class="bill-top-bar">
           <div>GSTIN. 09AWKPN5910E1ZG</div>
           <div class="bill-doc-title">${docTitle}</div>
-          <div style="text-align:right; font-size:11px; font-weight:bold;">M.: 9911678386, 8851627221</div>
+          <div style="text-align:right; font-size:11.5px; font-weight:bold;">M.: 9911678386</div>
         </div>
 
-        <!-- Main Header: Brand & Address -->
+        <!-- Main Header: Brand & Address with Top Left Logo -->
         <div class="bill-header-center">
-          <div class="bill-brand-name">
+          <div class="bill-brand-logo-box">
             <img src="assets/images/logo.png" alt="Logo" class="bill-brand-logo" onerror="this.style.display='none'">
-            <span>A S PRINT GALLERY</span>
           </div>
-          <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box</div>
-          <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102</div>
+          <div class="bill-brand-center-text">
+            <div class="bill-brand-name">AS PRINT GALLERY</div>
+            <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box</div>
+            <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102</div>
+          </div>
+          <div class="bill-brand-right-spacer"></div>
         </div>
 
         <!-- Invoice No & Date Bar -->
@@ -5155,8 +5162,12 @@ function renderCustomInvoicePreview() {
               <span class="bill-field-val">${receiverState}</span>
             </div>
             <div class="bill-field-row">
-              <span class="bill-field-lbl">GSTIN / Phone :</span>
-              <span class="bill-field-val" style="font-weight:bold;">${[receiverGstin, (receiverPhone ? ('Mob: ' + receiverPhone) : '')].filter(Boolean).join(' | ') || '-'}</span>
+              <span class="bill-field-lbl">GSTIN/Unique ID :</span>
+              <span class="bill-field-val" style="font-weight:bold;">${receiverGstin || '-'}</span>
+            </div>
+            <div class="bill-field-row">
+              <span class="bill-field-lbl">Customer Mobile :</span>
+              <span class="bill-field-val" style="font-weight:bold; color:#000;">${receiverPhone || '-'}</span>
             </div>
           </div>
 
@@ -5265,7 +5276,7 @@ function renderCustomInvoicePreview() {
         </div>
 
         <div class="bill-sign-box">
-          <div style="font-weight:bold; font-size:11px;">For A S PRINT GALLERY</div>
+          <div style="font-weight:bold; font-size:11px;">For AS PRINT GALLERY</div>
           <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
         </div>
       </div>
@@ -5411,8 +5422,8 @@ function copyCustomBillText() {
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const items = getInvoiceCustomItemsData();
 
-  let text = `*A S PRINT GALLERY*\n`;
-  text += `GSTIN: 09AWKPN5910E1ZG | Mob: 9911678386, 8851627221\n`;
+  let text = `*AS PRINT GALLERY*\n`;
+  text += `GSTIN: 09AWKPN5910E1ZG | Mob: 9911678386\n`;
   text += `-----------------------------------------\n`;
   text += `*${docTitle}* #${invoiceNo}\n`;
   text += `Date: ${document.getElementById('custInvoiceDate')?.value || ''}\n`;
@@ -5489,8 +5500,8 @@ function shareCustomBillWhatsApp() {
     shareableUrl += '?billData=' + encodeURIComponent(b64);
   } catch(e) {}
 
-  let text = `*A S PRINT GALLERY*\n`;
-  text += `GSTIN: 09AWKPN5910E1ZG | Phone: 9911678386, 8851627221\n`;
+  let text = `*AS PRINT GALLERY*\n`;
+  text += `GSTIN: 09AWKPN5910E1ZG | Phone: 9911678386\n`;
   text += `*${docTitle}* #${invoiceNo}\n`;
   text += `Billed To: *${receiverName}*\n`;
   if (receiverPhone) {
