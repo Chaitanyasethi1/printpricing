@@ -4451,3 +4451,47 @@ body {
     margin: 0 !important;
   }
 }
+
+
+/* Clean vertical column dividers without horizontal row lines in item area */
+.bill-items-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+}
+
+.bill-items-table th {
+  border-bottom: 1.5px solid #000000 !important;
+  border-right: 1.5px solid #000000 !important;
+  padding: 6px 4px !important;
+  background: #f1f5f9 !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  text-align: center !important;
+}
+
+.bill-items-table th:last-child {
+  border-right: none !important;
+}
+
+.bill-items-table td {
+  border-bottom: none !important;
+  border-right: 1.5px solid #000000 !important;
+  padding: 6px 6px !important;
+  vertical-align: top !important;
+}
+
+.bill-items-table td:last-child {
+  border-right: none !important;
+}
+
+.bill-summary-row td {
+  border-top: 1.5px solid #000000 !important;
+  border-right: 1.5px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+}
+
+.bill-summary-row td:last-child {
+  border-right: none !important;
+}

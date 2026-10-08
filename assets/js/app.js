@@ -3994,15 +3994,16 @@ function renderQuotationPreview() {
     displayDesc = specs.join(' | ');
   }
 
-  let emptyRowsHtml = '';
-  for (let i = 0; i < 9; i++) {
-    emptyRowsHtml += `
-      <tr style="height:32px;">
-        <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${i + 2}</td>
-        <td></td><td></td><td></td><td></td><td></td>
-      </tr>
-    `;
-  }
+  let emptyRowsHtml = `
+    <tr style="height:260px;">
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td></td>
+    </tr>
+  `;
 
   previewEl.innerHTML = `
     <div class="billbook-container" id="printableQuotation">
@@ -5221,17 +5222,18 @@ function renderCustomInvoicePreview() {
     `;
   }).join('');
 
-  // Proportional empty rows to gracefully fill full A4 height
-  let emptyRowsHtml = '';
-  const emptyNeeded = Math.max(0, 10 - items.length);
-  for (let i = 0; i < emptyNeeded; i++) {
-    emptyRowsHtml += `
-      <tr style="height:32px;">
-        <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${items.length + i + 1}</td>
-        <td></td><td></td><td></td><td></td><td></td>
-      </tr>
-    `;
-  }
+  // Clean continuous vertical column lines extending to summary (no horizontal empty lines or row numbers)
+  const fillerHeight = Math.max(120, 280 - (items.length * 40));
+  const emptyRowsHtml = `
+    <tr style="height:${fillerHeight}px;">
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td></td>
+    </tr>
+  `;
 
   previewEl.innerHTML = `
     <div class="billbook-container" id="printableInvoice">
