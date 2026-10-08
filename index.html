@@ -70,7 +70,7 @@
 
 
 
-  <link rel="stylesheet" href="style.css?v=2.2">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.3">
 
 
 
@@ -236,7 +236,7 @@
     <div class="header-container">
       <div class="logo-badge">
         <div class="logo-icon" style="background:#fff; border-radius:50%; overflow:hidden; padding:2px; display:flex; align-items:center; justify-content:center;">
-          <img src="logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;">
+          <img src="assets/images/logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;">
         </div>
         <div class="logo-text">
           <h1 style="font-weight:800; letter-spacing:0.5px;">A S PRINT GALLERY</h1>
@@ -3853,199 +3853,195 @@
 
 
 
-      <!-- Dedicated Custom Bill / Tax Invoice Modal (Fully Customizable Multi-Item Bill Book) -->
-  <div class="modal-backdrop" id="customInvoiceModal">
-    <div class="modal-content" style="max-width:920px;">
-      <div class="modal-header">
-        <h3 style="font-size:1.15rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <span>🧾</span> A S PRINT GALLERY — Custom Bill & Tax Invoice Studio
-        </h3>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <button class="btn-pill" style="padding:6px 12px; font-size:12px;" onclick="openHistoryModal()">
-            <span>🗂️</span> Saved Bills (<span id="savedCountBadge2">0</span>)
-          </button>
-          <button class="btn-icon" onclick="closeCustomInvoiceModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
-        </div>
-      </div>
-      
-      <div class="modal-body">
-        <!-- Document Type & Meta Row -->
-        <div class="no-print" style="background:var(--bg-card-sub); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; margin-bottom:1.25rem;">
-          
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px; background:var(--bg-card); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border);">
-            <div class="input-field">
-              <label>Document Title</label>
-              <div class="input-wrapper">
-                <select id="custDocTitle" onchange="renderCustomInvoicePreview()">
-                  <option value="TAX INVOICE" selected>TAX INVOICE</option>
-                  <option value="QUOTATION">QUOTATION</option>
-                  <option value="ESTIMATE / JOB SHEET">ESTIMATE / JOB SHEET</option>
-                  <option value="PERFORMA INVOICE">PERFORMA INVOICE</option>
-                  <option value="DELIVERY CHALLAN">DELIVERY CHALLAN</option>
-                </select>
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Copy For</label>
-              <div class="input-wrapper">
-                <select id="custCopyType" onchange="renderCustomInvoicePreview()">
-                  <option value="Original For Buyer" selected>Original For Buyer</option>
-                  <option value="Duplicate For Supplier">Duplicate For Supplier</option>
-                  <option value="Triplicate For Supplier">Triplicate For Supplier</option>
-                </select>
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Invoice / Bill No.</label>
-              <div class="input-wrapper">
-                <input id="custInvoiceNo" type="text" placeholder="077" value="077" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Invoice Date</label>
-              <div class="input-wrapper">
-                <input id="custInvoiceDate" type="text" placeholder="08-Oct-2026" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-          </div>
-
-          <!-- Receiver & Transport Details Grid -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
-            <div class="input-field">
-              <label>Receiver Name (Billed To)</label>
-              <div class="input-wrapper">
-                <input id="custReceiverName" type="text" placeholder="e.g. MOHIT KUMAR" value="M/S MOHIT KUMAR" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Receiver Address</label>
-              <div class="input-wrapper">
-                <input id="custReceiverAddress" type="text" placeholder="e.g. KHEKRA, BAGHPAT" value="KHEKRA, BAGHPAT, U.P." oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>State & State Code</label>
-              <div class="input-wrapper">
-                <input id="custReceiverState" type="text" placeholder="e.g. Uttar Pradesh (09)" value="Uttar Pradesh (09)" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>GSTIN / Unique ID / Phone</label>
-              <div class="input-wrapper">
-                <input id="custReceiverGstin" type="text" placeholder="e.g. GSTIN: XXXXXXX | Ph: 7037442527" value="GSTIN: XXXXXXX | Ph: 7037442527" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Transportation Mode</label>
-              <div class="input-wrapper">
-                <input id="custTransportMode" type="text" placeholder="e.g. Direct Dispatch / Tempo" value="Direct Dispatch / By Hand" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Vehicle Number</label>
-              <div class="input-wrapper">
-                <input id="custVehicleNo" type="text" placeholder="e.g. UP-14-XX-1234" value="" oninput="renderCustomInvoicePreview()">
-              </div>
-            </div>
-          </div>
-
-          <!-- Multi-Item Goods Rows Builder -->
-          <div style="background:var(--bg-card); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:0.85rem; font-weight:800; text-transform:uppercase; color:var(--text-main);">
-                📦 Description of Goods & Items (आइटम्स लिस्ट)
-              </span>
-              <button type="button" class="btn-pill" style="padding:4px 10px; font-size:12px; background:var(--primary); color:#fff;" onclick="addInvoiceItemRow()">
-                <span>➕</span> Add Item Row
-              </button>
-            </div>
-
-            <div id="invoiceItemsBuilder">
-              <!-- Item Row 1 -->
-              <div class="invoice-item-row" id="itemRow_0" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1.2fr auto; gap:8px; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--border);">
-                <div>
-                  <label style="font-size:11px; font-weight:700;">Item Title & Description</label>
-                  <input type="text" class="item-title-input" placeholder="e.g. LIFAFA / Sweet Box" value="LIFAFA" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
-                  <input type="text" class="item-desc-input" placeholder="e.g. Material: 23x18 | 250 GSM Board" value="Material: 23x18 | 250 GSM Board | Printing: Multi-Color Offset" oninput="renderCustomInvoicePreview()" style="font-size:11px; margin-top:3px;">
-                </div>
-                <div>
-                  <label style="font-size:11px; font-weight:700;">HSN Code</label>
-                  <input type="text" class="item-hsn-input" placeholder="4819" value="4819" oninput="renderCustomInvoicePreview()">
-                </div>
-                <div>
-                  <label style="font-size:11px; font-weight:700;">Qty</label>
-                  <input type="number" step="any" class="item-qty-input" placeholder="1000" value="1000" oninput="renderCustomInvoicePreview()">
-                </div>
-                <div>
-                  <label style="font-size:11px; font-weight:700;">Unit</label>
-                  <select class="item-unit-select" onchange="renderCustomInvoicePreview()">
-                    <option value="NOS" selected>NOS</option>
-                    <option value="KGS">KGS (किलो)</option>
-                    <option value="SHEETS">SHEETS</option>
-                    <option value="PCS">PCS</option>
-                    <option value="BOXES">BOXES</option>
-                    <option value="SETS">SETS</option>
-                    <option value="ROLLS">ROLLS</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:11px; font-weight:700;">Rate (₹)</label>
-                  <input type="number" step="any" class="item-rate-input" placeholder="5.34" value="5.34" oninput="renderCustomInvoicePreview()">
-                </div>
-                <div style="padding-top:16px;">
-                  <button type="button" class="btn-icon" style="color:#ef4444; width:28px; height:28px;" onclick="removeInvoiceItemRow(0)" title="Delete Row">✕</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tax Options Grid -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
-            <div class="input-field">
-              <label>GST Tax Type</label>
-              <div class="input-wrapper">
-                <select id="custGstType" onchange="handleCustGstTypeChange()">
-                  <option value="cgst_sgst" selected>CGST + SGST (Local UP State)</option>
-                  <option value="igst">IGST (Inter-State / Other State)</option>
-                  <option value="extra">GST Extra as applicable</option>
-                  <option value="exempt">GST Nil / Exempted (0%)</option>
-                </select>
-              </div>
-            </div>
-            <div class="input-field">
-              <label>GST Rate (%)</label>
-              <div class="input-wrapper">
-                <input id="custGstRateInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 18" value="18" oninput="renderCustomInvoicePreview()">
-                <span class="input-suffix">%</span>
-              </div>
-            </div>
-            <div class="input-field">
-              <label>Reverse Charge Applicable?</label>
-              <div class="input-wrapper">
-                <select id="custReverseCharge" onchange="renderCustomInvoicePreview()">
-                  <option value="No" selected>No</option>
-                  <option value="Yes">Yes</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Live Custom Bill Preview -->
-        <div id="customInvoicePreview"></div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn-pill" onclick="closeCustomInvoiceModal()">Close</button>
-        <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save Bill</button>
-        <button class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
-        <button class="btn-pill btn-success" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill</button>
-        <button class="btn-pill primary" onclick="printCustomInvoice()"><span>🖨️</span> Print / Save as PDF</button>
-      </div>
-    </div>
-  </div>
-
+      <!-- Dedicated Custom Bill / Tax Invoice Modal (Fully Customizable Multi-Item Bill Book) -->
+  <div class="modal-backdrop" id="customInvoiceModal">
+    <div class="modal-content" style="max-width:1080px; width:95%;">
+      <div class="modal-header" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding:14px 20px;">
+        <h3 style="font-size:1.2rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <span>🧾</span> A S PRINT GALLERY — Multi-Item Bill & Tax Invoice Studio
+        </h3>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-pill" style="padding:7px 14px; font-size:13px;" onclick="openHistoryModal()">
+            <span>🗂️</span> Saved Records (<span id="savedCountBadge2">0</span>)
+          </button>
+          <button class="btn-icon" onclick="closeCustomInvoiceModal()" style="width:34px; height:34px; font-size:16px;">✕</button>
+        </div>
+      </div>
+      
+      <div class="modal-body" style="padding:16px;">
+        <!-- Spacious Form Section -->
+        <div class="no-print" style="background:var(--bg-card-sub); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:1.5rem;">
+          
+          <!-- Document Header Row -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:14px; background:var(--bg-card); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <div class="input-field">
+              <label style="font-weight:700;">Document Title (बिल का प्रकार)</label>
+              <div class="input-wrapper">
+                <select id="custDocTitle" onchange="renderCustomInvoicePreview()">
+                  <option value="TAX INVOICE" selected>TAX INVOICE</option>
+                  <option value="QUOTATION">QUOTATION</option>
+                  <option value="ESTIMATE / JOB SHEET">ESTIMATE / JOB SHEET</option>
+                  <option value="PERFORMA INVOICE">PERFORMA INVOICE</option>
+                  <option value="DELIVERY CHALLAN">DELIVERY CHALLAN</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Copy For (कॉपी प्रकार)</label>
+              <div class="input-wrapper">
+                <select id="custCopyType" onchange="renderCustomInvoicePreview()">
+                  <option value="Original For Buyer" selected>Original For Buyer</option>
+                  <option value="Duplicate For Supplier">Duplicate For Supplier</option>
+                  <option value="Triplicate For Supplier">Triplicate For Supplier</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Invoice / Bill No. (बिल नं.)</label>
+              <div class="input-wrapper">
+                <input id="custInvoiceNo" type="text" placeholder="071" value="071" oninput="renderCustomInvoicePreview()" style="font-weight:800; font-family:monospace;">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Invoice Date (बिल दिनांक)</label>
+              <div class="input-wrapper">
+                <input id="custInvoiceDate" type="text" placeholder="08-Oct-2026" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Receiver & Transport Details Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
+            <div class="input-field">
+              <label style="font-weight:700;">Receiver Name (M/S Billed To) *</label>
+              <div class="input-wrapper">
+                <input id="custReceiverName" type="text" placeholder="e.g. Labrary Clothing Limited" value="M/S MOHIT KUMAR" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Receiver Address (पार्टी का पता)</label>
+              <div class="input-wrapper">
+                <input id="custReceiverAddress" type="text" placeholder="e.g. Khekra, Baghpat, U.P." value="KHEKRA, BAGHPAT, U.P." oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">State & State Code</label>
+              <div class="input-wrapper">
+                <input id="custReceiverState" type="text" placeholder="e.g. Uttar Pradesh (09)" value="Uttar Pradesh (09)" oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">GSTIN / Unique ID / Phone</label>
+              <div class="input-wrapper">
+                <input id="custReceiverGstin" type="text" placeholder="e.g. 09AADCL7286D1ZG / Ph: 7037442527" value="GSTIN: XXXXXXX | Ph: 7037442527" oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Transportation Mode</label>
+              <div class="input-wrapper">
+                <input id="custTransportMode" type="text" placeholder="e.g. Direct Dispatch / Tempo" value="Direct Dispatch / By Hand" oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Vehicle Number</label>
+              <div class="input-wrapper">
+                <input id="custVehicleNo" type="text" placeholder="e.g. UP-14-XX-1234" value="" oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Item Goods Rows Builder (Spacious, Multi-Product Support) -->
+          <div style="background:var(--bg-card); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+              <div>
+                <span style="font-size:0.95rem; font-weight:800; text-transform:uppercase; color:var(--text-main);">
+                  📦 Description of Goods & Products (सभी प्रोडक्ट्स और साइज़ लिस्ट)
+                </span>
+                <p style="font-size:11px; color:var(--text-secondary); margin:2px 0 0 0;">
+                  आप 1, 5 या जितने चाहें उतने अलग-अलग प्रोडक्ट्स S.No. और मल्टी-लाइन साइज़ ब्रेकडाउन के साथ जोड़ सकते हैं।
+                </p>
+              </div>
+              <button type="button" class="btn-pill" style="padding:6px 14px; font-size:13px; font-weight:700; background:var(--primary); color:#fff;" onclick="addInvoiceItemRow()">
+                <span>➕</span> Add Product (+ नया प्रोडक्ट)
+              </button>
+            </div>
+
+            <!-- Item Rows Container -->
+            <div id="invoiceItemsBuilder" style="display:flex; flex-direction:column; gap:14px;">
+              <!-- Dynamic Rows Injected by JS -->
+            </div>
+
+            <!-- Add Row Button at bottom of list as well -->
+            <div style="margin-top:14px; text-align:center;">
+              <button type="button" class="btn-pill" style="padding:8px 20px; font-size:13px; font-weight:700; background:var(--bg-card-sub); border:1.5px dashed var(--primary); color:var(--primary);" onclick="addInvoiceItemRow()">
+                <span>➕</span> + Add Another Product Row (+ एक और प्रोडक्ट जोड़ें)
+              </button>
+            </div>
+          </div>
+
+          <!-- Tax Options & Financials Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; background:var(--bg-card); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <div class="input-field">
+              <label style="font-weight:700;">GST Tax Type</label>
+              <div class="input-wrapper">
+                <select id="custGstType" onchange="handleCustGstTypeChange()">
+                  <option value="cgst_sgst" selected>CGST + SGST (Local UP State 2.5% + 2.5% / 9% + 9%)</option>
+                  <option value="igst">IGST (Inter-State / Other State)</option>
+                  <option value="extra">GST Extra as applicable</option>
+                  <option value="exempt">GST Nil / Exempted (0%)</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">GST Rate (%)</label>
+              <div class="input-wrapper">
+                <input id="custGstRateInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 5 or 18" value="18" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Reverse Charge Applicable?</label>
+              <div class="input-wrapper">
+                <select id="custReverseCharge" onchange="renderCustomInvoicePreview()">
+                  <option value="No" selected>No [✓]</option>
+                  <option value="Yes">Yes [✓]</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-weight:700;">Discount (₹ छूट यदि कोई हो)</label>
+              <div class="input-wrapper">
+                <input id="custDiscount" type="number" step="any" min="0" placeholder="0" value="0" oninput="renderCustomInvoicePreview()">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Authentic A4 Bill Preview -->
+        <div style="margin-top:10px;">
+          <div class="no-print" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
+              📄 A4 Print Preview (A S Print Gallery Authentic Bill Book Format):
+            </span>
+            <span style="font-size:11px; color:#10b981; font-weight:700;">● Live Updated</span>
+          </div>
+          <div id="customInvoicePreview"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <button class="btn-pill" onclick="closeCustomInvoiceModal()">Close</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save Bill</button>
+          <button class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
+          <button class="btn-pill btn-success" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill</button>
+          <button class="btn-pill primary" style="font-weight:800; padding:10px 22px; font-size:14px;" onclick="printCustomInvoice()"><span>🖨️</span> Print / Save as PDF (A4)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Quotation Generation Modal (From Calc) -->
   <div class="modal-backdrop" id="quotationModal">
     <div class="modal-content" style="max-width:860px;">
@@ -4093,7 +4089,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=2.2"></script>
+  <script src="assets/js/app.js?v=2.3"></script>
 
 
 
