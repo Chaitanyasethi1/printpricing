@@ -2614,69 +2614,34 @@ body {
 /* Modal for Quotation & Printing */
 
 
-.modal-backdrop {
-
-
-  position: fixed;
-
-
-  top: 0;
-
-
-  left: 0;
-
-
-  width: 100vw;
-
-
-  height: 100vh;
-
-
-  background: rgba(15, 23, 42, 0.6);
-
-
-  backdrop-filter: blur(8px);
-
-
-  z-index: 1000;
-
-
-  display: flex;
-
-
-  align-items: center;
-
-
-  justify-content: center;
-
-
-  padding: 1rem;
-
-
-  opacity: 0;
-
-
-  pointer-events: none;
-
-
-  transition: opacity 0.3s ease;
-
-
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  transition: opacity 0.25s ease;
 }
 
 
 
 
 
-.modal-backdrop.active {
-
-
-  opacity: 1;
-
-
-  pointer-events: auto;
-
-
+.modal-backdrop.active {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 
@@ -3736,5 +3701,42 @@ body {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+  }
+}
+
+
+/* ============================================================
+   PRINT MEDIA - 100% SINGLE PAGE FIT (NO BLANK 2ND PAGE)
+   ============================================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 4mm 6mm !important;
+  }
+
+  html, body {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+  }
+
+  .billbook-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 270mm !important;
+    max-height: 270mm !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 2px solid #000000 !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-inside: avoid !important;
+    box-sizing: border-box !important;
   }
 }

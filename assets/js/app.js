@@ -3947,9 +3947,9 @@ function renderQuotationPreview() {
   }
 
   let emptyRowsHtml = '';
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     emptyRowsHtml += `
-      <tr style="height:36px;">
+      <tr style="height:32px;">
         <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${i + 2}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
@@ -3965,7 +3965,7 @@ function renderQuotationPreview() {
         <div class="bill-top-bar">
           <div>GSTIN. ${companyGstin}</div>
           <div class="bill-doc-title">${docTitle}</div>
-          <div style="text-align:right; font-size:11.5px;">M.: ${companyMobiles}</div>
+          <div style="text-align:right; font-size:11px; font-weight:bold;">M.: ${companyMobiles}</div>
         </div>
 
         <!-- Main Header: Brand & Address -->
@@ -4055,26 +4055,6 @@ function renderQuotationPreview() {
             </tr>
             ${emptyRowsHtml}
 
-            ${transportCharges > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Freight &amp; Transportation Charges (भाड़ा शुल्क)
-              </td>
-              <td style="text-align:right; font-weight:bold; color:#0369a1;">Transport / Cartage</td>
-              <td style="text-align:right; font-weight:bold; color:#0369a1;">${transportCharges.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            ${discount > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Special Discount Allowed
-              </td>
-              <td style="text-align:right; font-weight:bold; color:#dc2626;">(-) Discount</td>
-              <td style="text-align:right; font-weight:bold; color:#dc2626;">-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
             <!-- Total Amount Before Tax -->
             <tr class="bill-summary-row">
               <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
@@ -4161,6 +4141,680 @@ function renderQuotationPreview() {
     </div>
   `;
 }
+
+function saveCurrentInvoice() {
+
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
+
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+
+  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN');
+
+  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
+
+  const jobTitle = document.getElementById('jobTitleInput')?.value || 'Job Work';
+
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+
+  const customQty = document.getElementById('customBillingQty')?.value || '1000';
+
+  const customRate = document.getElementById('customBillingRate')?.value || '0';
+
+
+
+  const history = getSavedInvoicesList();
+
+  
+
+  const record = {
+
+    id: Date.now(),
+
+    invoiceNo: invoiceNo,
+
+    docTitle: docTitle,
+
+    invoiceDate: invoiceDate,
+
+    clientName: clientName,
+
+    clientAddress: document.getElementById('clientAddressInput')?.value || '',
+
+    clientState: document.getElementById('clientStateInput')?.value || '',
+
+    clientGstin: document.getElementById('clientGstinInput')?.value || '',
+
+    transportMode: document.getElementById('transportModeInput')?.value || '',
+
+    vehicleNo: document.getElementById('vehicleNoInput')?.value || '',
+
+    jobTitle: jobTitle,
+
+    hsn: document.getElementById('hsnInput')?.value || '4819',
+
+    billingUnit: billingUnit,
+
+    customQty: customQty,
+
+    customRate: customRate,
+
+    customDesc: document.getElementById('customItemDescInput')?.value || '',
+
+    gstType: document.getElementById('quoteGstType')?.value || 'cgst_sgst',
+
+    gstRate: document.getElementById('quoteGstPercentInput')?.value || '18',
+
+    reverseCharge: document.getElementById('reverseChargeSelect')?.value || 'No'
+
+  };
+
+
+
+  // Check if invoice with same number already exists, update or add
+
+  const existingIdx = history.findIndex(item => item.invoiceNo === invoiceNo);
+
+  if (existingIdx >= 0) {
+
+    history[existingIdx] = record;
+
+  } else {
+
+    history.unshift(record);
+
+  }
+
+
+
+  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
+
+  incrementNextInvoiceNumber();
+
+  
+
+  // Set next number in input for convenience
+
+  const invInput = document.getElementById('invoiceNoInput');
+
+  if (invInput) invInput.value = getNextInvoiceNumber();
+
+
+
+  updateSavedCountBadge();
+
+  showToast(`Bill #${invoiceNo} saved successfully!`);
+
+}
+
+
+
+function openHistoryModal() {
+
+  const modal = document.getElementById('invoiceHistoryModal');
+
+  if (modal) {
+
+    renderHistoryTable();
+
+    modal.classList.add('active');
+
+  }
+
+}
+
+
+
+function closeHistoryModal() {
+
+  const modal = document.getElementById('invoiceHistoryModal');
+
+  if (modal) modal.classList.remove('active');
+
+}
+
+
+
+function renderHistoryTable(filterText = '') {
+
+  const container = document.getElementById('historyTableContainer');
+
+  if (!container) return;
+
+
+
+  const history = getSavedInvoicesList();
+
+  const filtered = filterText ? history.filter(item => {
+
+    const q = filterText.toLowerCase();
+
+    return (item.invoiceNo && item.invoiceNo.toLowerCase().includes(q)) ||
+
+           (item.clientName && item.clientName.toLowerCase().includes(q)) ||
+
+           (item.jobTitle && item.jobTitle.toLowerCase().includes(q)) ||
+
+           (item.docTitle && item.docTitle.toLowerCase().includes(q));
+
+  }) : history;
+
+
+
+  if (filtered.length === 0) {
+
+    container.innerHTML = `
+
+      <div style="padding:2rem; text-align:center; color:var(--text-muted);">
+
+        <div style="font-size:2rem; margin-bottom:8px;">📭</div>
+
+        <div>No saved invoices found. Click <b>"Save Invoice"</b> to store bills!</div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+
+  container.innerHTML = `
+
+    <table class="history-table">
+
+      <thead>
+
+        <tr>
+
+          <th>Bill No.</th>
+
+          <th>Date</th>
+
+          <th>Type</th>
+
+          <th>Customer (Billed To)</th>
+
+          <th>Item / Job</th>
+
+          <th style="text-align:center;">Actions</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${filtered.map(item => `
+
+          <tr>
+
+            <td><b>#${item.invoiceNo}</b></td>
+
+            <td>${item.invoiceDate}</td>
+
+            <td><span style="font-size:10px; background:#eef2ff; color:#4338ca; padding:2px 6px; border-radius:4px; font-weight:bold;">${item.docTitle}</span></td>
+
+            <td><b>${item.clientName}</b></td>
+
+            <td>${item.jobTitle}</td>
+
+            <td style="text-align:center;">
+
+              <button class="btn-pill" style="padding:4px 8px; font-size:11px; margin-right:4px;" onclick="loadSavedInvoice(${item.id})">📂 Open</button>
+
+              <button class="btn-pill btn-danger" style="padding:4px 8px; font-size:11px; background:#ef4444; color:#fff;" onclick="deleteSavedInvoice(${item.id})">✕</button>
+
+            </td>
+
+          </tr>
+
+        `).join('')}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+
+
+function filterHistoryTable() {
+
+  const query = document.getElementById('historySearchInput')?.value || '';
+
+  renderHistoryTable(query);
+
+}
+
+
+
+function loadSavedInvoice(id) {
+
+  const history = getSavedInvoicesList();
+
+  const record = history.find(item => item.id === id);
+
+  if (!record) return;
+
+
+
+  if (record.docTitle) document.getElementById('docTitleSelect').value = record.docTitle;
+
+  if (record.invoiceNo) document.getElementById('invoiceNoInput').value = record.invoiceNo;
+
+  if (record.invoiceDate) document.getElementById('invoiceDateInput').value = record.invoiceDate;
+
+  if (record.clientName) document.getElementById('clientNameInput').value = record.clientName;
+
+  if (record.clientAddress) document.getElementById('clientAddressInput').value = record.clientAddress;
+
+  if (record.clientState) document.getElementById('clientStateInput').value = record.clientState;
+
+  if (record.clientGstin) document.getElementById('clientGstinInput').value = record.clientGstin;
+
+  if (record.transportMode) document.getElementById('transportModeInput').value = record.transportMode;
+
+  if (record.vehicleNo) document.getElementById('vehicleNoInput').value = record.vehicleNo;
+
+  if (record.jobTitle) document.getElementById('jobTitleInput').value = record.jobTitle;
+
+  if (record.hsn) document.getElementById('hsnInput').value = record.hsn;
+
+  if (record.billingUnit) document.getElementById('billingUnitSelect').value = record.billingUnit;
+
+  if (record.customQty) document.getElementById('customBillingQty').value = record.customQty;
+
+  if (record.customRate) document.getElementById('customBillingRate').value = record.customRate;
+
+  if (record.customDesc !== undefined) document.getElementById('customItemDescInput').value = record.customDesc;
+
+  if (record.gstType) document.getElementById('quoteGstType').value = record.gstType;
+
+  if (record.gstRate) document.getElementById('quoteGstPercentInput').value = record.gstRate;
+
+  if (record.reverseCharge) document.getElementById('reverseChargeSelect').value = record.reverseCharge;
+
+
+
+  closeHistoryModal();
+
+  renderQuotationPreview();
+
+  showToast(`Loaded Bill #${record.invoiceNo} for ${record.clientName}`);
+
+}
+
+
+
+function deleteSavedInvoice(id) {
+
+  if (!confirm('Are you sure you want to delete this invoice record?')) return;
+
+  let history = getSavedInvoicesList();
+
+  history = history.filter(item => item.id !== id);
+
+  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
+
+  renderHistoryTable();
+
+  updateSavedCountBadge();
+
+  showToast('Invoice deleted from history');
+
+}
+
+
+
+function clearAllHistory() {
+
+  if (!confirm('Delete all saved invoices history?')) return;
+
+  localStorage.removeItem('as_saved_invoices');
+
+  renderHistoryTable();
+
+  updateSavedCountBadge();
+
+  showToast('All invoice history cleared');
+
+}
+
+
+
+function copyQuoteToClipboard() {
+
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
+
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
+
+  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+
+  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
+
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+
+  const billQty = document.getElementById('customBillingQty')?.value || '1000';
+
+  const billRate = document.getElementById('customBillingRate')?.value || '0';
+
+
+
+  const text = `🧾 *${docTitle} #${invoiceNo}*\n` +
+
+    `🏢 *A S PRINT GALLERY*\n` +
+
+    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
+
+    `--------------------------------\n` +
+
+    `👤 *Billed To:* ${clientName}\n` +
+
+    `📦 *Item / Goods:* ${jobTitle}\n` +
+
+    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
+
+    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
+
+    `--------------------------------\n` +
+
+    `*GSTIN:* 09AWKPN5910E1ZG\n` +
+
+    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
+
+    `Thank you for your business!`;
+
+
+
+  navigator.clipboard.writeText(text).then(() => {
+
+    showToast('Bill details copied to clipboard!');
+
+  }).catch(() => {
+
+    showToast('Failed to copy');
+
+  });
+
+}
+
+
+
+function shareWhatsApp() {
+
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
+
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
+
+  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+
+  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
+
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+
+  const billQty = document.getElementById('customBillingQty')?.value || '1000';
+
+  const billRate = document.getElementById('customBillingRate')?.value || '0';
+
+
+
+  const msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
+
+    `🏢 *A S PRINT GALLERY*\n` +
+
+    `📍 Ghaziabad, U.P. | 📞 9911678386, 8851627221\n` +
+
+    `--------------------------------\n` +
+
+    `👤 *Billed To:* ${clientName}\n` +
+
+    `📦 *Item / Goods:* ${jobTitle}\n` +
+
+    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
+
+    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
+
+    `--------------------------------\n` +
+
+    `*GSTIN:* 09AWKPN5910E1ZG\n` +
+
+    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
+
+    `Thank you for your business!`;
+
+
+
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+  window.open(url, '_blank');
+
+}
+
+
+
+function toggleTheme() {
+
+
+
+
+
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+
+
+
+
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+
+
+
+
+  document.documentElement.setAttribute('data-theme', newTheme);
+
+
+
+
+
+  localStorage.setItem('calc_theme', newTheme);
+
+
+
+
+
+  
+
+
+
+
+
+  const icon = document.getElementById('themeIcon');
+
+
+
+
+
+  if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+
+
+
+  const savedTheme = localStorage.getItem('calc_theme') || 'light';
+
+
+
+
+
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+
+
+
+
+  const icon = document.getElementById('themeIcon');
+
+
+
+
+
+  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+
+
+
+
+
+
+
+
+
+
+  // Listen to all inputs and selects
+
+
+
+
+
+  const allInputs = document.querySelectorAll('input, select');
+
+
+
+
+
+  allInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      setCustomPresetActive();
+      calculate();
+    });
+    input.addEventListener('change', (e) => {
+      setCustomPresetActive();
+      calculate();
+    });
+    if (input.tagName === 'INPUT') {
+      input.addEventListener('focus', function() {
+        this.select();
+      });
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Dedicated Dropdown change listeners for instant factor update
+
+
+
+
+
+  const lamTypeSelect = document.getElementById('lamType');
+
+
+
+
+
+  if (lamTypeSelect) {
+
+
+
+
+
+    lamTypeSelect.addEventListener('change', handleLamTypeChange);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  const leafTypeSelect = document.getElementById('leafType');
+
+
+
+
+
+  if (leafTypeSelect) {
+
+
+
+
+
+    leafTypeSelect.addEventListener('change', handleLeafTypeChange);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  calculate();
+
+
+
+
+
+});
+
+
+
+
+
+
+
+// =========================================================================
+// A S PRINT GALLERY - DEDICATED CUSTOM GST BILL & INVOICE STUDIO
+// =========================================================================
+
+let invoiceRowCounter = 0;
 
 function getNextInvoiceNumber() {
   let seq = parseInt(localStorage.getItem('as_next_invoice_seq') || '71', 10);
@@ -4393,13 +5047,13 @@ function renderCustomInvoicePreview() {
   if (!previewEl) return;
 
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
-  const copyType = document.getElementById('custCopyType')?.value || 'Original For Buyer';
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
   const invoiceDate = document.getElementById('custInvoiceDate')?.value || new Date().toLocaleDateString('en-IN', {
     day: '2-digit', month: '2-digit', year: 'numeric'
   });
 
   const receiverName = document.getElementById('custReceiverName')?.value || 'M/S MOHIT KUMAR';
+  const receiverPhone = document.getElementById('custReceiverPhone')?.value || '';
   const receiverAddress = document.getElementById('custReceiverAddress')?.value || '';
   const receiverState = document.getElementById('custReceiverState')?.value || 'Uttar Pradesh (09)';
   const receiverGstin = document.getElementById('custReceiverGstin')?.value || '';
@@ -4470,10 +5124,10 @@ function renderCustomInvoicePreview() {
 
   // Proportional empty rows to gracefully fill full A4 height
   let emptyRowsHtml = '';
-  const emptyNeeded = Math.max(0, 6 - items.length);
+  const emptyNeeded = Math.max(0, 5 - items.length);
   for (let i = 0; i < emptyNeeded; i++) {
     emptyRowsHtml += `
-      <tr style="height:36px;">
+      <tr style="height:32px;">
         <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${items.length + i + 1}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
@@ -4489,7 +5143,7 @@ function renderCustomInvoicePreview() {
         <div class="bill-top-bar">
           <div>GSTIN. 09AWKPN5910E1ZG</div>
           <div class="bill-doc-title">${docTitle}</div>
-          <div style="text-align:right; font-size:11.5px;">M.: 9911678386, 8851627221</div>
+          <div style="text-align:right; font-size:11px; font-weight:bold;">M.: 9911678386, 8851627221</div>
         </div>
 
         <!-- Main Header: Brand & Address -->
@@ -4499,7 +5153,7 @@ function renderCustomInvoicePreview() {
             <span>A S PRINT GALLERY</span>
           </div>
           <div class="bill-mfd-tag">Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box</div>
-          <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden,Ashok Vihar,Loni,Ghaziabad,(U.P) 201102</div>
+          <div class="bill-address-tag">Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102</div>
         </div>
 
         <!-- Invoice No & Date Bar -->
@@ -4526,13 +5180,13 @@ function renderCustomInvoicePreview() {
             </div>
             <div class="bill-field-row">
               <span class="bill-field-lbl">GSTIN / Phone :</span>
-              <span class="bill-field-val" style="font-weight:bold;">${[receiverGstin, (document.getElementById('custReceiverPhone')?.value ? ('Mob: ' + document.getElementById('custReceiverPhone')?.value) : '')].filter(Boolean).join(' | ') || '-'}</span>
+              <span class="bill-field-val" style="font-weight:bold;">${[receiverGstin, (receiverPhone ? ('Mob: ' + receiverPhone) : '')].filter(Boolean).join(' | ') || '-'}</span>
             </div>
           </div>
 
           <div class="bill-party-box right">
             <div class="bill-field-row">
-              <span class="bill-field-lbl">Transportation Mode. :</span>
+              <span class="bill-field-lbl">Transportation Mode :</span>
               <span class="bill-field-val">${transportMode}</span>
             </div>
             <div class="bill-field-row">
@@ -4568,6 +5222,26 @@ function renderCustomInvoicePreview() {
           <tbody>
             ${itemRowsHtml}
             ${emptyRowsHtml}
+
+            ${transportCharges > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Freight &amp; Transportation Charges (भाड़ा शुल्क)
+              </td>
+              <td style="text-align:right; font-weight:bold; color:#0369a1;">Transport / Cartage</td>
+              <td style="text-align:right; font-weight:bold; color:#0369a1;">${transportCharges.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
+
+            ${discount > 0 ? `
+            <tr class="bill-summary-row">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
+                Special Discount Allowed
+              </td>
+              <td style="text-align:right; font-weight:bold; color:#dc2626;">(-) Discount</td>
+              <td style="text-align:right; font-weight:bold; color:#dc2626;">-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            ` : ''}
 
             <!-- Total Amount Before Tax -->
             <tr class="bill-summary-row">
@@ -4609,41 +5283,46 @@ function renderCustomInvoicePreview() {
 
             <!-- Grand Total Row -->
             <tr class="bill-total-final-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; text-align:right;">GST Total Amount After Tax :</td>
-              <td style="text-align:right; font-weight:bold;">₹</td>
-              <td style="text-align:right; font-weight:900; font-size:14px;">${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11.5px;">
+                GST on Reverse Charge: ₹0.00
+              </td>
+              <td style="text-align:right; font-size:13.5px; font-weight:900;">Total Amount After Tax</td>
+              <td style="text-align:right; font-size:13.5px; font-weight:900;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           </tbody>
         </table>
+
+        <!-- Amount In Words Box -->
+        <div class="bill-words-section">
+          <div style="margin-bottom:3px;">
+            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
+          </div>
+          <div>
+            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Bottom Section: Words, Terms, Bank & Signatures -->
-      <div class="bill-bottom-section">
-        <!-- Words Section -->
-        <div class="bill-words-section">
-          <div><b>Amount in Words :</b> <span style="font-weight:bold; margin-left:4px;">${wordsText}</span></div>
-          ${totalGst > 0 ? `<div style="margin-top:2px;"><b>Total Tax Amount in words. :</b> <span style="font-weight:bold; margin-left:4px;">${taxWordsText}</span></div>` : ''}
+      <!-- Bottom Section: Terms, Bank Details & Signature -->
+      <div class="bill-footer-section">
+        <div class="bill-terms-box">
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
+          <div>1. Goods once sold will not be taken back.</div>
+          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
+          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
         </div>
 
-        <!-- Footer: Terms, Bank Details & Signature -->
-        <div class="bill-footer-section">
-          <div class="bill-terms-box">
-            <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">TERMS & CONDITIONS</div>
-            <div>Goods once sold will not be taken back.</div>
-            <div>All disputes are subject to Ghaziabad Jurisdiction only.</div>
-          </div>
+        <div class="bill-bank-box">
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
+          <div>Bank : <b>HDFC BANK</b></div>
+          <div>A/c No. : <b>50200098986238</b></div>
+          <div>IFSC : <b>HDFC0004729</b></div>
+          <div>Branch : <b>LONI GHAZIABAD</b></div>
+        </div>
 
-          <div class="bill-bank-box">
-            <div style="font-weight:bold; text-decoration:underline; margin-bottom:2px;">Bank Details.:</div>
-            <div>Bank Name : <b>HDFC</b></div>
-            <div>BANK A/C : <b>50200098986238</b></div>
-            <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
-          </div>
-
-          <div class="bill-sign-box">
-            <div style="font-size:10.5px; font-weight:bold; text-transform:uppercase;">For: A S PRINT GALLERY</div>
-            <div style="border-top:1px solid #000; padding-top:2px; font-size:9.5px; margin-top:30px;">Signature</div>
-          </div>
+        <div class="bill-sign-box">
+          <div style="font-weight:bold; font-size:11px;">For A S PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
         </div>
       </div>
 
@@ -4753,9 +5432,6 @@ function saveCustomBillInvoice() {
   const totalGst = gstType === 'exempt' ? 0 : (subtotal * gstRate) / 100;
   const grandTotal = Math.round(subtotal + totalGst);
 
-  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
-  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
-
   const billObj = {
     id: 'bill_' + Date.now(),
     invoiceNo: invoiceNo,
@@ -4770,8 +5446,6 @@ function saveCustomBillInvoice() {
     date: invoiceDate,
     items: items,
     jobTitle: items[0]?.title || 'Packaging Item',
-    transportCharges: transportCharges,
-    discount: discount,
     gstType: gstType,
     gstPercent: gstRate,
     grandTotal: grandTotal,
@@ -4813,17 +5487,11 @@ function copyCustomBillText() {
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
-  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
-  
-  const taxable = Math.max(0, sub - discount + transportCharges);
-  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
-  const tot = Math.round(taxable + gstAmt);
+  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
+  const tot = Math.round(sub + gstAmt);
 
   text += `-----------------------------------------\n`;
-  text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
-  if (transportCharges > 0) text += `Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
-  if (discount > 0) text += `Discount: -₹${discount.toFixed(2)}\n`;
+  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
   if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
   text += `*GRAND TOTAL: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
@@ -4862,17 +5530,11 @@ function shareCustomBillWhatsApp() {
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
   const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
-  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
-  
-  const taxable = Math.max(0, sub - discount + transportCharges);
-  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
-  const tot = Math.round(taxable + gstAmt);
+  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
+  const tot = Math.round(sub + gstAmt);
 
   text += `-----------------------------------------\n`;
-  text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
-  if (transportCharges > 0) text += `🚚 Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
-  if (discount > 0) text += `🏷️ Discount: -₹${discount.toFixed(2)}\n`;
+  text += `Sub Total: ₹${sub.toFixed(2)}\n`;
   if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
   text += `*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
