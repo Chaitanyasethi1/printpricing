@@ -3740,3 +3740,39 @@ body {
     box-sizing: border-box !important;
   }
 }
+
+
+/* Natural table row flow and zero-overlap layout */
+.bill-middle-fill {
+  display: block !important;
+  flex: none !important;
+}
+
+.bill-items-table {
+  width: 100% !important;
+  height: auto !important;
+  border-collapse: collapse !important;
+}
+
+.bill-items-table tr {
+  height: auto !important;
+}
+
+.bill-items-table th,
+.bill-items-table td {
+  height: auto !important;
+  vertical-align: top !important;
+}
+
+.bill-summary-row td,
+.bill-total-final-row td {
+  padding: 4px 6px !important;
+  line-height: 1.3 !important;
+  height: auto !important;
+}
+
+.bill-item-sub-desc {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
+}

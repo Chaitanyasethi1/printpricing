@@ -3949,7 +3949,7 @@ function renderQuotationPreview() {
   let emptyRowsHtml = '';
   for (let i = 0; i < 4; i++) {
     emptyRowsHtml += `
-      <tr style="height:32px;">
+      <tr style="height:20px;">
         <td style="text-align:center; color:#cbd5e1; font-weight:bold;">${i + 2}</td>
         <td></td><td></td><td></td><td></td><td></td>
       </tr>
@@ -4055,51 +4055,27 @@ function renderQuotationPreview() {
             </tr>
             ${emptyRowsHtml}
 
-            <!-- Total Amount Before Tax -->
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
+            <!-- Compact 2-Line Summary & Tax Section -->
+            <tr class="bill-summary-row" style="background:#fafafa;">
+              <td colspan="4" style="border-right:1.5px solid #000; font-size:10.5px; padding:3px 6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
+                  <span style="font-weight:bold; color:#0f172a;">
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} &nbsp;|&nbsp; SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} &nbsp;|&nbsp; Total Tax: ₹${totalTaxAmount.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                  </span>
+                </div>
               </td>
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 6px;">Total Before Tax</td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 6px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
 
-            ${cgstAmt > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            ${igstAmt > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            ${totalTaxAmount > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
-              <td style="text-align:right; font-weight:bold;">${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            <!-- Grand Total Row -->
+            <!-- Final Grand Total Row -->
             <tr class="bill-total-final-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11.5px;">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-size:13.5px; font-weight:900;">Total Amount After Tax</td>
-              <td style="text-align:right; font-size:13.5px; font-weight:900;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:4px 6px; white-space:nowrap;">Total Amount After Tax</td>
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 6px;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           </tbody>
         </table>
@@ -5124,7 +5100,7 @@ function renderCustomInvoicePreview() {
 
   // Proportional empty rows to gracefully fill full A4 height
   let emptyRowsHtml = '';
-  const emptyNeeded = Math.max(0, 5 - items.length);
+  const emptyNeeded = Math.max(0, 2 - items.length);
   for (let i = 0; i < emptyNeeded; i++) {
     emptyRowsHtml += `
       <tr style="height:32px;">
@@ -5223,71 +5199,39 @@ function renderCustomInvoicePreview() {
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            ${transportCharges > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Freight &amp; Transportation Charges (भाड़ा शुल्क)
+            <!-- Compact 2-Line Summary & Tax Section -->
+            <tr class="bill-summary-row" style="background:#fafafa;">
+              <td colspan="4" style="border-right:1.5px solid #000; font-size:10.5px; padding:3px 6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
+                  <span style="font-weight:bold; color:#0f172a;">
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} &nbsp;|&nbsp; SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} &nbsp;|&nbsp; Total Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                  </span>
+                </div>
               </td>
-              <td style="text-align:right; font-weight:bold; color:#0369a1;">Transport / Cartage</td>
-              <td style="text-align:right; font-weight:bold; color:#0369a1;">${transportCharges.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 6px;">Total Before Tax</td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 6px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
-            ` : ''}
 
-            ${discount > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Special Discount Allowed
+            ${(transportCharges > 0 || discount > 0) ? `
+            <tr class="bill-summary-row" style="background:#fff;">
+              <td colspan="4" style="border-right:1.5px solid #000; font-size:10.5px; padding:2px 6px;">
+                ${transportCharges > 0 ? `🚚 <b>Transport / Freight:</b> ₹${transportCharges.toFixed(2)}` : ''}
+                ${(transportCharges > 0 && discount > 0) ? ' &nbsp;|&nbsp; ' : ''}
+                ${discount > 0 ? `🏷️ <b>Discount:</b> -₹${discount.toFixed(2)}` : ''}
               </td>
-              <td style="text-align:right; font-weight:bold; color:#dc2626;">(-) Discount</td>
-              <td style="text-align:right; font-weight:bold; color:#dc2626;">-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:10px; padding:2px 6px;">Tax Amount</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:2px 6px;">₹${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
             ` : ''}
 
-            <!-- Total Amount Before Tax -->
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11px;">
-                Amount Of Tax Subject To Reverse Charge: &nbsp; Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]
-              </td>
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">Total Amount Before Tax</td>
-              <td style="text-align:right; font-weight:bold; background:#fafafa;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-
-            ${cgstAmt > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">CGST ${cgstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">SGST ${sgstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            ${igstAmt > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">IGST ${igstRate.toFixed(1)} %</td>
-              <td style="text-align:right;">${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            ${totalGst > 0 ? `
-            <tr class="bill-summary-row">
-              <td colspan="4" style="border-right:1.5px solid #000;"></td>
-              <td style="text-align:right; font-weight:bold;">Total Tax Amount</td>
-              <td style="text-align:right; font-weight:bold;">${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-            ` : ''}
-
-            <!-- Grand Total Row -->
+            <!-- Final Grand Total Row -->
             <tr class="bill-total-final-row">
-              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:11.5px;">
+              <td colspan="4" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-size:13.5px; font-weight:900;">Total Amount After Tax</td>
-              <td style="text-align:right; font-size:13.5px; font-weight:900;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:4px 6px; white-space:nowrap;">Total Amount After Tax</td>
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 6px;">₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           </tbody>
         </table>
