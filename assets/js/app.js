@@ -2866,12 +2866,19 @@ function syncLeafDimensions() {
 
 
 
-function loadPreset(key) {
-
-
-
-
-
+function setCustomPresetActive() {
+  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
+  const customChip = document.getElementById('preset-custom');
+  if (customChip) customChip.classList.add('active');
+}
+
+function loadPreset(key) {
+  if (key === 'custom') {
+    setCustomPresetActive();
+    calculate();
+    showToast('✏️ Custom mode active: Type any value directly!');
+    return;
+  }
   const p = PRESETS[key];
 
 
@@ -5240,24 +5247,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  allInputs.forEach(input => {
-
-
-
-
-
-    input.addEventListener('input', calculate);
-
-
-
-
-
-    input.addEventListener('change', calculate);
-
-
-
-
-
+  allInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      setCustomPresetActive();
+      calculate();
+    });
+    input.addEventListener('change', (e) => {
+      setCustomPresetActive();
+      calculate();
+    });
+    if (input.tagName === 'INPUT') {
+      input.addEventListener('focus', function() {
+        this.select();
+      });
+    }
   });
 
 
