@@ -4050,7 +4050,7 @@ function renderQuotationPreview() {
   }
 
   let emptyRowsHtml = `
-    <tr style="height:260px;">
+    <tr style="height:320px;">
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
@@ -5293,7 +5293,7 @@ function renderCustomInvoicePreview() {
   }).join('');
 
   // Clean continuous vertical column lines extending to summary (no horizontal empty lines or row numbers)
-  const fillerHeight = Math.max(80, 160 - (items.length * 35));
+  const fillerHeight = Math.max(160, 360 - (items.length * 40));
   const emptyRowsHtml = `
     <tr style="height:${fillerHeight}px;">
       <td style="border-right:1.5px solid #000;"></td>
@@ -5796,7 +5796,7 @@ function shareCustomBillWhatsApp() {
   const el = document.getElementById('printableInvoice');
   if (el && typeof html2pdf !== 'undefined') {
     const opt = {
-      margin: [4, 6, 4, 6],
+      margin: [3, 4, 3, 4],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
@@ -5866,7 +5866,7 @@ async function generateA4PDFBlob(elementId, filename) {
   }
 
   const opt = {
-    margin: [4, 6, 4, 6],
+    margin: [3, 4, 3, 4],
     filename: filename || 'Invoice.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true, logging: false },
@@ -5897,7 +5897,7 @@ function downloadCustomBillPDF() {
   if (typeof html2pdf !== 'undefined') {
     showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
-      margin: [4, 6, 4, 6],
+      margin: [3, 4, 3, 4],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
@@ -5931,7 +5931,7 @@ function downloadQuotationPDF() {
   if (typeof html2pdf !== 'undefined') {
     showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
-      margin: [4, 6, 4, 6],
+      margin: [3, 4, 3, 4],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
