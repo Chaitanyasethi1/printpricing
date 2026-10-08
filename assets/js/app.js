@@ -5541,3 +5541,80 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderCustomInvoicePreview();
 });
+
+
+// PDF Generator Helper
+async function generateA4PDFBlob(elementId, filename) {
+  const element = document.getElementById(elementId);
+  if (!element) return null;
+
+  if (typeof html2pdf === 'undefined') {
+    window.print();
+    return null;
+  }
+
+  const opt = {
+    margin: [4, 6, 4, 6],
+    filename: filename || 'Invoice.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  try {
+    return await html2pdf().set(opt).from(element).outputPdf('blob');
+  } catch (e) {
+    console.warn('PDF blob generation fallback:', e);
+    return null;
+  }
+}
+
+function downloadCustomBillPDF() {
+  const invoiceNo = document.getElementById('custInvoiceNo')?.value || '071';
+  const receiverName = (document.getElementById('custReceiverName')?.value || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
+  const filename = `AS_Print_Gallery_Invoice_${invoiceNo}_${receiverName}.pdf`;
+  
+  const element = document.getElementById('printableInvoice');
+  if (!element) return;
+
+  if (typeof html2pdf !== 'undefined') {
+    showToast('⏳ Generating High-Definition A4 PDF...');
+    const opt = {
+      margin: [4, 6, 4, 6],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save().then(() => {
+      showToast(`✅ PDF downloaded: ${filename}`);
+    });
+  } else {
+    window.print();
+  }
+}
+
+function downloadQuotationPDF() {
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
+  const clientName = (document.getElementById('clientNameInput')?.value || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
+  const filename = `AS_Print_Gallery_Quote_${invoiceNo}_${clientName}.pdf`;
+  
+  const element = document.getElementById('printableQuotation');
+  if (!element) return;
+
+  if (typeof html2pdf !== 'undefined') {
+    showToast('⏳ Generating Quotation PDF...');
+    const opt = {
+      margin: [4, 6, 4, 6],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save().then(() => {
+      showToast(`✅ PDF downloaded: ${filename}`);
+    });
+  } else {
+    window.print();
+  }
+}

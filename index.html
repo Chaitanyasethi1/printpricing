@@ -4004,8 +4004,9 @@
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save Bill</button>
           <button class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
-          <button class="btn-pill btn-success" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill</button>
-          <button class="btn-pill primary" style="font-weight:800; padding:10px 22px; font-size:14px;" onclick="printCustomInvoice()"><span>🖨️</span> Print / Save as PDF (A4)</button>
+          <button class="btn-pill" style="background:#475569; color:#fff; font-weight:700;" onclick="downloadCustomBillPDF()"><span>📥</span> Download PDF</button>
+          <button class="btn-pill btn-success" style="font-weight:800;" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill + PDF</button>
+          <button class="btn-pill primary" style="font-weight:800; padding:10px 22px; font-size:14px;" onclick="printCustomInvoice()"><span>🖨️</span> Print (A4)</button>
         </div>
       </div>
     </div>
@@ -4061,6 +4062,7 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="assets/js/app.js?v=2.3"></script>
 
 
