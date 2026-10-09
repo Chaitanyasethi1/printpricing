@@ -3388,9 +3388,7 @@ body {
   text-align: center;
 }
 
-.bill-items-table th:last-child {
-  border-right: none;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-items-table td {
   border-bottom: 1px solid #000000;
@@ -3399,9 +3397,7 @@ body {
   vertical-align: top;
 }
 
-.bill-items-table td:last-child {
-  border-right: none;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-item-main-title {
   font-weight: 900;
@@ -4018,9 +4014,7 @@ body {
   font-size: 11px !important;
 }
 
-.bill-items-table th:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-items-table td {
   border-bottom: 1px solid #000000 !important;
@@ -4029,9 +4023,7 @@ body {
   vertical-align: top !important;
 }
 
-.bill-items-table td:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-item-main-title {
   font-weight: 900 !important;
@@ -4471,9 +4463,7 @@ body {
   text-align: center !important;
 }
 
-.bill-items-table th:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-items-table td {
   border-bottom: none !important;
@@ -4482,9 +4472,7 @@ body {
   vertical-align: top !important;
 }
 
-.bill-items-table td:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-summary-row td {
   border-top: 1.5px solid #000000 !important;
@@ -4492,9 +4480,7 @@ body {
   border-bottom: 1px solid #000000 !important;
 }
 
-.bill-summary-row td:last-child {
-  border-right: none !important;
-}
+.bill-summary-row td:last-child { border-right: 1.5px solid #000000 !important; }
 
 
 /* Clean Bill Header & Party Titles without text-line collision */
@@ -4872,9 +4858,7 @@ body {
   white-space: nowrap !important;
 }
 
-.bill-items-table th:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-items-table td {
   border-bottom: none !important;
@@ -4884,9 +4868,7 @@ body {
   box-sizing: border-box !important;
 }
 
-.bill-items-table td:last-child {
-  border-right: none !important;
-}
+.bill-items-table th:last-child, .bill-items-table td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-summary-row td {
   border-top: 1.5px solid #000000 !important;
@@ -4896,9 +4878,7 @@ body {
   vertical-align: middle !important;
 }
 
-.bill-summary-row td:last-child {
-  border-right: none !important;
-}
+.bill-summary-row td:last-child { border-right: 1.5px solid #000000 !important; }
 
 .bill-total-final-row td {
   border-top: 1.5px solid #000000 !important;
@@ -4909,9 +4889,7 @@ body {
   background: #fafafa !important;
 }
 
-.bill-total-final-row td:last-child {
-  border-right: none !important;
-}
+.bill-total-final-row td:last-child { border-right: 1.5px solid #000000 !important; }
 
 /* Footer Section */
 .bill-bottom-section {
@@ -5230,20 +5208,12 @@ body {
   white-space: nowrap !important;
 }
 
-.bill-items-table th:last-child {
-  border-right: none !important;
-}
-
 .bill-items-table td {
   border-bottom: none !important;
   border-right: 1.5px solid #000000 !important;
   padding: 5px 6px !important;
   vertical-align: top !important;
   box-sizing: border-box !important;
-}
-
-.bill-items-table td:last-child {
-  border-right: none !important;
 }
 
 .bill-summary-row td {
@@ -5254,10 +5224,6 @@ body {
   vertical-align: middle !important;
 }
 
-.bill-summary-row td:last-child {
-  border-right: none !important;
-}
-
 .bill-total-final-row td {
   border-top: 1.5px solid #000000 !important;
   border-right: 1.5px solid #000000 !important;
@@ -5265,10 +5231,6 @@ body {
   padding: 5px 8px !important;
   vertical-align: middle !important;
   background: #fafafa !important;
-}
-
-.bill-total-final-row td:last-child {
-  border-right: none !important;
 }
 
 /* Footer Section */
@@ -5307,3 +5269,71 @@ body {
   text-align: right !important;
   min-height: 60px !important;
 }
+
+/* Universal Solid Right Border for Table */
+.bill-items-table th,
+.bill-items-table td,
+.bill-summary-row td,
+.bill-total-final-row td {
+  border-right: 1.5px solid #000000 !important;
+}
+
+/* Substrate Category Selector Tabs */
+.substrate-category-nav {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-card-sub, #f1f5f9);
+  padding: 6px;
+  border-radius: var(--radius-md, 12px);
+  border: 1.5px solid var(--border, #e2e8f0);
+  margin-bottom: 14px;
+}
+
+.substrate-tab {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: var(--transition, all 0.2s ease);
+  background: transparent;
+  color: var(--text-muted, #64748b);
+}
+
+.substrate-tab:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .substrate-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.substrate-tab.active {
+  background: var(--primary, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.substrate-tab.active.corr {
+  background: #d97706;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.substrate-tab.active.kappa {
+  background: #7c3aed;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.substrate-status-pill {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+

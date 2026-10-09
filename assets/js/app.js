@@ -3,27 +3,78 @@
 
 let isCorrugatedEnabled = false;
 let isKappaEnabled = false;
+let currentSubstrateTab = 'printed';
+
+function selectSubstrateTab(tab) {
+  currentSubstrateTab = tab;
+  const pPrinted = document.getElementById('panelPrintedSheet');
+  const pCorr = document.getElementById('panelCorrSheet');
+  const pKappa = document.getElementById('panelKappaSheet');
+  
+  const tPrinted = document.getElementById('tabPrintedSheet');
+  const tCorr = document.getElementById('tabCorrSheet');
+  const tKappa = document.getElementById('tabKappaSheet');
+  
+  if (tPrinted && pPrinted) {
+    if (tab === 'printed') {
+      tPrinted.classList.add('active');
+      tPrinted.classList.remove('corr', 'kappa');
+      pPrinted.style.display = 'block';
+    } else {
+      tPrinted.classList.remove('active');
+      pPrinted.style.display = 'none';
+    }
+  }
+
+  if (tCorr && pCorr) {
+    if (tab === 'corr') {
+      tCorr.classList.add('active', 'corr');
+      pCorr.style.display = 'block';
+    } else {
+      tCorr.classList.remove('active', 'corr');
+      pCorr.style.display = 'none';
+    }
+  }
+
+  if (tKappa && pKappa) {
+    if (tab === 'kappa') {
+      tKappa.classList.add('active', 'kappa');
+      pKappa.style.display = 'block';
+    } else {
+      tKappa.classList.remove('active', 'kappa');
+      pKappa.style.display = 'none';
+    }
+  }
+}
 
 function toggleSubstrateLayer(type) {
   if (type === 'corr') {
     isCorrugatedEnabled = !isCorrugatedEnabled;
-    const box = document.getElementById('corrugatedSheetBox');
-    const btn = document.getElementById('btnToggleCorr');
-    if (box) box.style.display = isCorrugatedEnabled ? 'block' : 'none';
-    if (btn) {
-      btn.innerHTML = isCorrugatedEnabled ? '<span>✕</span> Remove Corrugated' : '<span>➕</span> Corrugated Sheet';
-      btn.style.background = isCorrugatedEnabled ? '#fee2e2' : 'rgba(37,99,235,0.1)';
-      btn.style.color = isCorrugatedEnabled ? '#dc2626' : 'var(--primary)';
+    const badge = document.getElementById('badgeCorrStatus');
+    const toggleBtn = document.getElementById('btnToggleCorrInner');
+    if (badge) {
+      badge.textContent = isCorrugatedEnabled ? 'Active' : 'Off';
+      badge.style.background = isCorrugatedEnabled ? '#dcfce7' : '#e2e8f0';
+      badge.style.color = isCorrugatedEnabled ? '#166534' : '#475569';
+    }
+    if (toggleBtn) {
+      toggleBtn.innerHTML = isCorrugatedEnabled ? '<span>✓</span> Corrugated Active (Click to Disable)' : '<span>➕</span> Enable Corrugated Layer';
+      toggleBtn.style.background = isCorrugatedEnabled ? '#16a34a' : 'var(--bg-card-sub)';
+      toggleBtn.style.color = isCorrugatedEnabled ? '#fff' : 'var(--text)';
     }
   } else if (type === 'kappa') {
     isKappaEnabled = !isKappaEnabled;
-    const box = document.getElementById('kappaBoardBox');
-    const btn = document.getElementById('btnToggleKappa');
-    if (box) box.style.display = isKappaEnabled ? 'block' : 'none';
-    if (btn) {
-      btn.innerHTML = isKappaEnabled ? '<span>✕</span> Remove Kappa' : '<span>➕</span> Kappa Board';
-      btn.style.background = isKappaEnabled ? '#fee2e2' : 'rgba(124,58,237,0.1)';
-      btn.style.color = isKappaEnabled ? '#dc2626' : '#7c3aed';
+    const badge = document.getElementById('badgeKappaStatus');
+    const toggleBtn = document.getElementById('btnToggleKappaInner');
+    if (badge) {
+      badge.textContent = isKappaEnabled ? 'Active' : 'Off';
+      badge.style.background = isKappaEnabled ? '#dcfce7' : '#e2e8f0';
+      badge.style.color = isKappaEnabled ? '#166534' : '#475569';
+    }
+    if (toggleBtn) {
+      toggleBtn.innerHTML = isKappaEnabled ? '<span>✓</span> Kappa Board Active (Click to Disable)' : '<span>➕</span> Enable Kappa Board Layer';
+      toggleBtn.style.background = isKappaEnabled ? '#7c3aed' : 'var(--bg-card-sub)';
+      toggleBtn.style.color = isKappaEnabled ? '#fff' : 'var(--text)';
     }
   }
   if (typeof calculate === 'function') calculate();
@@ -587,23 +638,19 @@ function calculate() {
   const printedPaperCost = weightKg * pr;
 
   let corrCost = 0;
-  if (isCorrugatedEnabled || (document.getElementById('corrugatedSheetBox') && document.getElementById('corrugatedSheetBox').style.display !== 'none')) {
+  if (isCorrugatedEnabled) {
     const corrSl = (typeof n === 'function' ? n('corrSl') : 0) || sl;
     const corrSw = (typeof n === 'function' ? n('corrSw') : 0) || sw;
-    const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0) || 150;
-    const corrPr = (typeof n === 'function' ? n('corrPr') : 0) || 45;
+    const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0);
+    const corrPr = (typeof n === 'function' ? n('corrPr') : 0);
     const corrAreaM2 = corrSl * corrSw * 0.00064516;
     corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
   }
 
   let kappaCost = 0;
-  if (isKappaEnabled || (document.getElementById('kappaBoardBox') && document.getElementById('kappaBoardBox').style.display !== 'none')) {
-    const kappaSl = (typeof n === 'function' ? n('kappaSl') : 0) || sl;
-    const kappaSw = (typeof n === 'function' ? n('kappaSw') : 0) || sw;
-    const kappaGsm = (typeof n === 'function' ? n('kappaGsm') : 0) || 1200;
-    const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0) || 55;
-    const kappaAreaM2 = kappaSl * kappaSw * 0.00064516;
-    kappaCost = (kappaAreaM2 * kappaGsm / 1000) * kappaPr;
+  if (isKappaEnabled) {
+    const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0);
+    kappaCost = kappaPr; // Direct Sheet / Board Rate (GSM removed as requested)
   }
 
   const paperCost = printedPaperCost + corrCost + kappaCost;
@@ -3213,222 +3260,52 @@ function loadPreset(key) {
 
 
 
-function resetCalculator() {
-
-
-
-
-
-  document.getElementById('sl').value = 23;
-
-
-
-
-
-  document.getElementById('sw').value = 18;
-
-
-
-
-
-  document.getElementById('gsm').value = 250;
-
-
-
-
-
-  if (document.getElementById('pr')) document.getElementById('pr').value = 80; if (document.getElementById('paperRate')) document.getElementById('paperRate').value = 80;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('lamType').value = 'None';
-
-
-
-
-
-  document.getElementById('ll').value = 18;
-
-
-
-
-
-  document.getElementById('lw').value = 23;
-
-
-
-
-
-  document.getElementById('divide').value = 2.5;
-
-
-
-
-
-
-
-
-
-
-
-  if (document.getElementById('leafType')) document.getElementById('leafType').value = 'None';
-
-
-
-
-
-  if (document.getElementById('leafL')) document.getElementById('leafL').value = 0;
-
-
-
-
-
-  if (document.getElementById('leafW')) document.getElementById('leafW').value = 0;
-
-
-
-
-
-  if (document.getElementById('leafDivide')) document.getElementById('leafDivide').value = 2.5;
-
-
-
-
-
-  if (document.getElementById('leafBlock')) document.getElementById('leafBlock').value = 0;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('printing').value = 0;
-
-
-
-
-
-  if (document.getElementById('plates')) document.getElementById('plates').value = 0;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('die').value = 0;
-
-
-
-
-
-  if (document.getElementById('dieCharges')) document.getElementById('dieCharges').value = 0;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('pasting').value = 0;
-
-
-
-
-
-  document.getElementById('uv').value = 0;
-
-
-
-
-
-  document.getElementById('embossed').value = 0;
-
-
-
-
-
-  document.getElementById('other').value = 0;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('wastage').value = 0;
-
-
-
-
-
-  document.getElementById('profit').value = 0;
-
-
-
-
-
-  document.getElementById('batchQty').value = 1000;
-
-
-
-
-
-
-
-
-
-
-
-  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
-
-
-
-
-
-
-
-
-
-
-
-  showToast('Reset to default values');
-
-
-
-
-
-  calculate();
-
-
-
-
-
+function resetCalculator() {
+  if (document.getElementById('sl')) document.getElementById('sl').value = 0;
+  if (document.getElementById('sw')) document.getElementById('sw').value = 0;
+  if (document.getElementById('gsm')) document.getElementById('gsm').value = 0;
+  if (document.getElementById('pr')) document.getElementById('pr').value = 0;
+  if (document.getElementById('paperRate')) document.getElementById('paperRate').value = 0;
+
+  if (document.getElementById('corrSl')) document.getElementById('corrSl').value = 0;
+  if (document.getElementById('corrSw')) document.getElementById('corrSw').value = 0;
+  if (document.getElementById('corrGsm')) document.getElementById('corrGsm').value = 0;
+  if (document.getElementById('corrPr')) document.getElementById('corrPr').value = 0;
+
+  if (document.getElementById('kappaSl')) document.getElementById('kappaSl').value = 0;
+  if (document.getElementById('kappaSw')) document.getElementById('kappaSw').value = 0;
+  if (document.getElementById('kappaPr')) document.getElementById('kappaPr').value = 0;
+
+  if (document.getElementById('lamType')) document.getElementById('lamType').value = 'None';
+  if (document.getElementById('ll')) document.getElementById('ll').value = 0;
+  if (document.getElementById('lw')) document.getElementById('lw').value = 0;
+  if (document.getElementById('divide')) document.getElementById('divide').value = 0;
+
+  if (document.getElementById('leafType')) document.getElementById('leafType').value = 'None';
+  if (document.getElementById('leafL')) document.getElementById('leafL').value = 0;
+  if (document.getElementById('leafW')) document.getElementById('leafW').value = 0;
+  if (document.getElementById('leafDivide')) document.getElementById('leafDivide').value = 0;
+  if (document.getElementById('leafBlock')) document.getElementById('leafBlock').value = 0;
+
+  if (document.getElementById('printing')) document.getElementById('printing').value = 0;
+  if (document.getElementById('plates')) document.getElementById('plates').value = 0;
+  if (document.getElementById('die')) document.getElementById('die').value = 0;
+  if (document.getElementById('dieCharges')) document.getElementById('dieCharges').value = 0;
+  if (document.getElementById('pasting')) document.getElementById('pasting').value = 0;
+  if (document.getElementById('uv')) document.getElementById('uv').value = 0;
+  if (document.getElementById('embossed')) document.getElementById('embossed').value = 0;
+  if (document.getElementById('other')) document.getElementById('other').value = 0;
+  if (document.getElementById('wastage')) document.getElementById('wastage').value = 0;
+  if (document.getElementById('profit')) document.getElementById('profit').value = 0;
+
+  isCorrugatedEnabled = false;
+  isKappaEnabled = false;
+  if (typeof selectSubstrateTab === 'function') selectSubstrateTab('printed');
+
+  setCustomPresetActive();
+  syncActiveChips();
+  calculate();
+  showToast('🔄 Calculator set to zero (0)!');
 }
 
 
@@ -3898,10 +3775,10 @@ function renderQuotationPreview() {
   const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
   const companyAddress = 'Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
 
-  const clientName = document.getElementById('clientNameInput')?.value || 'M/S MOHIT KUMAR';
-  const clientAddress = document.getElementById('clientAddressInput')?.value || 'KHEKRA, BAGHPAT, U.P.';
+  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
+  const clientAddress = document.getElementById('clientAddressInput')?.value || '';
   const clientState = document.getElementById('clientStateInput')?.value || 'Uttar Pradesh (09)';
-  const clientPhone = document.getElementById('clientPhoneInput')?.value || '7037442527';
+  const clientPhone = document.getElementById('clientPhoneInput')?.value || '';
   const clientGstin = document.getElementById('clientGstinInput')?.value || '';
   
   const transportMode = document.getElementById('transportModeInput')?.value || 'Direct Dispatch / By Hand';
@@ -4029,9 +3906,7 @@ function renderQuotationPreview() {
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
-      <td style="border-right:1.5px solid #000;"></td>
-      <td></td>
-    </tr>
+      <td style="border-right:1.5px solid #000;"></td><td style="border-right:1.5px solid #000;"></td></tr>
   `;
 
   previewEl.innerHTML = `
@@ -4083,7 +3958,7 @@ function renderQuotationPreview() {
               <span class="bill-field-val" style="font-weight:bold;">${clientGstin || '-'}</span>
             </div>
             <div class="bill-field-row">
-              <span class="bill-field-lbl">Customer Mobile :</span>
+              <span class="bill-field-lbl">Mobile :</span>
               <span class="bill-field-val" style="font-weight:bold; color:#000;">${clientPhone || '-'}</span>
             </div>
           </div>
@@ -4439,7 +4314,8 @@ function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
     <table class="history-table">
       <thead>
         <tr>
-          <th style="width:70px;">Bill #</th>
+          <th style="width:50px;">S.No</th>
+          <th style="width:75px;">Bill #</th>
           <th style="width:90px;">Date</th>
           <th style="width:110px;">Doc Type</th>
           <th>Customer / Client</th>
@@ -4449,7 +4325,7 @@ function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
         </tr>
       </thead>
       <tbody>
-        ${filtered.map(item => {
+        ${filtered.map((item, idx) => {
           const docType = item.docTitle || item.docType || 'TAX INVOICE';
           let badgeClass = 'tax_invoice';
           if (docType.includes('QUOTE')) badgeClass = 'quotation';
@@ -4462,11 +4338,15 @@ function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
             ? `${item.items[0].title} ${item.items.length > 1 ? '<span style="color:#64748b; font-weight:normal;">(+' + (item.items.length - 1) + ' more)</span>' : ''}`
             : (item.jobTitle || 'Print Work');
           const totalAmt = Math.round(item.grandTotal || item.totalAmount || 0);
+          const serialNo = String(idx + 1).padStart(2, '0');
 
           return `
             <tr>
+              <td style="font-family:monospace; font-weight:700; color:#64748b; font-size:12px;">
+                ${serialNo}
+              </td>
               <td>
-                <span style="font-family:monospace; font-weight:800; font-size:13px; color:#2563eb;">#${item.invoiceNo || '01'}</span>
+                <span style="font-family:monospace; font-weight:800; font-size:13px; color:#2563eb;">#${item.invoiceNo || serialNo}</span>
               </td>
               <td style="font-size:12px; color:#475569; white-space:nowrap;">
                 ${item.date || item.invoiceDate || '—'}
@@ -4589,6 +4469,20 @@ function deleteSavedInvoice(id) {
   localStorage.setItem('as_saved_invoices_v3', JSON.stringify(history));
   localStorage.setItem('as_saved_invoices', JSON.stringify(history));
   
+  if (history.length === 0) {
+    localStorage.setItem('as_bill_seq_v5', '1');
+    localStorage.setItem('as_next_invoice_seq', '1');
+  } else {
+    let maxNum = 0;
+    history.forEach(item => {
+      let n = parseInt(String(item.invoiceNo || '').replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(n) && n > maxNum && n < 10000) maxNum = n;
+    });
+    let nextNum = maxNum > 0 ? maxNum + 1 : 1;
+    localStorage.setItem('as_bill_seq_v5', String(nextNum));
+    localStorage.setItem('as_next_invoice_seq', String(nextNum));
+  }
+  
   updateSavedCountBadges();
   renderHistoryTable();
   showToast('🗑️ Record deleted from database');
@@ -4600,10 +4494,12 @@ function clearAllHistory() {
   
   localStorage.removeItem('as_saved_invoices_v3');
   localStorage.removeItem('as_saved_invoices');
+  localStorage.setItem('as_bill_seq_v5', '1');
+  localStorage.setItem('as_next_invoice_seq', '1');
   
   updateSavedCountBadges();
   renderHistoryTable();
-  showToast('🗑️ All saved records cleared');
+  showToast('🗑️ All saved records cleared. Next Bill sequence reset to 01.');
 }
 
 // Export full backup as JSON
@@ -4710,54 +4606,40 @@ function copyQuoteToClipboard() {
 
 
 
-function shareWhatsApp() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const billQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const billRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
-
-    `🏢 *AS PRINT GALLERY*\n` +
-
-    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
-
-    `--------------------------------\n` +
-
-    `👤 *Billed To:* ${clientName}\n` +
-
-    `📦 *Item / Goods:* ${jobTitle}\n` +
-
-    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
-
-    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
-
-    `--------------------------------\n` +
-
-    `*GSTIN:* 09AWKPN5910E1ZG\n` +
-
-    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
-
-    `Thank you for your business!`;
-
-
-
-  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-
-  window.open(url, '_blank');
-
+function shareWhatsApp() {
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
+  const clientPhone = document.getElementById('clientPhoneInput')?.value || '';
+  const jobTitle = document.getElementById('jobTitleInput')?.value || document.getElementById('jobType')?.value || 'PRINTED PACKAGING BOX';
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+  const billQty = document.getElementById('customBillingQty')?.value || document.getElementById('batchQty')?.value || '1000';
+  const billRate = document.getElementById('customBillingRate')?.value || (typeof currentResults !== 'undefined' && currentResults?.sellingPricePerUnit ? currentResults.sellingPricePerUnit.toFixed(2) : '0');
+  const totalAmt = (parseFloat(billQty) * parseFloat(billRate)).toFixed(2);
+
+  let msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
+    `🏢 *AS PRINT GALLERY*\n` +
+    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
+    `--------------------------------\n` +
+    `👤 *Billed To:* ${clientName}\n`;
+  if (clientPhone) {
+    msg += `📱 *Mobile:* ${clientPhone}\n`;
+  }
+  msg += `📦 *Item / Goods:* ${jobTitle}\n` +
+    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
+    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
+    `💰 *Total Amount:* ₹${Number(totalAmt).toLocaleString('en-IN')}\n` +
+    `--------------------------------\n` +
+    `*GSTIN:* 09AWKPN5910E1ZG\n` +
+    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
+    `Thank you for your business!`;
+
+  const cleanPhone = extractCleanPhoneNumber(clientPhone);
+  const url = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
+    : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+  window.open(url, '_blank');
 }
 
 
@@ -5274,9 +5156,7 @@ function renderCustomInvoicePreview() {
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
-      <td style="border-right:1.5px solid #000;"></td>
-      <td></td>
-    </tr>
+      <td style="border-right:1.5px solid #000;"></td><td style="border-right:1.5px solid #000;"></td></tr>
   `;
 
   previewEl.innerHTML = `
@@ -5331,7 +5211,7 @@ function renderCustomInvoicePreview() {
               <span class="bill-field-val" style="font-weight:bold;">${receiverGstin || '-'}</span>
             </div>
             <div class="bill-field-row">
-              <span class="bill-field-lbl">Customer Mobile :</span>
+              <span class="bill-field-lbl">Mobile :</span>
               <span class="bill-field-val" style="font-weight:bold; color:#000;">${receiverPhone || '-'}</span>
             </div>
           </div>
@@ -5732,7 +5612,7 @@ function shareCustomBillWhatsApp() {
   text += `*${docTitle}* #${invoiceNo}\n`;
   text += `Billed To: *${receiverName}*\n`;
   if (receiverPhone) {
-    text += `Customer Mob: *${receiverPhone}*\n`;
+    text += `Mobile: *${receiverPhone}*\n`;
   }
   text += `-----------------------------------------\n`;
   
@@ -5967,3 +5847,88 @@ function checkAndLoadSharedBillFromURL() {
     console.warn('Could not parse shared bill URL:', err);
   }
 }
+
+
+function startNewBlankBill() {
+  const nextNo = getNextInvoiceNumber();
+  if (document.getElementById('custInvoiceNo')) document.getElementById('custInvoiceNo').value = nextNo;
+  if (document.getElementById('custDocTitle')) document.getElementById('custDocTitle').value = 'TAX INVOICE';
+  if (document.getElementById('custInvoiceDate')) {
+    document.getElementById('custInvoiceDate').value = new Date().toLocaleDateString('en-IN', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  }
+  if (document.getElementById('custReceiverName')) document.getElementById('custReceiverName').value = '';
+  if (document.getElementById('custReceiverAddress')) document.getElementById('custReceiverAddress').value = '';
+  if (document.getElementById('custReceiverState')) document.getElementById('custReceiverState').value = 'Uttar Pradesh (09)';
+  if (document.getElementById('custReceiverPhone')) document.getElementById('custReceiverPhone').value = '';
+  if (document.getElementById('custReceiverGstin')) document.getElementById('custReceiverGstin').value = '';
+  if (document.getElementById('custTransportMode')) document.getElementById('custTransportMode').value = '';
+  if (document.getElementById('custVehicleNo')) document.getElementById('custVehicleNo').value = '';
+  if (document.getElementById('custTransportCharges')) document.getElementById('custTransportCharges').value = 0;
+  if (document.getElementById('custDiscount')) document.getElementById('custDiscount').value = 0;
+
+  const container = document.getElementById('invoiceItemsBuilder');
+  if (container) {
+    container.innerHTML = '';
+    addInvoiceItemRow({
+      title: '',
+      desc: '',
+      hsn: '4819',
+      qty: 1000,
+      unit: 'NOS',
+      rate: 0
+    });
+  }
+
+  renderCustomInvoicePreview();
+  showToast('🆕 Started New Blank Bill #' + nextNo);
+}
+
+function resequenceSavedInvoices() {
+  let history = getSavedInvoicesList();
+  if (history.length === 0) {
+    showToast('⚠️ No saved bills to resequence.');
+    return;
+  }
+  if (!confirm('Do you want to re-number all saved bills sequentially starting from #01?')) return;
+  history.reverse();
+  history.forEach((item, idx) => {
+    item.invoiceNo = String(idx + 1).padStart(2, '0');
+  });
+  history.reverse();
+  localStorage.setItem('as_saved_invoices_v3', JSON.stringify(history));
+  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
+  
+  let nextNum = history.length + 1;
+  localStorage.setItem('as_bill_seq_v5', String(nextNum));
+  localStorage.setItem('as_next_invoice_seq', String(nextNum));
+  
+  updateSavedCountBadges();
+  renderHistoryTable();
+  showToast('✅ Saved bills re-sequenced starting from #01!');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateSavedCountBadges();
+  checkAndLoadSharedBillFromURL();
+  
+  // Attach real-time input & change event listeners to all calculator form controls
+  const formInputs = document.querySelectorAll('input, select');
+  formInputs.forEach(input => {
+    input.addEventListener('input', () => {
+      if (typeof calculate === 'function') calculate();
+    });
+    input.addEventListener('change', () => {
+      if (typeof calculate === 'function') calculate();
+    });
+  });
+
+  const savedTheme = localStorage.getItem('calc_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+  if (typeof calculate === 'function') calculate();
+});
+
