@@ -119,30 +119,30 @@ function clearJobType() {
   calculate();
 }
 
-// Complete Printing Cost Calculator Web Application Engine
-
-
-
-
-
-// Preserving the Exact Mathematical Algorithm with 100% Precision
-
-
-
-
-
-// Full Bidirectional Sync for Dropdowns, Divisor Chips & Inputs
-
-
-
-
-
-
-
-
-
-
-
+// Complete Printing Cost Calculator Web Application Engine
+
+
+
+
+
+// Preserving the Exact Mathematical Algorithm with 100% Precision
+
+
+
+
+
+// Full Bidirectional Sync for Dropdowns, Divisor Chips & Inputs
+
+
+
+
+
+
+
+
+
+
+
 function n(id) {
   if (id === 'paperRate' || id === 'pr') {
     const el = document.getElementById('pr') || document.getElementById('paperRate');
@@ -150,438 +150,438 @@ function n(id) {
   }
   const el = document.getElementById(id);
   return el ? (parseFloat(el.value) || 0) : 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-function setVal(id, val) {
-
-
-
-
-
-  const el = document.getElementById(id);
-
-
-
-
-
-  if (el) {
-
-
-
-
-
-    el.value = val;
-
-
-
-
-
-    calculate();
-
-
-
-
-
-  }
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-function money(v) {
-
-
-
-
-
-  if (isNaN(v)) v = 0;
-
-
-
-
-
-  return '₹' + v.toLocaleString('en-IN', {
-
-
-
-
-
-    minimumFractionDigits: 2,
-
-
-
-
-
-    maximumFractionDigits: 2
-
-
-
-
-
-  });
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-const PRESETS = {
-
-
-
-
-
-  sweetBox: {
-
-
-
-
-
-    name: 'Sweet Box Packaging',
-
-
-
-
-
-    sl: 20, sw: 28, gsm: 350, pr: 85,
-
-
-
-
-
-    lamType: 'Matt', ll: 20, lw: 28, divide: 2.2,
-
-
-
-
-
-    leafType: 'Gold Foil', leafL: 4, leafW: 6, leafDivide: 2.5, leafBlock: 350,
-
-
-
-
-
-    printing: 2.50, plates: 800,
-
-
-
-
-
-    die: 0.80, dieCharges: 650,
-
-
-
-
-
-    pasting: 1.20, uv: 0.60, embossed: 0.40, other: 0.25,
-
-
-
-
-
-    wastage: 5, profit: 20, batchQty: 1000
-
-
-
-
-
-  },
-
-
-
-
-
-  visitingCard: {
-
-
-
-
-
-    name: 'Visiting Card Sheet (12x18)',
-
-
-
-
-
-    sl: 12, sw: 18, gsm: 350, pr: 90,
-
-
-
-
-
-    lamType: 'Velvet', ll: 12, lw: 18, divide: 1.8,
-
-
-
-
-
-    leafType: 'Gold Foil', leafL: 3.5, leafW: 2, leafDivide: 2.5, leafBlock: 250,
-
-
-
-
-
-    printing: 1.80, plates: 400,
-
-
-
-
-
-    die: 0.50, dieCharges: 350,
-
-
-
-
-
-    pasting: 0, uv: 0.40, embossed: 0, other: 0,
-
-
-
-
-
-    wastage: 3, profit: 25, batchQty: 500
-
-
-
-
-
-  },
-
-
-
-
-
-  monocarton: {
-
-
-
-
-
-    name: 'Pharma / Cosmetic Monocarton',
-
-
-
-
-
-    sl: 18, sw: 23, gsm: 300, pr: 82,
-
-
-
-
-
-    lamType: 'Gloss', ll: 18, lw: 23, divide: 2.5,
-
-
-
-
-
-    leafType: 'None', leafL: 0, leafW: 0, leafDivide: 2.5, leafBlock: 0,
-
-
-
-
-
-    printing: 1.60, plates: 800,
-
-
-
-
-
-    die: 0.70, dieCharges: 500,
-
-
-
-
-
-    pasting: 0.90, uv: 0.50, embossed: 0.30, other: 0.15,
-
-
-
-
-
-    wastage: 4, profit: 18, batchQty: 5000
-
-
-
-
-
-  },
-
-
-
-
-
-  bookCover: {
-
-
-
-
-
-    name: 'Book / Notebook Cover',
-
-
-
-
-
-    sl: 23, sw: 36, gsm: 250, pr: 78,
-
-
-
-
-
-    lamType: 'Matt', ll: 23, lw: 36, divide: 2.2,
-
-
-
-
-
-    leafType: 'Silver Foil', leafL: 5, leafW: 7, leafDivide: 2.5, leafBlock: 400,
-
-
-
-
-
-    printing: 3.20, plates: 800,
-
-
-
-
-
-    die: 0.40, dieCharges: 400,
-
-
-
-
-
-    pasting: 0.50, uv: 0, embossed: 0, other: 0.20,
-
-
-
-
-
-    wastage: 5, profit: 15, batchQty: 2500
-
-
-
-
-
-  },
-
-
-
-
-
-  flyer: {
-
-
-
-
-
-    name: 'A4 Flyer / Brochure (18x23 Sheet)',
-
-
-
-
-
-    sl: 18, sw: 23, gsm: 130, pr: 75,
-
-
-
-
-
-    lamType: 'None', ll: 18, lw: 23, divide: 2.5,
-
-
-
-
-
-    leafType: 'None', leafL: 0, leafW: 0, leafDivide: 2.5, leafBlock: 0,
-
-
-
-
-
-    printing: 1.20, plates: 800,
-
-
-
-
-
-    die: 0, dieCharges: 0,
-
-
-
-
-
-    pasting: 0, uv: 0, embossed: 0, other: 0,
-
-
-
-
-
-    wastage: 2, profit: 15, batchQty: 10000
-
-
-
-
-
-  }
-
-
-
-
-
-};
-
-
-
-
-
-
-
-
-
-
-
-// Main Calculation Engine (Strictly preserves user's exact mathematical equations)
-
-
-
-
-
+}
+
+
+
+
+
+
+
+
+
+
+
+function setVal(id, val) {
+
+
+
+
+
+  const el = document.getElementById(id);
+
+
+
+
+
+  if (el) {
+
+
+
+
+
+    el.value = val;
+
+
+
+
+
+    calculate();
+
+
+
+
+
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function money(v) {
+
+
+
+
+
+  if (isNaN(v)) v = 0;
+
+
+
+
+
+  return '₹' + v.toLocaleString('en-IN', {
+
+
+
+
+
+    minimumFractionDigits: 2,
+
+
+
+
+
+    maximumFractionDigits: 2
+
+
+
+
+
+  });
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const PRESETS = {
+
+
+
+
+
+  sweetBox: {
+
+
+
+
+
+    name: 'Sweet Box Packaging',
+
+
+
+
+
+    sl: 20, sw: 28, gsm: 350, pr: 85,
+
+
+
+
+
+    lamType: 'Matt', ll: 20, lw: 28, divide: 2.2,
+
+
+
+
+
+    leafType: 'Gold Foil', leafL: 4, leafW: 6, leafDivide: 2.5, leafBlock: 350,
+
+
+
+
+
+    printing: 2.50, plates: 800,
+
+
+
+
+
+    die: 0.80, dieCharges: 650,
+
+
+
+
+
+    pasting: 1.20, uv: 0.60, embossed: 0.40, other: 0.25,
+
+
+
+
+
+    wastage: 5, profit: 20, batchQty: 1000
+
+
+
+
+
+  },
+
+
+
+
+
+  visitingCard: {
+
+
+
+
+
+    name: 'Visiting Card Sheet (12x18)',
+
+
+
+
+
+    sl: 12, sw: 18, gsm: 350, pr: 90,
+
+
+
+
+
+    lamType: 'Velvet', ll: 12, lw: 18, divide: 1.8,
+
+
+
+
+
+    leafType: 'Gold Foil', leafL: 3.5, leafW: 2, leafDivide: 2.5, leafBlock: 250,
+
+
+
+
+
+    printing: 1.80, plates: 400,
+
+
+
+
+
+    die: 0.50, dieCharges: 350,
+
+
+
+
+
+    pasting: 0, uv: 0.40, embossed: 0, other: 0,
+
+
+
+
+
+    wastage: 3, profit: 25, batchQty: 500
+
+
+
+
+
+  },
+
+
+
+
+
+  monocarton: {
+
+
+
+
+
+    name: 'Pharma / Cosmetic Monocarton',
+
+
+
+
+
+    sl: 18, sw: 23, gsm: 300, pr: 82,
+
+
+
+
+
+    lamType: 'Gloss', ll: 18, lw: 23, divide: 2.5,
+
+
+
+
+
+    leafType: 'None', leafL: 0, leafW: 0, leafDivide: 2.5, leafBlock: 0,
+
+
+
+
+
+    printing: 1.60, plates: 800,
+
+
+
+
+
+    die: 0.70, dieCharges: 500,
+
+
+
+
+
+    pasting: 0.90, uv: 0.50, embossed: 0.30, other: 0.15,
+
+
+
+
+
+    wastage: 4, profit: 18, batchQty: 5000
+
+
+
+
+
+  },
+
+
+
+
+
+  bookCover: {
+
+
+
+
+
+    name: 'Book / Notebook Cover',
+
+
+
+
+
+    sl: 23, sw: 36, gsm: 250, pr: 78,
+
+
+
+
+
+    lamType: 'Matt', ll: 23, lw: 36, divide: 2.2,
+
+
+
+
+
+    leafType: 'Silver Foil', leafL: 5, leafW: 7, leafDivide: 2.5, leafBlock: 400,
+
+
+
+
+
+    printing: 3.20, plates: 800,
+
+
+
+
+
+    die: 0.40, dieCharges: 400,
+
+
+
+
+
+    pasting: 0.50, uv: 0, embossed: 0, other: 0.20,
+
+
+
+
+
+    wastage: 5, profit: 15, batchQty: 2500
+
+
+
+
+
+  },
+
+
+
+
+
+  flyer: {
+
+
+
+
+
+    name: 'A4 Flyer / Brochure (18x23 Sheet)',
+
+
+
+
+
+    sl: 18, sw: 23, gsm: 130, pr: 75,
+
+
+
+
+
+    lamType: 'None', ll: 18, lw: 23, divide: 2.5,
+
+
+
+
+
+    leafType: 'None', leafL: 0, leafW: 0, leafDivide: 2.5, leafBlock: 0,
+
+
+
+
+
+    printing: 1.20, plates: 800,
+
+
+
+
+
+    die: 0, dieCharges: 0,
+
+
+
+
+
+    pasting: 0, uv: 0, embossed: 0, other: 0,
+
+
+
+
+
+    wastage: 2, profit: 15, batchQty: 10000
+
+
+
+
+
+  }
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+// Main Calculation Engine (Strictly preserves user's exact mathematical equations)
+
+
+
+
+
 function calculate() {
   const batchQty = n('batchQty') || 1000;
 
@@ -680,10 +680,17 @@ function calculate() {
   const profitAmount = (cost * profit) / 100;
   const finalPrice = cost + profitAmount;
 
+  // 8B. GST Tax Calculation
+  const calcGstRate = typeof n === 'function' ? n('calcGstRate') : 0;
+  const gstUnitAmount = (finalPrice * calcGstRate) / 100;
+  const finalPriceWithGst = finalPrice + gstUnitAmount;
+
   // 9. Batch Totals
   const totalBatchCost = cost * batchQty;
   const totalBatchPrice = finalPrice * batchQty;
   const totalBatchProfit = profitAmount * batchQty;
+  const totalBatchGst = (totalBatchPrice * calcGstRate) / 100;
+  const totalBatchPriceWithGst = totalBatchPrice + totalBatchGst;
 
   // ================= UI UPDATES =================
 
@@ -694,9 +701,26 @@ function calculate() {
   updateText('heroBatchTotal', money(totalBatchPrice));
   updateText('heroBatchCost', money(totalBatchCost));
   updateText('heroBatchProfit', money(totalBatchProfit));
-  updateText('batchTotalPrice', money(totalBatchPrice));
   updateText('batchTotalCost', money(totalBatchCost));
   updateText('batchTotalProfit', money(totalBatchProfit));
+  
+  updateText('calcGstAmount', calcGstRate > 0 ? `+${money(gstUnitAmount)} (${calcGstRate}%)` : '+₹0.00');
+  updateText('calcFinalPriceWithGst', money(finalPriceWithGst));
+  
+  if (calcGstRate > 0) {
+    updateText('heroFinalPrice', money(finalPriceWithGst));
+    updateText('batchTotalPrice', money(totalBatchPriceWithGst));
+    const bgstEl = document.getElementById('batchGstBreakdown');
+    if (bgstEl) {
+      bgstEl.style.display = 'inline';
+      updateText('batchTotalGst', money(totalBatchGst));
+    }
+  } else {
+    updateText('heroFinalPrice', money(finalPrice));
+    updateText('batchTotalPrice', money(totalBatchPrice));
+    const bgstEl = document.getElementById('batchGstBreakdown');
+    if (bgstEl) bgstEl.style.display = 'none';
+  }
   updateText('heroWeight', activeHeroWeight > 0 ? activeHeroWeight.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
   
   if (typeof syncBatchPills === 'function') syncBatchPills(batchQty);
@@ -811,726 +835,726 @@ function calculate() {
   };
 }
 
-function updateText(id, text) {
-
-
-
-
-
-  const el = document.getElementById(id);
-
-
-
-
-
-  if (el) el.textContent = text;
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// Visual Sheet Simulator with Lamination & Foil Overlay
-
-
-
-
-
-function updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType) {
-
-
-
-
-
-  const sheetEl = document.getElementById('visualSheet');
-
-
-
-
-
-  const lamEl = document.getElementById('visualLam');
-
-
-
-
-
-  const leafEl = document.getElementById('visualLeaf');
-
-
-
-
-
-  const dimWEl = document.getElementById('visualDimW');
-
-
-
-
-
-  const dimHEl = document.getElementById('visualDimH');
-
-
-
-
-
-
-
-
-
-
-
-  if (!sheetEl || !lamEl) return;
-
-
-
-
-
-
-
-
-
-
-
-  const maxPixelW = 190;
-
-
-
-
-
-  const maxPixelH = 120;
-
-
-
-
-
-  const safeSl = Math.max(sl || 1, 1);
-
-
-
-
-
-  const safeSw = Math.max(sw || 1, 1);
-
-
-
-
-
-
-
-
-
-
-
-  const ratio = safeSl / safeSw;
-
-
-
-
-
-  let renderW, renderH;
-
-
-
-
-
-
-
-
-
-
-
-  if (ratio >= (maxPixelW / maxPixelH)) {
-
-
-
-
-
-    renderW = maxPixelW;
-
-
-
-
-
-    renderH = Math.max(maxPixelW / ratio, 30);
-
-
-
-
-
-  } else {
-
-
-
-
-
-    renderH = maxPixelH;
-
-
-
-
-
-    renderW = Math.max(maxPixelH * ratio, 30);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  sheetEl.style.width = `${renderW}px`;
-
-
-
-
-
-  sheetEl.style.height = `${renderH}px`;
-
-
-
-
-
-
-
-
-
-
-
-  if (dimWEl) dimWEl.textContent = `${safeSl}" L`;
-
-
-
-
-
-  if (dimHEl) dimHEl.textContent = `${safeSw}" W`;
-
-
-
-
-
-
-
-
-
-
-
-  // Lamination overlay
-
-
-
-
-
-  if (lamType === 'None' || !ll || !lw) {
-
-
-
-
-
-    lamEl.style.display = 'none';
-
-
-
-
-
-  } else {
-
-
-
-
-
-    lamEl.style.display = 'flex';
-
-
-
-
-
-    const lamWPercent = Math.min((ll / safeSl) * 100, 100);
-
-
-
-
-
-    const lamHPercent = Math.min((lw / safeSw) * 100, 100);
-
-
-
-
-
-    lamEl.style.width = `${lamWPercent}%`;
-
-
-
-
-
-    lamEl.style.height = `${lamHPercent}%`;
-
-
-
-
-
-    lamEl.textContent = lamType;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  // Leaf Foil overlay
-
-
-
-
-
-  if (leafEl) {
-
-
-
-
-
-    if (leafType === 'None' || !leafL || !leafW) {
-
-
-
-
-
-      leafEl.style.display = 'none';
-
-
-
-
-
-    } else {
-
-
-
-
-
-      leafEl.style.display = 'flex';
-
-
-
-
-
-      const foilWPercent = Math.min((leafL / safeSl) * 100, 100);
-
-
-
-
-
-      const foilHPercent = Math.min((leafW / safeSw) * 100, 100);
-
-
-
-
-
-      leafEl.style.width = `${foilWPercent}%`;
-
-
-
-
-
-      leafEl.style.height = `${foilHPercent}%`;
-
-
-
-
-
-      leafEl.textContent = '✨ ' + leafType.replace(' Foil', '');
-
-
-
-
-
-    }
-
-
-
-
-
-  }
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// -------------------------------------------------------------
-
-
-
-
-
-// Bidirectional Handlers for Dropdowns & Chips
-
-
-
-
-
-// -------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-// Dropdown Change: When user selects Lamination type from dropdown
-
-
-
-
-
-function handleLamTypeChange() {
-
-
-
-
-
-  const lamType = document.getElementById('lamType').value;
-
-
-
-
-
-  const divideEl = document.getElementById('divide');
-
-
-
-
-
-
-
-
-
-
-
-  if (lamType === 'Gloss') {
-
-
-
-
-
-    divideEl.value = 2.5;
-
-
-
-
-
-  } else if (lamType === 'Matt') {
-
-
-
-
-
-    divideEl.value = 2.2;
-
-
-
-
-
-  } else if (lamType === 'Velvet') {
-
-
-
-
-
-    divideEl.value = 1.8;
-
-
-
-
-
-  } else if (lamType === 'Thermal') {
-
-
-
-
-
-    divideEl.value = 2.0;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// Dropdown Change: When user selects Leaf/Foil type from dropdown
-
-
-
-
-
-function handleLeafTypeChange() {
-
-
-
-
-
-  const leafType = document.getElementById('leafType').value;
-
-
-
-
-
-  const leafDivideEl = document.getElementById('leafDivide');
-
-
-
-
-
-
-
-
-
-
-
-  if (leafType === 'Gold Foil' || leafType === 'Silver Foil' || leafType === 'Copper Foil' || leafType === 'Red Foil') {
-
-
-
-
-
-    leafDivideEl.value = 2.5;
-
-
-
-
-
-  } else if (leafType === 'Rose Gold') {
-
-
-
-
-
-    leafDivideEl.value = 2.2;
-
-
-
-
-
-  } else if (leafType === 'Holographic') {
-
-
-
-
-
-    leafDivideEl.value = 2.0;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// Chip Click: When user clicks Lamination chip below
-
-
-
-
-
-function setLaminationDivider(val, name) {
-
-
-
-
-
-  document.getElementById('divide').value = val;
-
-
-
-
-
-  if (name) {
-
-
-
-
-
-    document.getElementById('lamType').value = name;
-
-
-
-
-
-  }
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// Chip Click: When user clicks Leaf chip below
-
-
-
-
-
-function setLeafDivider(val, name) {
-
-
-
-
-
-  document.getElementById('leafDivide').value = val;
-
-
-
-
-
-  if (name) {
-
-
-
-
-
-    document.getElementById('leafType').value = name;
-
-
-
-
-
-  }
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
+function updateText(id, text) {
+
+
+
+
+
+  const el = document.getElementById(id);
+
+
+
+
+
+  if (el) el.textContent = text;
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// Visual Sheet Simulator with Lamination & Foil Overlay
+
+
+
+
+
+function updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType) {
+
+
+
+
+
+  const sheetEl = document.getElementById('visualSheet');
+
+
+
+
+
+  const lamEl = document.getElementById('visualLam');
+
+
+
+
+
+  const leafEl = document.getElementById('visualLeaf');
+
+
+
+
+
+  const dimWEl = document.getElementById('visualDimW');
+
+
+
+
+
+  const dimHEl = document.getElementById('visualDimH');
+
+
+
+
+
+
+
+
+
+
+
+  if (!sheetEl || !lamEl) return;
+
+
+
+
+
+
+
+
+
+
+
+  const maxPixelW = 190;
+
+
+
+
+
+  const maxPixelH = 120;
+
+
+
+
+
+  const safeSl = Math.max(sl || 1, 1);
+
+
+
+
+
+  const safeSw = Math.max(sw || 1, 1);
+
+
+
+
+
+
+
+
+
+
+
+  const ratio = safeSl / safeSw;
+
+
+
+
+
+  let renderW, renderH;
+
+
+
+
+
+
+
+
+
+
+
+  if (ratio >= (maxPixelW / maxPixelH)) {
+
+
+
+
+
+    renderW = maxPixelW;
+
+
+
+
+
+    renderH = Math.max(maxPixelW / ratio, 30);
+
+
+
+
+
+  } else {
+
+
+
+
+
+    renderH = maxPixelH;
+
+
+
+
+
+    renderW = Math.max(maxPixelH * ratio, 30);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  sheetEl.style.width = `${renderW}px`;
+
+
+
+
+
+  sheetEl.style.height = `${renderH}px`;
+
+
+
+
+
+
+
+
+
+
+
+  if (dimWEl) dimWEl.textContent = `${safeSl}" L`;
+
+
+
+
+
+  if (dimHEl) dimHEl.textContent = `${safeSw}" W`;
+
+
+
+
+
+
+
+
+
+
+
+  // Lamination overlay
+
+
+
+
+
+  if (lamType === 'None' || !ll || !lw) {
+
+
+
+
+
+    lamEl.style.display = 'none';
+
+
+
+
+
+  } else {
+
+
+
+
+
+    lamEl.style.display = 'flex';
+
+
+
+
+
+    const lamWPercent = Math.min((ll / safeSl) * 100, 100);
+
+
+
+
+
+    const lamHPercent = Math.min((lw / safeSw) * 100, 100);
+
+
+
+
+
+    lamEl.style.width = `${lamWPercent}%`;
+
+
+
+
+
+    lamEl.style.height = `${lamHPercent}%`;
+
+
+
+
+
+    lamEl.textContent = lamType;
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  // Leaf Foil overlay
+
+
+
+
+
+  if (leafEl) {
+
+
+
+
+
+    if (leafType === 'None' || !leafL || !leafW) {
+
+
+
+
+
+      leafEl.style.display = 'none';
+
+
+
+
+
+    } else {
+
+
+
+
+
+      leafEl.style.display = 'flex';
+
+
+
+
+
+      const foilWPercent = Math.min((leafL / safeSl) * 100, 100);
+
+
+
+
+
+      const foilHPercent = Math.min((leafW / safeSw) * 100, 100);
+
+
+
+
+
+      leafEl.style.width = `${foilWPercent}%`;
+
+
+
+
+
+      leafEl.style.height = `${foilHPercent}%`;
+
+
+
+
+
+      leafEl.textContent = '✨ ' + leafType.replace(' Foil', '');
+
+
+
+
+
+    }
+
+
+
+
+
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------
+
+
+
+
+
+// Bidirectional Handlers for Dropdowns & Chips
+
+
+
+
+
+// -------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+// Dropdown Change: When user selects Lamination type from dropdown
+
+
+
+
+
+function handleLamTypeChange() {
+
+
+
+
+
+  const lamType = document.getElementById('lamType').value;
+
+
+
+
+
+  const divideEl = document.getElementById('divide');
+
+
+
+
+
+
+
+
+
+
+
+  if (lamType === 'Gloss') {
+
+
+
+
+
+    divideEl.value = 2.5;
+
+
+
+
+
+  } else if (lamType === 'Matt') {
+
+
+
+
+
+    divideEl.value = 2.2;
+
+
+
+
+
+  } else if (lamType === 'Velvet') {
+
+
+
+
+
+    divideEl.value = 1.8;
+
+
+
+
+
+  } else if (lamType === 'Thermal') {
+
+
+
+
+
+    divideEl.value = 2.0;
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// Dropdown Change: When user selects Leaf/Foil type from dropdown
+
+
+
+
+
+function handleLeafTypeChange() {
+
+
+
+
+
+  const leafType = document.getElementById('leafType').value;
+
+
+
+
+
+  const leafDivideEl = document.getElementById('leafDivide');
+
+
+
+
+
+
+
+
+
+
+
+  if (leafType === 'Gold Foil' || leafType === 'Silver Foil' || leafType === 'Copper Foil' || leafType === 'Red Foil') {
+
+
+
+
+
+    leafDivideEl.value = 2.5;
+
+
+
+
+
+  } else if (leafType === 'Rose Gold') {
+
+
+
+
+
+    leafDivideEl.value = 2.2;
+
+
+
+
+
+  } else if (leafType === 'Holographic') {
+
+
+
+
+
+    leafDivideEl.value = 2.0;
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// Chip Click: When user clicks Lamination chip below
+
+
+
+
+
+function setLaminationDivider(val, name) {
+
+
+
+
+
+  document.getElementById('divide').value = val;
+
+
+
+
+
+  if (name) {
+
+
+
+
+
+    document.getElementById('lamType').value = name;
+
+
+
+
+
+  }
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// Chip Click: When user clicks Leaf chip below
+
+
+
+
+
+function setLeafDivider(val, name) {
+
+
+
+
+
+  document.getElementById('leafDivide').value = val;
+
+
+
+
+
+  if (name) {
+
+
+
+
+
+    document.getElementById('leafType').value = name;
+
+
+
+
+
+  }
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 // Quick GSM Chip Handler
 function setGsm(val) {
   const el = document.getElementById('gsm');
@@ -1563,24 +1587,24 @@ function setSheetSize(sl, sw) {
   if (swEl) swEl.dispatchEvent(new Event('input', { bubbles: true }));
   calculate();
   syncActiveChips();
-}
-
-
-
-
-
-
-
-
-
-
-
-// Quick Batch Pill
-
-
-
-
-
+}
+
+
+
+
+
+
+
+
+
+
+
+// Quick Batch Pill
+
+
+
+
+
 function syncBatchPills(qty) {
   const target = parseFloat(qty) || (document.getElementById('batchQty') ? parseFloat(document.getElementById('batchQty').value) : 1000);
   document.querySelectorAll('.batch-pill').forEach(btn => {
@@ -1589,677 +1613,687 @@ function syncBatchPills(qty) {
   });
 }
 
+
+function setCalcGst(rate) {
+  const el = document.getElementById('calcGstRate');
+  if (el) el.value = rate;
+  document.querySelectorAll('[data-chip-type="calcGst"]').forEach(btn => {
+    btn.classList.toggle('active', parseFloat(btn.getAttribute('data-val')) === parseFloat(rate));
+  });
+  calculate();
+}
+
 function setBatchQty(qty) {
   const el = document.getElementById('batchQty');
   if (el) el.value = qty;
   syncBatchPills(qty);
   calculate();
-}
-
-
-
-
-
-
-
-
-
-
-
-// Dynamic Chip Highlighting (Keeps UI fully in sync with current state)
-
-
-
-
-
-function syncActiveChips() {
-
-
-
-
-
-  const sl = n('sl'), sw = n('sw');
-
-
-
-
-
-  const gsm = n('gsm');
-
-
-
-
-
-  const paperRate = n('pr') || n('paperRate');
-
-
-
-
-
-  const lamType = document.getElementById('lamType')?.value;
-
-
-
-
-
-  const divide = n('divide');
-
-
-
-
-
-  const leafType = document.getElementById('leafType')?.value;
-
-
-
-
-
-  const leafDivide = n('leafDivide');
-
-
-
-
-
-  const leafBlock = n('leafBlock');
-
-
-
-
-
-  const printing = n('printing');
-
-
-
-
-
-  const plates = n('plates');
-
-
-
-
-
-  const die = n('die');
-
-
-
-
-
-  const dieCharges = n('dieCharges');
-
-
-
-
-
-  const wastage = n('wastage');
-
-
-
-
-
-  const profit = n('profit');
-
-
-
-
-
-  const batchQty = n('batchQty');
-
-
-
-
-
-
-
-
-
-
-
-  // Sheet Size chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="size"]').forEach(btn => {
-
-
-
-
-
-    const bSl = parseFloat(btn.getAttribute('data-sl'));
-
-
-
-
-
-    const bSw = parseFloat(btn.getAttribute('data-sw'));
-
-
-
-
-
-    btn.classList.toggle('active', (sl === bSl && sw === bSw) || (sl === bSw && sw === bSl));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // GSM chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="gsm"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', gsm === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Paper Rate chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="paperRate"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', paperRate === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Lamination Factor chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="lamFactor"]').forEach(btn => {
-
-
-
-
-
-    const bName = btn.getAttribute('data-name');
-
-
-
-
-
-    const bVal = parseFloat(btn.getAttribute('data-val'));
-
-
-
-
-
-    btn.classList.toggle('active', lamType === bName && Math.abs(divide - bVal) < 0.01);
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Leaf Factor chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="leafFactor"]').forEach(btn => {
-
-
-
-
-
-    const bName = btn.getAttribute('data-name');
-
-
-
-
-
-    const bVal = parseFloat(btn.getAttribute('data-val'));
-
-
-
-
-
-    btn.classList.toggle('active', leafType === bName && Math.abs(leafDivide - bVal) < 0.01);
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Leaf Block chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="leafBlock"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', leafBlock === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Printing chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="printing"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', Math.abs(printing - parseFloat(btn.getAttribute('data-val'))) < 0.01);
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Plates chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="plates"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', plates === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Die Cutting chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="die"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', Math.abs(die - parseFloat(btn.getAttribute('data-val'))) < 0.01);
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Die Charges chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="dieCharges"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', dieCharges === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Wastage chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="wastage"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', wastage === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Margin chips
-
-
-
-
-
-  document.querySelectorAll('[data-chip-type="profit"]').forEach(btn => {
-
-
-
-
-
-    btn.classList.toggle('active', profit === parseFloat(btn.getAttribute('data-val')));
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Batch pills
-
-
-
-
-
-  document.querySelectorAll('.batch-pill').forEach(btn => {
-
-
-
-
-
-    const bQty = parseFloat(btn.getAttribute('data-qty'));
-
-
-
-
-
-    btn.classList.toggle('active', batchQty === bQty);
-
-
-
-
-
-  });
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-function syncDimensions() {
-
-
-
-
-
-  const sl = document.getElementById('sl').value;
-
-
-
-
-
-  const sw = document.getElementById('sw').value;
-
-
-
-
-
-  if (sl) document.getElementById('ll').value = sl;
-
-
-
-
-
-  if (sw) document.getElementById('lw').value = sw;
-
-
-
-
-
-  showToast('Sheet size copied to Lamination!');
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-function syncLeafDimensions() {
-
-
-
-
-
-  const sl = document.getElementById('sl').value;
-
-
-
-
-
-  const sw = document.getElementById('sw').value;
-
-
-
-
-
-  if (sl) document.getElementById('leafL').value = sl;
-
-
-
-
-
-  if (sw) document.getElementById('leafW').value = sw;
-
-
-
-
-
-  showToast('Sheet size copied to Leaf / Foil!');
-
-
-
-
-
-  calculate();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
+}
+
+
+
+
+
+
+
+
+
+
+
+// Dynamic Chip Highlighting (Keeps UI fully in sync with current state)
+
+
+
+
+
+function syncActiveChips() {
+
+
+
+
+
+  const sl = n('sl'), sw = n('sw');
+
+
+
+
+
+  const gsm = n('gsm');
+
+
+
+
+
+  const paperRate = n('pr') || n('paperRate');
+
+
+
+
+
+  const lamType = document.getElementById('lamType')?.value;
+
+
+
+
+
+  const divide = n('divide');
+
+
+
+
+
+  const leafType = document.getElementById('leafType')?.value;
+
+
+
+
+
+  const leafDivide = n('leafDivide');
+
+
+
+
+
+  const leafBlock = n('leafBlock');
+
+
+
+
+
+  const printing = n('printing');
+
+
+
+
+
+  const plates = n('plates');
+
+
+
+
+
+  const die = n('die');
+
+
+
+
+
+  const dieCharges = n('dieCharges');
+
+
+
+
+
+  const wastage = n('wastage');
+
+
+
+
+
+  const profit = n('profit');
+
+
+
+
+
+  const batchQty = n('batchQty');
+
+
+
+
+
+
+
+
+
+
+
+  // Sheet Size chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="size"]').forEach(btn => {
+
+
+
+
+
+    const bSl = parseFloat(btn.getAttribute('data-sl'));
+
+
+
+
+
+    const bSw = parseFloat(btn.getAttribute('data-sw'));
+
+
+
+
+
+    btn.classList.toggle('active', (sl === bSl && sw === bSw) || (sl === bSw && sw === bSl));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // GSM chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="gsm"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', gsm === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Paper Rate chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="paperRate"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', paperRate === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Lamination Factor chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="lamFactor"]').forEach(btn => {
+
+
+
+
+
+    const bName = btn.getAttribute('data-name');
+
+
+
+
+
+    const bVal = parseFloat(btn.getAttribute('data-val'));
+
+
+
+
+
+    btn.classList.toggle('active', lamType === bName && Math.abs(divide - bVal) < 0.01);
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Leaf Factor chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="leafFactor"]').forEach(btn => {
+
+
+
+
+
+    const bName = btn.getAttribute('data-name');
+
+
+
+
+
+    const bVal = parseFloat(btn.getAttribute('data-val'));
+
+
+
+
+
+    btn.classList.toggle('active', leafType === bName && Math.abs(leafDivide - bVal) < 0.01);
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Leaf Block chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="leafBlock"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', leafBlock === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Printing chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="printing"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', Math.abs(printing - parseFloat(btn.getAttribute('data-val'))) < 0.01);
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Plates chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="plates"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', plates === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Die Cutting chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="die"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', Math.abs(die - parseFloat(btn.getAttribute('data-val'))) < 0.01);
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Die Charges chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="dieCharges"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', dieCharges === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Wastage chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="wastage"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', wastage === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Margin chips
+
+
+
+
+
+  document.querySelectorAll('[data-chip-type="profit"]').forEach(btn => {
+
+
+
+
+
+    btn.classList.toggle('active', profit === parseFloat(btn.getAttribute('data-val')));
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Batch pills
+
+
+
+
+
+  document.querySelectorAll('.batch-pill').forEach(btn => {
+
+
+
+
+
+    const bQty = parseFloat(btn.getAttribute('data-qty'));
+
+
+
+
+
+    btn.classList.toggle('active', batchQty === bQty);
+
+
+
+
+
+  });
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function syncDimensions() {
+
+
+
+
+
+  const sl = document.getElementById('sl').value;
+
+
+
+
+
+  const sw = document.getElementById('sw').value;
+
+
+
+
+
+  if (sl) document.getElementById('ll').value = sl;
+
+
+
+
+
+  if (sw) document.getElementById('lw').value = sw;
+
+
+
+
+
+  showToast('Sheet size copied to Lamination!');
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function syncLeafDimensions() {
+
+
+
+
+
+  const sl = document.getElementById('sl').value;
+
+
+
+
+
+  const sw = document.getElementById('sw').value;
+
+
+
+
+
+  if (sl) document.getElementById('leafL').value = sl;
+
+
+
+
+
+  if (sw) document.getElementById('leafW').value = sw;
+
+
+
+
+
+  showToast('Sheet size copied to Leaf / Foil!');
+
+
+
+
+
+  calculate();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 function setCustomPresetActive() {
   document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
   const customChip = document.getElementById('preset-custom');
@@ -2322,18 +2356,18 @@ function loadPreset(key) {
 
   showToast(`Loaded "${p.name}" preset`);
   calculate();
-}
-
-
-
-
-
-
-
-
-
-
-
+}
+
+
+
+
+
+
+
+
+
+
+
 function resetCalculator() {
   if (document.getElementById('sl')) document.getElementById('sl').value = 0;
   if (document.getElementById('sw')) document.getElementById('sw').value = 0;
@@ -2380,116 +2414,116 @@ function resetCalculator() {
   syncActiveChips();
   calculate();
   showToast('🔄 Calculator set to zero (0)!');
-}
-
-
-
-
-
-
-
-
-
-
-
-function showToast(msg) {
-
-
-
-
-
-  let toast = document.getElementById('appToast');
-
-
-
-
-
-  if (!toast) {
-
-
-
-
-
-    toast = document.createElement('div');
-
-
-
-
-
-    toast.id = 'appToast';
-
-
-
-
-
-    toast.className = 'toast';
-
-
-
-
-
-    document.body.appendChild(toast);
-
-
-
-
-
-  }
-
-
-
-
-
-  toast.innerHTML = `<span>✨</span> ${msg}`;
-
-
-
-
-
-  toast.classList.add('show');
-
-
-
-
-
-  setTimeout(() => {
-
-
-
-
-
-    toast.classList.remove('show');
-
-
-
-
-
-  }, 2500);
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// ============================================================
-
-// AS PRINT GALLERY - OFFICIAL BILLING, INVOICE & HISTORY SYSTEM
-
-// ============================================================
-
-
-
+}
+
+
+
+
+
+
+
+
+
+
+
+function showToast(msg) {
+
+
+
+
+
+  let toast = document.getElementById('appToast');
+
+
+
+
+
+  if (!toast) {
+
+
+
+
+
+    toast = document.createElement('div');
+
+
+
+
+
+    toast.id = 'appToast';
+
+
+
+
+
+    toast.className = 'toast';
+
+
+
+
+
+    document.body.appendChild(toast);
+
+
+
+
+
+  }
+
+
+
+
+
+  toast.innerHTML = `<span>✨</span> ${msg}`;
+
+
+
+
+
+  toast.classList.add('show');
+
+
+
+
+
+  setTimeout(() => {
+
+
+
+
+
+    toast.classList.remove('show');
+
+
+
+
+
+  }, 2500);
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+
+// AS PRINT GALLERY - OFFICIAL BILLING, INVOICE & HISTORY SYSTEM
+
+// ============================================================
+
+
+
 
 let currentQuoteMode = 'customer';
 
@@ -2603,268 +2637,268 @@ function updateSavedCountBadges() {
 function updateSavedCountBadge() {
   updateSavedCountBadges();
 }
-
-
-
-
-function getSavedInvoicesList() {
-
-  try {
-
-    return JSON.parse(localStorage.getItem('as_saved_invoices') || '[]');
-
-  } catch(e) {
-
-    return [];
-
-  }
-
-}
-
-
-
-function setQuoteMode(mode) {
-
-  currentQuoteMode = mode;
-
-  const custBtn = document.getElementById('modeCustomerBtn');
-
-  const internBtn = document.getElementById('modeInternalBtn');
-
-  if (custBtn && internBtn) {
-
-    if (mode === 'customer') {
-
-      custBtn.classList.add('active');
-
-      internBtn.classList.remove('active');
-
-    } else {
-
-      custBtn.classList.remove('active');
-
-      internBtn.classList.add('active');
-
-    }
-
-  }
-
-  renderQuotationPreview();
-
-}
-
-
-
-function openQuotationModal() {
-
-  const modal = document.getElementById('quotationModal');
-
-  if (modal) {
-
-    // Populate default invoice number and date if empty
-
-    const invInput = document.getElementById('invoiceNoInput');
-
-    if (invInput && !invInput.value) {
-
-      invInput.value = getNextInvoiceNumber();
-
-    }
-
-    const dateInput = document.getElementById('invoiceDateInput');
-
-    if (dateInput && !dateInput.value) {
-
-      dateInput.value = new Date().toLocaleDateString('en-IN', {
-
-        day: '2-digit',
-
-        month: 'short',
-
-        year: 'numeric'
-
-      });
-
-    }
-
-
-
-    updateSavedCountBadge();
-
-    renderQuotationPreview();
-
-    modal.classList.add('active');
-
-  }
-
-}
-
-
-
-function closeQuotationModal() {
-
-  const modal = document.getElementById('quotationModal');
-
-  if (modal) modal.classList.remove('active');
-
-}
-
-
-
-function handleGstTypeChange() {
-
-  const type = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
-
-  const percentInput = document.getElementById('quoteGstPercentInput');
-
-  if (type === 'exempt') {
-
-    if (percentInput) percentInput.value = '0';
-
-  } else if (type === 'extra') {
-
-    if (percentInput) percentInput.value = '18';
-
-  } else {
-
-    if (percentInput && (percentInput.value === '0' || !percentInput.value)) {
-
-      percentInput.value = '18';
-
-    }
-
-  }
-
-  renderQuotationPreview();
-
-}
-
-
-
-function handleUnitChange() {
-
-  const unit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const sl = n('sl'), sw = n('sw'), gsm = n('gsm');
-
-  const batchQty = n('batchQty') || 1000;
-
-  
-
-  const areaM2 = sl * sw * 0.00064516;
-
-  const singleWeightKg = (areaM2 * gsm) / 1000;
-
-  const totalWeightKg = singleWeightKg * batchQty;
-
-  
-
-  const qtyInput = document.getElementById('customBillingQty');
-
-  const rateInput = document.getElementById('customBillingRate');
-
-
-
-  if (unit === 'KGS') {
-
-    if (qtyInput && totalWeightKg > 0) {
-
-      qtyInput.value = totalWeightKg.toFixed(2);
-
-    }
-
-  }
-
-  renderQuotationPreview();
-
-}
-
-
-
-function numberToIndianWords(num) {
-
-  if (!num || isNaN(num) || num <= 0) return 'ZERO RUPEES ONLY';
-
-  num = Math.round(num * 100) / 100;
-
-  const a = ['', 'ONE ', 'TWO ', 'THREE ', 'FOUR ', 'FIVE ', 'SIX ', 'SEVEN ', 'EIGHT ', 'NINE ', 'TEN ', 'ELEVEN ', 'TWELVE ', 'THIRTEEN ', 'FOURTEEN ', 'FIFTEEN ', 'SIXTEEN ', 'SEVENTEEN ', 'EIGHTEEN ', 'NINETEEN '];
-
-  const b = ['', '', 'TWENTY ', 'THIRTY ', 'FORTY ', 'FIFTY ', 'SIXTY ', 'SEVENTY ', 'EIGHTY ', 'NINETY '];
-
-
-
-  function inWords(n) {
-
-    let str = '';
-
-    if (n >= 10000000) {
-
-      str += inWords(Math.floor(n / 10000000)) + 'CRORE ';
-
-      n %= 10000000;
-
-    }
-
-    if (n >= 100000) {
-
-      str += inWords(Math.floor(n / 100000)) + 'LAKH ';
-
-      n %= 100000;
-
-    }
-
-    if (n >= 1000) {
-
-      str += inWords(Math.floor(n / 1000)) + 'THOUSAND ';
-
-      n %= 1000;
-
-    }
-
-    if (n >= 100) {
-
-      str += inWords(Math.floor(n / 100)) + 'HUNDRED ';
-
-      n %= 100;
-
-    }
-
-    if (n > 0) {
-
-      if (str !== '') str += 'AND ';
-
-      if (n < 20) str += a[n];
-
-      else str += b[Math.floor(n / 10)] + a[n % 10];
-
-    }
-
-    return str;
-
-  }
-
-
-
-  const integerPart = Math.floor(num);
-
-  const decimalPart = Math.round((num - integerPart) * 100);
-
-
-
-  let result = inWords(integerPart).trim() + ' RUPEES';
-
-  if (decimalPart > 0) {
-
-    result += ' AND ' + inWords(decimalPart).trim() + ' PAISA';
-
-  }
-
-  return (result + ' ONLY').toUpperCase();
-
-}
-
-
-
+
+
+
+
+function getSavedInvoicesList() {
+
+  try {
+
+    return JSON.parse(localStorage.getItem('as_saved_invoices') || '[]');
+
+  } catch(e) {
+
+    return [];
+
+  }
+
+}
+
+
+
+function setQuoteMode(mode) {
+
+  currentQuoteMode = mode;
+
+  const custBtn = document.getElementById('modeCustomerBtn');
+
+  const internBtn = document.getElementById('modeInternalBtn');
+
+  if (custBtn && internBtn) {
+
+    if (mode === 'customer') {
+
+      custBtn.classList.add('active');
+
+      internBtn.classList.remove('active');
+
+    } else {
+
+      custBtn.classList.remove('active');
+
+      internBtn.classList.add('active');
+
+    }
+
+  }
+
+  renderQuotationPreview();
+
+}
+
+
+
+function openQuotationModal() {
+
+  const modal = document.getElementById('quotationModal');
+
+  if (modal) {
+
+    // Populate default invoice number and date if empty
+
+    const invInput = document.getElementById('invoiceNoInput');
+
+    if (invInput && !invInput.value) {
+
+      invInput.value = getNextInvoiceNumber();
+
+    }
+
+    const dateInput = document.getElementById('invoiceDateInput');
+
+    if (dateInput && !dateInput.value) {
+
+      dateInput.value = new Date().toLocaleDateString('en-IN', {
+
+        day: '2-digit',
+
+        month: 'short',
+
+        year: 'numeric'
+
+      });
+
+    }
+
+
+
+    updateSavedCountBadge();
+
+    renderQuotationPreview();
+
+    modal.classList.add('active');
+
+  }
+
+}
+
+
+
+function closeQuotationModal() {
+
+  const modal = document.getElementById('quotationModal');
+
+  if (modal) modal.classList.remove('active');
+
+}
+
+
+
+function handleGstTypeChange() {
+
+  const type = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
+
+  const percentInput = document.getElementById('quoteGstPercentInput');
+
+  if (type === 'exempt') {
+
+    if (percentInput) percentInput.value = '0';
+
+  } else if (type === 'extra') {
+
+    if (percentInput) percentInput.value = '18';
+
+  } else {
+
+    if (percentInput && (percentInput.value === '0' || !percentInput.value)) {
+
+      percentInput.value = '18';
+
+    }
+
+  }
+
+  renderQuotationPreview();
+
+}
+
+
+
+function handleUnitChange() {
+
+  const unit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+
+  const sl = n('sl'), sw = n('sw'), gsm = n('gsm');
+
+  const batchQty = n('batchQty') || 1000;
+
+  
+
+  const areaM2 = sl * sw * 0.00064516;
+
+  const singleWeightKg = (areaM2 * gsm) / 1000;
+
+  const totalWeightKg = singleWeightKg * batchQty;
+
+  
+
+  const qtyInput = document.getElementById('customBillingQty');
+
+  const rateInput = document.getElementById('customBillingRate');
+
+
+
+  if (unit === 'KGS') {
+
+    if (qtyInput && totalWeightKg > 0) {
+
+      qtyInput.value = totalWeightKg.toFixed(2);
+
+    }
+
+  }
+
+  renderQuotationPreview();
+
+}
+
+
+
+function numberToIndianWords(num) {
+
+  if (!num || isNaN(num) || num <= 0) return 'ZERO RUPEES ONLY';
+
+  num = Math.round(num * 100) / 100;
+
+  const a = ['', 'ONE ', 'TWO ', 'THREE ', 'FOUR ', 'FIVE ', 'SIX ', 'SEVEN ', 'EIGHT ', 'NINE ', 'TEN ', 'ELEVEN ', 'TWELVE ', 'THIRTEEN ', 'FOURTEEN ', 'FIFTEEN ', 'SIXTEEN ', 'SEVENTEEN ', 'EIGHTEEN ', 'NINETEEN '];
+
+  const b = ['', '', 'TWENTY ', 'THIRTY ', 'FORTY ', 'FIFTY ', 'SIXTY ', 'SEVENTY ', 'EIGHTY ', 'NINETY '];
+
+
+
+  function inWords(n) {
+
+    let str = '';
+
+    if (n >= 10000000) {
+
+      str += inWords(Math.floor(n / 10000000)) + 'CRORE ';
+
+      n %= 10000000;
+
+    }
+
+    if (n >= 100000) {
+
+      str += inWords(Math.floor(n / 100000)) + 'LAKH ';
+
+      n %= 100000;
+
+    }
+
+    if (n >= 1000) {
+
+      str += inWords(Math.floor(n / 1000)) + 'THOUSAND ';
+
+      n %= 1000;
+
+    }
+
+    if (n >= 100) {
+
+      str += inWords(Math.floor(n / 100)) + 'HUNDRED ';
+
+      n %= 100;
+
+    }
+
+    if (n > 0) {
+
+      if (str !== '') str += 'AND ';
+
+      if (n < 20) str += a[n];
+
+      else str += b[Math.floor(n / 10)] + a[n % 10];
+
+    }
+
+    return str;
+
+  }
+
+
+
+  const integerPart = Math.floor(num);
+
+  const decimalPart = Math.round((num - integerPart) * 100);
+
+
+
+  let result = inWords(integerPart).trim() + ' RUPEES';
+
+  if (decimalPart > 0) {
+
+    result += ' AND ' + inWords(decimalPart).trim() + ' PAISA';
+
+  }
+
+  return (result + ' ONLY').toUpperCase();
+
+}
+
+
+
 function renderQuotationPreview() {
   const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
   const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
@@ -3113,78 +3147,86 @@ function renderQuotationPreview() {
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            <!-- Compact Summary Row: Tax & Subtotal -->
-            <tr class="bill-summary-row" style="background:#fafafa;">
-              <td colspan="4" style="font-size:10px; padding:3px 6px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
-                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
-                  <span style="font-weight:bold; color:#0f172a;">
-                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
-                  </span>
+            <!-- Exact Match to Physical Yellow Bill Book -->
+            <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
+              <td colspan="4" rowspan="5" style="vertical-align:top; padding:6px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
+                <div style="font-size:11px; margin-bottom:6px; line-height:1.4;">
+                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:70%;">${wordsText}</span>
+                </div>
+                <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:60%;">${taxWordsText}</span>
+                </div>
+                <div style="font-size:10.5px; margin-top:6px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                  <span>Amount Of Tax Subject To Revrese Charge :</span>
+                  <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
+                  <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
                 </div>
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 6px;">Total Before Tax</td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
+                Total Amount Before Tax
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
             </tr>
 
-            ${(transportCharges > 0 || discount > 0) ? `
-            <tr class="bill-summary-row" style="background:#fff;">
-              <td colspan="4" style="font-size:10px; padding:2px 6px;">
-                ${transportCharges > 0 ? `🚚 <b>Transport:</b> ₹${transportCharges.toFixed(2)}` : ''}
-                ${(transportCharges > 0 && discount > 0) ? ' &nbsp;|&nbsp; ' : ''}
-                ${discount > 0 ? `🏷️ <b>Discount:</b> -₹${discount.toFixed(2)}` : ''}
+            <tr class="bill-summary-row">
+              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10px; padding:2px 6px;">Tax Amount</td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:2px 8px;">₹${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${cgstAmt > 0 ? `${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (igstAmt > 0 ? `${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00')}
+              </td>
             </tr>
-            ` : ''}
 
-            <!-- Final Grand Total Row: Colspan 3 + Colspan 2 for Title + 1 Col for Amount -->
-            <tr class="bill-total-final-row">
-              <td colspan="3" style="font-weight:bold; font-size:10px; padding:4px 6px;">
-                GST on Reverse Charge: ₹0.00
+            <tr class="bill-summary-row">
+              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
               </td>
-              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:4px 8px; white-space:nowrap;">
-                Total Amount After Tax
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${sgstAmt > 0 ? `${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00'}
               </td>
-              <td style="text-align:right; font-size:12px; font-weight:900; padding:4px 8px; white-space:nowrap;">
+            </tr>
+
+            <tr class="bill-summary-row" style="background:#f8fafc;">
+              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                Total Tax Amount
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+            </tr>
+
+            <tr class="bill-total-final-row" style="background:#f1f5f9;">
+              <td style="text-align:right; font-size:11px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
+                GST Total Amount After Tax
+              </td>
+              <td style="text-align:right; font-size:12px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
           </tbody>
         </table>
-
-        <!-- Amount In Words Box -->
-        <div class="bill-words-section">
-          <div style="margin-bottom:3px;">
-            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
-          </div>
-          <div>
-            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
-          </div>
-        </div>
       </div>
 
       <!-- Bottom Section: Terms, Bank Details & Signature -->
       <div class="bill-footer-section">
         <div class="bill-terms-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
-          <div>1. Goods once sold will not be taken back.</div>
-          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
-          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px; text-transform:uppercase;">TERMS &amp; CONDITIONS</div>
+          <div>1. Goods once should will not be taken back.</div>
+          <div>2. All disputes are subject to Ghaziabad Jurisdiction only.</div>
         </div>
 
         <div class="bill-bank-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
-          <div>Bank : <b>HDFC BANK</b></div>
-          <div>A/c No. : <b>50200098986238</b></div>
-          <div>IFSC : <b>HDFC0004729</b></div>
-          <div>Branch : <b>LONI GHAZIABAD</b></div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details.:</div>
+          <div>Bank Name : <b>HDFC</b></div>
+          <div>BANK A/C : <b>50200098986238</b></div>
+          <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
         </div>
 
         <div class="bill-sign-box">
-          <div style="font-weight:bold; font-size:11px;">For ${companyName}</div>
-          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
+          <div style="font-weight:bold; font-size:11.5px;">For: <b>${companyName}</b></div>
+          <div style="font-size:11px; font-weight:bold; margin-top:35px;">Signature</div>
         </div>
       </div>
 
@@ -3192,112 +3234,112 @@ function renderQuotationPreview() {
   `;
 }
 
-function saveCurrentInvoice() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-
-  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN');
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'Job Work';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const customQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const customRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const history = getSavedInvoicesList();
-
-  
-
-  const record = {
-
-    id: Date.now(),
-
-    invoiceNo: invoiceNo,
-
-    docTitle: docTitle,
-
-    invoiceDate: invoiceDate,
-
-    clientName: clientName,
-
-    clientAddress: document.getElementById('clientAddressInput')?.value || '',
-
-    clientState: document.getElementById('clientStateInput')?.value || '',
-
-    clientGstin: document.getElementById('clientGstinInput')?.value || '',
-
-    transportMode: document.getElementById('transportModeInput')?.value || '',
-
-    vehicleNo: document.getElementById('vehicleNoInput')?.value || '',
-
-    jobTitle: jobTitle,
-
-    hsn: document.getElementById('hsnInput')?.value || '4819',
-
-    billingUnit: billingUnit,
-
-    customQty: customQty,
-
-    customRate: customRate,
-
-    customDesc: document.getElementById('customItemDescInput')?.value || '',
-
-    gstType: document.getElementById('quoteGstType')?.value || 'cgst_sgst',
-
-    gstRate: document.getElementById('quoteGstPercentInput')?.value || '18',
-
-    reverseCharge: document.getElementById('reverseChargeSelect')?.value || 'No'
-
-  };
-
-
-
-  // Check if invoice with same number already exists, update or add
-
-  const existingIdx = history.findIndex(item => item.invoiceNo === invoiceNo);
-
-  if (existingIdx >= 0) {
-
-    history[existingIdx] = record;
-
-  } else {
-
-    history.unshift(record);
-
-  }
-
-
-
-  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-
-  incrementNextInvoiceNumber();
-
-  
-
-  // Set next number in input for convenience
-
-  const invInput = document.getElementById('invoiceNoInput');
-
-  if (invInput) invInput.value = getNextInvoiceNumber();
-
-
-
-  updateSavedCountBadge();
-
-  showToast(`Bill #${invoiceNo} saved successfully!`);
-
-}
-
-
-
+function saveCurrentInvoice() {
+
+  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
+
+  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+
+  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN');
+
+  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
+
+  const jobTitle = document.getElementById('jobTitleInput')?.value || 'Job Work';
+
+  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
+
+  const customQty = document.getElementById('customBillingQty')?.value || '1000';
+
+  const customRate = document.getElementById('customBillingRate')?.value || '0';
+
+
+
+  const history = getSavedInvoicesList();
+
+  
+
+  const record = {
+
+    id: Date.now(),
+
+    invoiceNo: invoiceNo,
+
+    docTitle: docTitle,
+
+    invoiceDate: invoiceDate,
+
+    clientName: clientName,
+
+    clientAddress: document.getElementById('clientAddressInput')?.value || '',
+
+    clientState: document.getElementById('clientStateInput')?.value || '',
+
+    clientGstin: document.getElementById('clientGstinInput')?.value || '',
+
+    transportMode: document.getElementById('transportModeInput')?.value || '',
+
+    vehicleNo: document.getElementById('vehicleNoInput')?.value || '',
+
+    jobTitle: jobTitle,
+
+    hsn: document.getElementById('hsnInput')?.value || '4819',
+
+    billingUnit: billingUnit,
+
+    customQty: customQty,
+
+    customRate: customRate,
+
+    customDesc: document.getElementById('customItemDescInput')?.value || '',
+
+    gstType: document.getElementById('quoteGstType')?.value || 'cgst_sgst',
+
+    gstRate: document.getElementById('quoteGstPercentInput')?.value || '18',
+
+    reverseCharge: document.getElementById('reverseChargeSelect')?.value || 'No'
+
+  };
+
+
+
+  // Check if invoice with same number already exists, update or add
+
+  const existingIdx = history.findIndex(item => item.invoiceNo === invoiceNo);
+
+  if (existingIdx >= 0) {
+
+    history[existingIdx] = record;
+
+  } else {
+
+    history.unshift(record);
+
+  }
+
+
+
+  localStorage.setItem('as_saved_invoices', JSON.stringify(history));
+
+  incrementNextInvoiceNumber();
+
+  
+
+  // Set next number in input for convenience
+
+  const invInput = document.getElementById('invoiceNoInput');
+
+  if (invInput) invInput.value = getNextInvoiceNumber();
+
+
+
+  updateSavedCountBadge();
+
+  showToast(`Bill #${invoiceNo} saved successfully!`);
+
+}
+
+
+
 
 function getSavedInvoicesList() {
   try {
@@ -3647,10 +3689,10 @@ function importHistoryFromJSON(event) {
   };
   reader.readAsText(file);
 }
-
-
-
-
+
+
+
+
 function copyQuoteToClipboard() {
   const b = window.currentCalcBreakdown || {};
   const jobTitle = document.getElementById('jobType')?.value || 'Custom Packaging Box';
@@ -3727,10 +3769,10 @@ function shareWhatsApp() {
     : `https://wa.me/?text=${encodeURIComponent(msg)}`;
 
   window.open(url, '_blank');
-}
-
-
-
+}
+
+
+
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -3748,54 +3790,54 @@ function toggleTheme() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  syncActiveChips();
-
-
-
-
-
-  const savedTheme = localStorage.getItem('calc_theme') || 'light';
-
-
-
-
-
-  document.documentElement.setAttribute('data-theme', savedTheme);
-
-
-
-
-
-  const icon = document.getElementById('themeIcon');
-
-
-
-
-
-  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
-
-
-
-
-
-
-
-
-
-
-
-  // Listen to all inputs and selects
-
-
-
-
-
-  const allInputs = document.querySelectorAll('input, select');
-
-
-
-
-
+  syncActiveChips();
+
+
+
+
+
+  const savedTheme = localStorage.getItem('calc_theme') || 'light';
+
+
+
+
+
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+
+
+
+
+  const icon = document.getElementById('themeIcon');
+
+
+
+
+
+  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+
+
+
+
+
+
+
+
+
+
+  // Listen to all inputs and selects
+
+
+
+
+
+  const allInputs = document.querySelectorAll('input, select');
+
+
+
+
+
   allInputs.forEach(input => {
     input.addEventListener('input', (e) => {
       calculate();
@@ -3808,99 +3850,99 @@ document.addEventListener('DOMContentLoaded', () => {
         this.select();
       });
     }
-  });
-
-
-
-
-
-
-
-
-
-
-
-  // Dedicated Dropdown change listeners for instant factor update
-
-
-
-
-
-  const lamTypeSelect = document.getElementById('lamType');
-
-
-
-
-
-  if (lamTypeSelect) {
-
-
-
-
-
-    lamTypeSelect.addEventListener('change', handleLamTypeChange);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  const leafTypeSelect = document.getElementById('leafType');
-
-
-
-
-
-  if (leafTypeSelect) {
-
-
-
-
-
-    leafTypeSelect.addEventListener('change', handleLeafTypeChange);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  calculate();
-
-
-
-
-
-});
-
-
-
-
-
-
-
-// =========================================================================
+  });
+
+
+
+
+
+
+
+
+
+
+
+  // Dedicated Dropdown change listeners for instant factor update
+
+
+
+
+
+  const lamTypeSelect = document.getElementById('lamType');
+
+
+
+
+
+  if (lamTypeSelect) {
+
+
+
+
+
+    lamTypeSelect.addEventListener('change', handleLamTypeChange);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  const leafTypeSelect = document.getElementById('leafType');
+
+
+
+
+
+  if (leafTypeSelect) {
+
+
+
+
+
+    leafTypeSelect.addEventListener('change', handleLeafTypeChange);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  calculate();
+
+
+
+
+
+});
+
+
+
+
+
+
+
+// =========================================================================
 // AS PRINT GALLERY - DEDICATED CUSTOM GST BILL & INVOICE STUDIO
 // =========================================================================
 
@@ -4296,66 +4338,86 @@ function renderCustomInvoicePreview() {
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-                                    <!-- Summary Rows: Colspan 3 + Colspan 2 + Colspan 1 -->
-            <tr class="bill-summary-row" style="background:#fafafa;">
-              <td colspan="3" style="border-right:1.5px solid #000; font-size:10px; padding:4px 6px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
-                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
-                  <span style="font-weight:bold; color:#0f172a;">
-                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
-                  </span>
+                                    <!-- Exact Match to Physical Yellow Bill Book -->
+            <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
+              <td colspan="4" rowspan="5" style="vertical-align:top; padding:6px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
+                <div style="font-size:11px; margin-bottom:6px; line-height:1.4;">
+                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:70%;">${wordsText}</span>
+                </div>
+                <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:60%;">${taxWordsText}</span>
+                </div>
+                <div style="font-size:10.5px; margin-top:6px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                  <span>Amount Of Tax Subject To Revrese Charge :</span>
+                  <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
+                  <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
                 </div>
               </td>
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap;">Total Before Tax</td>
-              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; white-space:nowrap;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
+                Total Amount Before Tax
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
             </tr>
 
-            <!-- Final Grand Total Row -->
-            <tr class="bill-total-final-row" style="background:#fafafa;">
-              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
-                GST on Reverse Charge: ₹0.00
+            <tr class="bill-summary-row">
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
               </td>
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; white-space:nowrap;">
-                Total Amount After Tax
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${cgstAmt > 0 ? `${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (igstAmt > 0 ? `${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00')}
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 8px; white-space:nowrap;">
+            </tr>
+
+            <tr class="bill-summary-row">
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${sgstAmt > 0 ? `${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00'}
+              </td>
+            </tr>
+
+            <tr class="bill-summary-row" style="background:#f8fafc;">
+              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+                Total Tax Amount
+              </td>
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+                ${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+            </tr>
+
+            <tr class="bill-total-final-row" style="background:#f1f5f9;">
+              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
+                GST Total Amount After Tax
+              </td>
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
           </tbody>
         </table>
-
-        <!-- Amount In Words Box -->
-        <div class="bill-words-section">
-          <div style="margin-bottom:3px;">
-            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
-          </div>
-          <div>
-            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
-          </div>
-        </div>
       </div>
 
       <!-- Bottom Section: Terms, Bank Details & Signature -->
       <div class="bill-footer-section">
         <div class="bill-terms-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
-          <div>1. Goods once sold will not be taken back.</div>
-          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
-          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px; text-transform:uppercase;">TERMS &amp; CONDITIONS</div>
+          <div>1. Goods once should will not be taken back.</div>
+          <div>2. All disputes are subject to Ghaziabad Jurisdiction only.</div>
         </div>
 
         <div class="bill-bank-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
-          <div>Bank : <b>HDFC BANK</b></div>
-          <div>A/c No. : <b>50200098986238</b></div>
-          <div>IFSC : <b>HDFC0004729</b></div>
-          <div>Branch : <b>LONI GHAZIABAD</b></div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details.:</div>
+          <div>Bank Name : <b>HDFC</b></div>
+          <div>BANK A/C : <b>50200098986238</b></div>
+          <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
         </div>
 
         <div class="bill-sign-box">
-          <div style="font-weight:bold; font-size:11px;">For AS PRINT GALLERY</div>
-          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
+          <div style="font-weight:bold; font-size:11.5px;">For: <b>A S PRINT GALLERY</b></div>
+          <div style="font-size:11px; font-weight:bold; margin-top:35px;">Signature</div>
         </div>
       </div>
 

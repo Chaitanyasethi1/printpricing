@@ -2637,7 +2637,7 @@
 
 
 
-              Total Cost: <b id="batchTotalCost">₹0.00</b> | Margin: <b id="batchTotalProfit" style="color:var(--success);">₹0.00</b>
+              Total Cost: <b id="batchTotalCost">₹0.00</b> | Margin: <b id="batchTotalProfit" style="color:var(--success);">₹0.00</b><span id="batchGstBreakdown" style="display:none; color:var(--primary);"> | GST: <b id="batchTotalGst">₹0.00</b></span>
 
 
 
@@ -3334,6 +3334,33 @@
 
 
 
+            </div>
+            <!-- GST Tax Selector & Price with GST -->
+            <div style="margin-top:12px; padding:12px; background:var(--bg-card-sub); border:1.5px solid var(--border); border-radius:var(--radius-md);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <label for="calcGstRate" style="font-size:0.82rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:5px;">
+                  <span>🏛️</span> GST Tax Rate (%):
+                </label>
+                <div style="display:flex; align-items:center; gap:4px; max-width:85px;">
+                  <input id="calcGstRate" type="number" min="0" max="100" step="1" value="0" placeholder="0" oninput="calculate()" style="width:55px; padding:4px 6px; font-size:13px; font-weight:800; text-align:center; border:1.5px solid var(--primary); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+                  <span style="font-size:12px; font-weight:700; color:var(--text-muted);">%</span>
+                </div>
+              </div>
+              <div class="chips-row" style="margin-bottom:8px; gap:5px;">
+                <button type="button" class="chip active" data-chip-type="calcGst" data-val="0" onclick="setCalcGst(0)">0% (Exempt)</button>
+                <button type="button" class="chip" data-chip-type="calcGst" data-val="5" onclick="setCalcGst(5)">5%</button>
+                <button type="button" class="chip" data-chip-type="calcGst" data-val="12" onclick="setCalcGst(12)">12%</button>
+                <button type="button" class="chip" data-chip-type="calcGst" data-val="18" onclick="setCalcGst(18)">18%</button>
+                <button type="button" class="chip" data-chip-type="calcGst" data-val="28" onclick="setCalcGst(28)">28%</button>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted); padding:5px 0; border-top:1px dashed var(--border);">
+                <span>GST Tax / Sheet:</span>
+                <b id="calcGstAmount" style="color:var(--primary); font-size:12px;">+₹0.00</b>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.88rem; font-weight:800; color:#15803d; padding:6px 0; border-top:1px solid var(--border);">
+                <span>Final Sale Price (Incl. GST):</span>
+                <span id="calcFinalPriceWithGst" style="font-size:1.15rem; color:#15803d; font-weight:900;">₹0.00</span>
+              </div>
             </div>
 
 
