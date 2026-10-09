@@ -4786,22 +4786,34 @@ function downloadCustomBillPDF() {
   const originalTitle = document.title;
   document.title = baseName;
 
+  if (typeof renderCustomInvoicePreview === 'function') {
+    renderCustomInvoicePreview();
+  }
+
   const element = document.getElementById('printableInvoice');
-  if (!element) return;
+  if (!element) {
+    showToast('⚠️ Preview not ready, opening Print/PDF dialog...');
+    window.print();
+    setTimeout(() => { document.title = originalTitle; }, 2500);
+    return;
+  }
 
   if (typeof html2pdf !== 'undefined') {
     showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
-      margin: [3, 4, 3, 4],
+      margin: [2, 3, 2, 3],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save().then(() => {
       showToast(`✅ PDF downloaded: ${filename}`);
       document.title = originalTitle;
-    }).catch(() => {
+    }).catch((err) => {
+      console.warn('html2pdf direct save failed, opening print dialog:', err);
+      showToast('⚠️ Direct PDF export issue, opening Print dialog...');
+      window.print();
       document.title = originalTitle;
     });
   } else {
@@ -4820,22 +4832,34 @@ function downloadQuotationPDF() {
   const originalTitle = document.title;
   document.title = baseName;
 
+  if (typeof renderQuotationPreview === 'function') {
+    renderQuotationPreview();
+  }
+
   const element = document.getElementById('printableQuotation');
-  if (!element) return;
+  if (!element) {
+    showToast('⚠️ Preview not ready, opening Print/PDF dialog...');
+    window.print();
+    setTimeout(() => { document.title = originalTitle; }, 2500);
+    return;
+  }
 
   if (typeof html2pdf !== 'undefined') {
     showToast(`⏳ Generating ${baseName}.pdf...`);
     const opt = {
-      margin: [3, 4, 3, 4],
+      margin: [2, 3, 2, 3],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save().then(() => {
       showToast(`✅ PDF downloaded: ${filename}`);
       document.title = originalTitle;
-    }).catch(() => {
+    }).catch((err) => {
+      console.warn('html2pdf direct save failed, opening print dialog:', err);
+      showToast('⚠️ Direct PDF export issue, opening Print dialog...');
+      window.print();
       document.title = originalTitle;
     });
   } else {
