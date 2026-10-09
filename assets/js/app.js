@@ -3037,6 +3037,20 @@ function renderQuotationPreview() {
     displayDesc = specs.join(' | ');
   }
 
+  const itemRowsHtml = `
+    <tr>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">1</td>
+      <td style="text-align:left; border-right:1.5px solid #000; padding:6px 8px;">
+        <div style="font-weight:900; font-size:12px; color:#000;">${jobTitle}</div>
+        <div style="font-size:10.5px; color:#334155; margin-top:3px; line-height:1.35;">${displayDesc}</div>
+      </td>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">${hsn}</td>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
+      <td style="text-align:right; font-weight:bold; border-right:1.5px solid #000; padding:6px 6px;">₹${billRate.toFixed(2)}</td>
+      <td style="text-align:right; font-weight:bold; padding:6px 8px;">₹${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+    </tr>
+  `;
+
   let emptyRowsHtml = `
     <tr style="height:320px;">
       <td style="border-right:1.5px solid #000;"></td>
