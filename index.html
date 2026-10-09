@@ -3678,18 +3678,22 @@
       <!-- Dedicated Custom Bill / Tax Invoice Modal (Fully Customizable Multi-Item Bill Book) -->
   <div class="modal-backdrop" id="customInvoiceModal">
     <div class="modal-content" style="max-width:1080px; width:95%;">
-      <div class="modal-header" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding:14px 20px;">
-        <h3 style="font-size:1.2rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <span>🧾</span> AS PRINT GALLERY — Multi-Item Bill & Tax Invoice Studio
-        </h3>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <button class="btn-pill primary" style="padding:6px 12px; font-size:12px; font-weight:700;" onclick="startNewBlankBill()">
-            <span>➕</span> New Bill
+      <div class="modal-header" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+          <span style="font-size:1.2rem;">🧾</span>
+          <div style="min-width:0;">
+            <h3 style="font-size:1.05rem; font-weight:800; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Invoice Studio</h3>
+            <span class="desktop-only-tag" style="font-size:11px; color:var(--text-muted);">Multi-Item Bill &amp; Tax Invoice</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">
+          <button type="button" class="btn-pill primary" style="padding:5px 10px; font-size:11.5px; font-weight:700;" onclick="startNewBlankBill()">
+            <span>➕</span> New
           </button>
-          <button class="btn-pill" style="padding:6px 12px; font-size:12px;" onclick="openHistoryModal()">
-            <span>🗂️</span> Saved Records (<span id="savedCountBadge2">0</span>)
+          <button type="button" class="btn-pill" style="padding:5px 10px; font-size:11.5px;" onclick="openHistoryModal()">
+            <span>🗂️</span> Records (<span id="savedCountBadge2">0</span>)
           </button>
-          <button class="btn-icon" onclick="closeCustomInvoiceModal()" style="width:34px; height:34px; font-size:16px;">✕</button>
+          <button type="button" class="btn-icon" onclick="closeCustomInvoiceModal()" style="width:30px; height:30px; font-size:14px;">✕</button>
         </div>
       </div>
       
@@ -3867,14 +3871,16 @@
         </div>
       </div>
 
-      <div class="modal-footer" style="padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <button class="btn-pill" onclick="closeCustomInvoiceModal()">Close</button>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save Bill</button>
-          <button class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
-          <button class="btn-pill" style="background:#475569; color:#fff; font-weight:700;" onclick="downloadCustomBillPDF()"><span>📥</span> Download PDF</button>
-          <button class="btn-pill btn-success" style="font-weight:800;" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp Bill + PDF</button>
-          <button class="btn-pill primary" style="font-weight:800; padding:10px 22px; font-size:14px;" onclick="printCustomInvoice()"><span>🖨️</span> Print (A4)</button>
+      <div class="modal-footer modal-footer-custom-bill">
+        <div class="modal-footer-grid-primary">
+          <button type="button" class="btn-pill" style="background:#0284c7; color:#fff;" onclick="saveCustomBillInvoice()"><span>💾</span> Save</button>
+          <button type="button" class="btn-pill btn-success" style="font-weight:800;" onclick="shareCustomBillWhatsApp()"><span>💬</span> WhatsApp</button>
+          <button type="button" class="btn-pill primary" style="font-weight:800;" onclick="printCustomInvoice()"><span>🖨️</span> Print (A4)</button>
+        </div>
+        <div class="modal-footer-grid-secondary">
+          <button type="button" class="btn-pill" style="background:#475569; color:#fff;" onclick="downloadCustomBillPDF()"><span>📥</span> PDF</button>
+          <button type="button" class="btn-pill" onclick="copyCustomBillText()"><span>📋</span> Copy Text</button>
+          <button type="button" class="btn-pill" style="background:var(--bg-card-sub); color:var(--text);" onclick="closeCustomInvoiceModal()"><span>✕</span> Close</button>
         </div>
       </div>
     </div>
@@ -3897,16 +3903,20 @@
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button class="btn-pill" onclick="closeQuotationModal()">Close</button>
-        <button class="btn-pill" onclick="copyQuoteToClipboard()"><span>📋</span> Copy Text</button>
-        <button class="btn-pill btn-success" onclick="shareWhatsApp()"><span>💬</span> WhatsApp Quote</button>
-        <button class="btn-pill primary" onclick="printQuotation()"><span>🖨️</span> Print / Save as PDF</button>
-      </div>
-    </div>
-  </div>
-
-    <!-- Saved Invoices History & Database Records Modal -->
+      <div class="modal-footer modal-footer-quote">
+        <div class="modal-footer-grid-primary">
+          <button type="button" class="btn-pill btn-success" style="font-weight:800;" onclick="shareWhatsApp()"><span>💬</span> WhatsApp Quote</button>
+          <button type="button" class="btn-pill primary" style="font-weight:800;" onclick="printQuotation()"><span>🖨️</span> Print / PDF</button>
+        </div>
+        <div class="modal-footer-grid-secondary">
+          <button type="button" class="btn-pill" onclick="copyQuoteToClipboard()"><span>📋</span> Copy Text</button>
+          <button type="button" class="btn-pill" style="background:var(--bg-card-sub); color:var(--text);" onclick="closeQuotationModal()"><span>✕</span> Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Invoices History & Database Records Modal -->
   <div class="modal-backdrop" id="invoiceHistoryModal">
     <div class="modal-content" style="max-width:960px; width:95%;">
       <div class="modal-header" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding:14px 20px;">
