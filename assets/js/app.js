@@ -85,7 +85,27 @@ function extractCleanPhoneNumber(phoneStr) {
 
 
 function handleJobTypeInput(val) {
-  setCustomPresetActive();
+  const trimmed = (val || '').trim().toLowerCase();
+  const presetKeys = ['sweetBox', 'visitingCard', 'monocarton', 'bookCover', 'flyer'];
+  const titles = { sweetBox: 'sweet box', visitingCard: 'visiting card', monocarton: 'monocarton', bookCover: 'book cover', flyer: 'flyer' };
+  let matchedKey = null;
+  if (typeof PRESETS !== 'undefined') {
+    for (const k of presetKeys) {
+      const p = PRESETS[k];
+      if (p && (p.name.toLowerCase() === trimmed || k.toLowerCase() === trimmed || (titles[k] && trimmed.includes(titles[k])))) {
+        matchedKey = k;
+        break;
+      }
+    }
+  }
+  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
+  if (matchedKey) {
+    const chip = document.getElementById('preset-' + matchedKey);
+    if (chip) chip.classList.add('active');
+  } else {
+    const customChip = document.getElementById('preset-custom');
+    if (customChip) customChip.classList.add('active');
+  }
   calculate();
 }
 
@@ -674,7 +694,12 @@ function calculate() {
   updateText('heroBatchTotal', money(totalBatchPrice));
   updateText('heroBatchCost', money(totalBatchCost));
   updateText('heroBatchProfit', money(totalBatchProfit));
+  updateText('batchTotalPrice', money(totalBatchPrice));
+  updateText('batchTotalCost', money(totalBatchCost));
+  updateText('batchTotalProfit', money(totalBatchProfit));
   updateText('heroWeight', activeHeroWeight > 0 ? activeHeroWeight.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
+  
+  if (typeof syncBatchPills === 'function') syncBatchPills(batchQty);
 
   // Itemized Breakdown: 3 Substrates
   updateText('printedSheetCost', money(printedPaperCost));
@@ -1556,24 +1581,19 @@ function setSheetSize(sl, sw) {
 
 
 
-function setBatchQty(qty) {
-
-
-
-
-
-  document.getElementById('batchQty').value = qty;
-
-
-
-
-
-  calculate();
-
-
-
-
-
+function syncBatchPills(qty) {
+  const target = parseFloat(qty) || (document.getElementById('batchQty') ? parseFloat(document.getElementById('batchQty').value) : 1000);
+  document.querySelectorAll('.batch-pill').forEach(btn => {
+    const bVal = parseFloat(btn.getAttribute('data-qty'));
+    btn.classList.toggle('active', Math.abs(bVal - target) < 0.1);
+  });
+}
+
+function setBatchQty(qty) {
+  const el = document.getElementById('batchQty');
+  if (el) el.value = qty;
+  syncBatchPills(qty);
+  calculate();
 }
 
 
@@ -2254,262 +2274,54 @@ function loadPreset(key) {
     return;
   }
   const p = PRESETS[key];
+  if (!p) return;
+
   const jobTypeInput = document.getElementById('jobType');
-  if (jobTypeInput && p) {
+  if (jobTypeInput) {
     const titles = { sweetBox: 'Sweet Box Packaging', visitingCard: 'Visiting Card Sheet', monocarton: 'Monocarton Box', bookCover: 'Book Cover', flyer: 'Flyer / Brochure' };
-    jobTypeInput.value = titles[key] || 'Custom Job';
-  }
-
-
-
-
-
-  if (!p) return;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('sl').value = p.sl;
-
-
-
-
-
-  document.getElementById('sw').value = p.sw;
-
-
-
-
-
-  document.getElementById('gsm').value = p.gsm;
-
-
-
-
-
-  if (document.getElementById('pr')) document.getElementById('pr').value = p.pr; if (document.getElementById('paperRate')) document.getElementById('paperRate').value = p.pr;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('lamType').value = p.lamType;
-
-
-
-
-
-  document.getElementById('ll').value = p.ll;
-
-
-
-
-
-  document.getElementById('lw').value = p.lw;
-
-
-
-
-
-  document.getElementById('divide').value = p.divide;
-
-
-
-
-
-
-
-
-
-
-
-  if (document.getElementById('leafType')) document.getElementById('leafType').value = p.leafType;
-
-
-
-
-
-  if (document.getElementById('leafL')) document.getElementById('leafL').value = p.leafL;
-
-
-
-
-
-  if (document.getElementById('leafW')) document.getElementById('leafW').value = p.leafW;
-
-
-
-
-
-  if (document.getElementById('leafDivide')) document.getElementById('leafDivide').value = p.leafDivide;
-
-
-
-
-
-  if (document.getElementById('leafBlock')) document.getElementById('leafBlock').value = p.leafBlock;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('printing').value = p.printing;
-
-
-
-
-
-  if (document.getElementById('plates')) document.getElementById('plates').value = p.plates;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('die').value = p.die;
-
-
-
-
-
-  if (document.getElementById('dieCharges')) document.getElementById('dieCharges').value = p.dieCharges;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('pasting').value = p.pasting;
-
-
-
-
-
-  document.getElementById('uv').value = p.uv;
-
-
-
-
-
-  document.getElementById('embossed').value = p.embossed;
-
-
-
-
-
-  document.getElementById('other').value = p.other;
-
-
-
-
-
-
-
-
-
-
-
-  document.getElementById('wastage').value = p.wastage;
-
-
-
-
-
-  document.getElementById('profit').value = p.profit;
-
-
-
-
-
-  if (document.getElementById('batchQty')) {
-
-
-
-
-
-    document.getElementById('batchQty').value = p.batchQty;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
-
-
-
-
-
-  const activeChip = document.getElementById('preset-' + key);
-
-
-
-
-
-  if (activeChip) activeChip.classList.add('active');
-
-
-
-
-
-
-
-
-
-
-
-  showToast(`Loaded "${p.name}" preset`);
-
-
-
-
-
-  calculate();
-
-
-
-
-
+    jobTypeInput.value = titles[key] || p.name || 'Custom Job';
+  }
+
+  if (document.getElementById('sl')) document.getElementById('sl').value = p.sl;
+  if (document.getElementById('sw')) document.getElementById('sw').value = p.sw;
+  if (document.getElementById('gsm')) document.getElementById('gsm').value = p.gsm;
+  if (document.getElementById('pr')) document.getElementById('pr').value = p.pr;
+  if (document.getElementById('paperRate')) document.getElementById('paperRate').value = p.pr;
+
+  if (document.getElementById('lamType')) document.getElementById('lamType').value = p.lamType;
+  if (document.getElementById('ll')) document.getElementById('ll').value = p.ll;
+  if (document.getElementById('lw')) document.getElementById('lw').value = p.lw;
+  if (document.getElementById('divide')) document.getElementById('divide').value = p.divide;
+
+  if (document.getElementById('leafType')) document.getElementById('leafType').value = p.leafType;
+  if (document.getElementById('leafL')) document.getElementById('leafL').value = p.leafL;
+  if (document.getElementById('leafW')) document.getElementById('leafW').value = p.leafW;
+  if (document.getElementById('leafDivide')) document.getElementById('leafDivide').value = p.leafDivide;
+  if (document.getElementById('leafBlock')) document.getElementById('leafBlock').value = p.leafBlock;
+
+  if (document.getElementById('printing')) document.getElementById('printing').value = p.printing;
+  if (document.getElementById('plates')) document.getElementById('plates').value = p.plates;
+  if (document.getElementById('die')) document.getElementById('die').value = p.die;
+  if (document.getElementById('dieCharges')) document.getElementById('dieCharges').value = p.dieCharges;
+  if (document.getElementById('pasting')) document.getElementById('pasting').value = p.pasting;
+  if (document.getElementById('uv')) document.getElementById('uv').value = p.uv;
+  if (document.getElementById('embossed')) document.getElementById('embossed').value = p.embossed;
+  if (document.getElementById('other')) document.getElementById('other').value = p.other;
+  if (document.getElementById('wastage')) document.getElementById('wastage').value = p.wastage;
+  if (document.getElementById('profit')) document.getElementById('profit').value = p.profit;
+  if (document.getElementById('batchQty')) {
+    document.getElementById('batchQty').value = p.batchQty;
+  }
+
+  document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
+  const activeChip = document.getElementById('preset-' + key);
+  if (activeChip) activeChip.classList.add('active');
+
+  if (typeof syncBatchPills === 'function') syncBatchPills(p.batchQty);
+  if (typeof syncActiveChips === 'function') syncActiveChips();
+
+  showToast(`Loaded "${p.name}" preset`);
+  calculate();
 }
 
 
@@ -3986,11 +3798,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   allInputs.forEach(input => {
     input.addEventListener('input', (e) => {
-      setCustomPresetActive();
       calculate();
     });
     input.addEventListener('change', (e) => {
-      setCustomPresetActive();
       calculate();
     });
     if (input.tagName === 'INPUT') {
