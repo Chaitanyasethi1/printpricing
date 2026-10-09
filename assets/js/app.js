@@ -625,21 +625,36 @@ function calculate() {
   const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0);
   const corrPr = (typeof n === 'function' ? n('corrPr') : 0);
   const corrAreaM2 = corrSl * corrSw * 0.00064516;
+  const corrWeightKg = (corrAreaM2 * corrGsm) / 1000;
   const corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
 
+  const kappaSl = (typeof n === 'function' ? n('kappaSl') : 0) || sl;
+  const kappaSw = (typeof n === 'function' ? n('kappaSw') : 0) || sw;
   const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0);
   const kappaCost = kappaPr; // Direct Sheet / Board Rate (GSM removed as requested)
 
   let paperCost = 0;
+  let substrateTitle = '📄 Printed Sheet (Top Liner / Paper)';
+  let substrateDotColor = '#2563eb';
+  let activeWeightGrams = 0;
+
   if (currentSubstrateTab === 'corr') {
     paperCost = corrCost > 0 ? corrCost : printedPaperCost;
+    substrateTitle = '📦 Corrugated Sheet (Fluting / Craft)';
+    substrateDotColor = '#d97706';
+    activeWeightGrams = corrWeightKg * 1000;
   } else if (currentSubstrateTab === 'kappa') {
     paperCost = kappaCost > 0 ? kappaCost : printedPaperCost;
+    substrateTitle = '📑 Kappa Board Sheet (Rigid Hardboard)';
+    substrateDotColor = '#7c3aed';
+    activeWeightGrams = 0;
   } else {
     paperCost = printedPaperCost;
+    substrateTitle = '📄 Printed Sheet (Top Liner / Paper)';
+    substrateDotColor = '#2563eb';
+    activeWeightGrams = weightKg * 1000;
   }
-
-  const weightGrams = weightKg * 1000;
+const weightGrams = weightKg * 1000;
 
 
 
@@ -1023,30 +1038,47 @@ function calculate() {
 
 
 
-  // Itemized Breakdown Update
-
-
-
-
-
-  updateText('weight', weightGrams.toFixed(2) + ' g');
-
-
-
-
-
-  updateText('paperCost', money(paperCost));
-
-
-
-
-
-
-
-
-
-
-
+  // Itemized Breakdown Substrate Update
+  const subNameEl = document.getElementById('substrateBreakdownName');
+  if (subNameEl) subNameEl.textContent = substrateTitle;
+
+  const subMetaEl = document.getElementById('substrateBreakdownMeta');
+  if (subMetaEl) {
+    if (currentSubstrateTab === 'kappa') {
+      subMetaEl.innerHTML = 'Size: <b>' + (kappaSl || 0) + '×' + (kappaSw || 0) + '"</b> | Flat Rate: <b>₹' + kappaPr + ' / Sheet</b>';
+    } else if (currentSubstrateTab === 'corr') {
+      subMetaEl.innerHTML = 'Size: <b>' + (corrSl || 0) + '×' + (corrSw || 0) + '"</b> | <b>' + corrGsm + ' GSM</b> | Weight: <b>' + (corrWeightKg * 1000).toFixed(2) + ' g</b>';
+    } else {
+      subMetaEl.innerHTML = 'Size: <b>' + (sl || 0) + '×' + (sw || 0) + '"</b> | <b>' + gsm + ' GSM</b> | Weight: <b>' + (weightKg * 1000).toFixed(2) + ' g</b>';
+    }
+  }
+
+  const subDotEl = document.getElementById('substrateBreakdownDot');
+  if (subDotEl) subDotEl.style.background = substrateDotColor;
+
+  updateText('weight', activeWeightGrams > 0 ? activeWeightGrams.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
+  updateText('heroWeight', activeWeightGrams > 0 ? activeWeightGrams.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
+  updateText('paperCost', money(paperCost));
+
+  // Store global result state
+  window.currentCalcBreakdown = {
+    jobTitle: document.getElementById('jobType')?.value || 'Custom Packaging Box',
+    batchQty: batchQty,
+    substrateTitle: substrateTitle,
+    paperCost: paperCost,
+    lamCost: lamCost,
+    totalLeafPerSheet: totalLeafPerSheet,
+    totalPrintingPerSheet: totalPrintingPerSheet,
+    totalDiePerSheet: totalDiePerSheet,
+    pasting: pasting,
+    uv: uv,
+    embossed: embossed,
+    other: other,
+    cost: cost,
+    finalPrice: finalPrice,
+    profitAmount: profitAmount
+  };
+
   // Lamination
 
 
@@ -4562,90 +4594,74 @@ function importHistoryFromJSON(event) {
 
 
 
-function copyQuoteToClipboard() {
-
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'TAX INVOICE';
-
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || '077';
-
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
-
-  const jobTitle = document.getElementById('jobTitleInput')?.value || 'LIFAFA';
-
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-
-  const billQty = document.getElementById('customBillingQty')?.value || '1000';
-
-  const billRate = document.getElementById('customBillingRate')?.value || '0';
-
-
-
-  const text = `🧾 *${docTitle} #${invoiceNo}*\n` +
-
-    `🏢 *AS PRINT GALLERY*\n` +
-
-    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
-
-    `--------------------------------\n` +
-
-    `👤 *Billed To:* ${clientName}\n` +
-
-    `📦 *Item / Goods:* ${jobTitle}\n` +
-
-    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
-
-    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
-
-    `--------------------------------\n` +
-
-    `*GSTIN:* 09AWKPN5910E1ZG\n` +
-
-    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
-
-    `Thank you for your business!`;
-
-
-
-  navigator.clipboard.writeText(text).then(() => {
-
-    showToast('Bill details copied to clipboard!');
-
-  }).catch(() => {
-
-    showToast('Failed to copy');
-
-  });
-
-}
-
-
-
+function copyQuoteToClipboard() {
+  const b = window.currentCalcBreakdown || {};
+  const jobTitle = document.getElementById('jobType')?.value || 'Custom Packaging Box';
+  const batchQty = n('batchQty') || 1000;
+  const rate = b.finalPrice ? b.finalPrice.toFixed(2) : '0.00';
+  const total = b.finalPrice ? (b.finalPrice * batchQty).toFixed(2) : '0.00';
+
+  const text = `📊 *ITEMIZED COST BREAKDOWN*\n` +
+    `🏢 *AS PRINT GALLERY*\n` +
+    `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
+    `--------------------------------\n` +
+    `📦 *Job Name:* ${jobTitle}\n` +
+    `🔢 *Quantity:* ${batchQty.toLocaleString('en-IN')} Sheets / Units\n` +
+    `--------------------------------\n` +
+    `${b.substrateTitle || '📄 Substrate'}: ₹${(b.paperCost || 0).toFixed(2)} / sheet\n` +
+    `✨ Lamination: ₹${(b.lamCost || 0).toFixed(2)} / sheet\n` +
+    `🌟 Foil / Leaf: ₹${(b.totalLeafPerSheet || 0).toFixed(2)} / sheet\n` +
+    `🎨 Printing & Plates: ₹${(b.totalPrintingPerSheet || 0).toFixed(2)} / sheet\n` +
+    `✂️ Die Cutting & Die: ₹${(b.totalDiePerSheet || 0).toFixed(2)} / sheet\n` +
+    `📦 Pasting / Assembly: ₹${(b.pasting || 0).toFixed(2)} / sheet\n` +
+    `⚡ UV / Emboss / Other: ₹${((b.uv || 0) + (b.embossed || 0) + (b.other || 0)).toFixed(2)} / sheet\n` +
+    `--------------------------------\n` +
+    `🏷️ *Final Price / Unit:* ₹${rate}\n` +
+    `💰 *Total Job Amount:* ₹${Number(total).toLocaleString('en-IN')}\n` +
+    `--------------------------------\n` +
+    `*GSTIN:* 09AWKPN5910E1ZG`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✅ Full Itemized Cost Breakdown copied to clipboard!');
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+}
+
 function shareWhatsApp() {
+  const b = window.currentCalcBreakdown || {};
   const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
   const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
   const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
   const clientPhone = document.getElementById('clientPhoneInput')?.value || '';
-  const jobTitle = document.getElementById('jobTitleInput')?.value || document.getElementById('jobType')?.value || 'PRINTED PACKAGING BOX';
-  const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
-  const billQty = document.getElementById('customBillingQty')?.value || document.getElementById('batchQty')?.value || '1000';
-  const billRate = document.getElementById('customBillingRate')?.value || (typeof currentResults !== 'undefined' && currentResults?.sellingPricePerUnit ? currentResults.sellingPricePerUnit.toFixed(2) : '0');
-  const totalAmt = (parseFloat(billQty) * parseFloat(billRate)).toFixed(2);
+  const jobTitle = document.getElementById('jobType')?.value || 'Custom Packaging Box';
+  const batchQty = n('batchQty') || 1000;
+  const rate = b.finalPrice ? b.finalPrice.toFixed(2) : '0.00';
+  const total = b.finalPrice ? (b.finalPrice * batchQty).toFixed(2) : '0.00';
 
-  let msg = `🧾 *${docTitle} #${invoiceNo}*\n` +
+  let msg = `🧾 *ESTIMATION QUOTATION #${invoiceNo}*\n` +
     `🏢 *AS PRINT GALLERY*\n` +
     `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
     `--------------------------------\n` +
-    `👤 *Billed To:* ${clientName}\n`;
+    `👤 *Quoted To:* ${clientName}\n`;
   if (clientPhone) {
     msg += `📱 *Mobile:* ${clientPhone}\n`;
   }
-  msg += `📦 *Item / Goods:* ${jobTitle}\n` +
-    `🔢 *Quantity:* ${billQty} ${billingUnit}\n` +
-    `🏷️ *Rate:* ₹${billRate} / ${billingUnit}\n` +
-    `💰 *Total Amount:* ₹${Number(totalAmt).toLocaleString('en-IN')}\n` +
+  msg += `📦 *Job Name:* ${jobTitle}\n` +
+    `🔢 *Quantity:* ${batchQty.toLocaleString('en-IN')} Units\n` +
+    `--------------------------------\n` +
+    `*ITEMIZED COST:*\n` +
+    `• ${b.substrateTitle || 'Substrate'}: ₹${(b.paperCost || 0).toFixed(2)} / sheet\n` +
+    `• Lamination: ₹${(b.lamCost || 0).toFixed(2)} / sheet\n` +
+    `• Leaf / Foil: ₹${(b.totalLeafPerSheet || 0).toFixed(2)} / sheet\n` +
+    `• Printing & Plates: ₹${(b.totalPrintingPerSheet || 0).toFixed(2)} / sheet\n` +
+    `• Die Cutting: ₹${(b.totalDiePerSheet || 0).toFixed(2)} / sheet\n` +
+    `• Pasting & Extras: ₹${((b.pasting || 0) + (b.uv || 0) + (b.embossed || 0) + (b.other || 0)).toFixed(2)} / sheet\n` +
+    `--------------------------------\n` +
+    `🏷️ *Final Price / Unit:* ₹${rate}\n` +
+    `💰 *Grand Total:* ₹${Number(total).toLocaleString('en-IN')}\n` +
     `--------------------------------\n` +
     `*GSTIN:* 09AWKPN5910E1ZG\n` +
-    `*Bank:* HDFC A/C: 50200098986238 | IFSC: HDFC0004729\n` +
     `Thank you for your business!`;
 
   const cleanPhone = extractCleanPhoneNumber(clientPhone);
