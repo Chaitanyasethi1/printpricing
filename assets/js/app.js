@@ -1,12 +1,10 @@
 
 
 
-let isCorrugatedEnabled = false;
-let isKappaEnabled = false;
 let currentSubstrateTab = 'printed';
 
 function selectSubstrateTab(tab) {
-  currentSubstrateTab = tab;
+  currentSubstrateTab = tab || 'printed';
   const pPrinted = document.getElementById('panelPrintedSheet');
   const pCorr = document.getElementById('panelCorrSheet');
   const pKappa = document.getElementById('panelKappaSheet');
@@ -16,20 +14,26 @@ function selectSubstrateTab(tab) {
   const tKappa = document.getElementById('tabKappaSheet');
   
   if (tPrinted && pPrinted) {
-    if (tab === 'printed') {
+    if (currentSubstrateTab === 'printed') {
       tPrinted.classList.add('active');
       tPrinted.classList.remove('corr', 'kappa');
       pPrinted.style.display = 'block';
     } else {
-      tPrinted.classList.remove('active');
+      tPrinted.classList.remove('active', 'corr', 'kappa');
       pPrinted.style.display = 'none';
     }
   }
 
   if (tCorr && pCorr) {
-    if (tab === 'corr') {
+    if (currentSubstrateTab === 'corr') {
       tCorr.classList.add('active', 'corr');
       pCorr.style.display = 'block';
+      const sl = document.getElementById('sl')?.value;
+      const sw = document.getElementById('sw')?.value;
+      const corrSl = document.getElementById('corrSl');
+      const corrSw = document.getElementById('corrSw');
+      if (corrSl && (!corrSl.value || corrSl.value === '0') && sl && sl !== '0') corrSl.value = sl;
+      if (corrSw && (!corrSw.value || corrSw.value === '0') && sw && sw !== '0') corrSw.value = sw;
     } else {
       tCorr.classList.remove('active', 'corr');
       pCorr.style.display = 'none';
@@ -37,47 +41,26 @@ function selectSubstrateTab(tab) {
   }
 
   if (tKappa && pKappa) {
-    if (tab === 'kappa') {
+    if (currentSubstrateTab === 'kappa') {
       tKappa.classList.add('active', 'kappa');
       pKappa.style.display = 'block';
+      const sl = document.getElementById('sl')?.value;
+      const sw = document.getElementById('sw')?.value;
+      const kappaSl = document.getElementById('kappaSl');
+      const kappaSw = document.getElementById('kappaSw');
+      if (kappaSl && (!kappaSl.value || kappaSl.value === '0') && sl && sl !== '0') kappaSl.value = sl;
+      if (kappaSw && (!kappaSw.value || kappaSw.value === '0') && sw && sw !== '0') kappaSw.value = sw;
     } else {
       tKappa.classList.remove('active', 'kappa');
       pKappa.style.display = 'none';
     }
   }
+
+  if (typeof calculate === 'function') calculate();
 }
 
 function toggleSubstrateLayer(type) {
-  if (type === 'corr') {
-    isCorrugatedEnabled = !isCorrugatedEnabled;
-    const badge = document.getElementById('badgeCorrStatus');
-    const toggleBtn = document.getElementById('btnToggleCorrInner');
-    if (badge) {
-      badge.textContent = isCorrugatedEnabled ? 'Active' : 'Off';
-      badge.style.background = isCorrugatedEnabled ? '#dcfce7' : '#e2e8f0';
-      badge.style.color = isCorrugatedEnabled ? '#166534' : '#475569';
-    }
-    if (toggleBtn) {
-      toggleBtn.innerHTML = isCorrugatedEnabled ? '<span>✓</span> Corrugated Active (Click to Disable)' : '<span>➕</span> Enable Corrugated Layer';
-      toggleBtn.style.background = isCorrugatedEnabled ? '#16a34a' : 'var(--bg-card-sub)';
-      toggleBtn.style.color = isCorrugatedEnabled ? '#fff' : 'var(--text)';
-    }
-  } else if (type === 'kappa') {
-    isKappaEnabled = !isKappaEnabled;
-    const badge = document.getElementById('badgeKappaStatus');
-    const toggleBtn = document.getElementById('btnToggleKappaInner');
-    if (badge) {
-      badge.textContent = isKappaEnabled ? 'Active' : 'Off';
-      badge.style.background = isKappaEnabled ? '#dcfce7' : '#e2e8f0';
-      badge.style.color = isKappaEnabled ? '#166534' : '#475569';
-    }
-    if (toggleBtn) {
-      toggleBtn.innerHTML = isKappaEnabled ? '<span>✓</span> Kappa Board Active (Click to Disable)' : '<span>➕</span> Enable Kappa Board Layer';
-      toggleBtn.style.background = isKappaEnabled ? '#7c3aed' : 'var(--bg-card-sub)';
-      toggleBtn.style.color = isKappaEnabled ? '#fff' : 'var(--text)';
-    }
-  }
-  if (typeof calculate === 'function') calculate();
+  selectSubstrateTab(type);
 }
 
 
@@ -637,23 +620,25 @@ function calculate() {
   const weightKg = (areaM2 * gsm) / 1000;
   const printedPaperCost = weightKg * pr;
 
-  let corrCost = 0;
-  if (isCorrugatedEnabled) {
-    const corrSl = (typeof n === 'function' ? n('corrSl') : 0) || sl;
-    const corrSw = (typeof n === 'function' ? n('corrSw') : 0) || sw;
-    const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0);
-    const corrPr = (typeof n === 'function' ? n('corrPr') : 0);
-    const corrAreaM2 = corrSl * corrSw * 0.00064516;
-    corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
+  const corrSl = (typeof n === 'function' ? n('corrSl') : 0) || sl;
+  const corrSw = (typeof n === 'function' ? n('corrSw') : 0) || sw;
+  const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0);
+  const corrPr = (typeof n === 'function' ? n('corrPr') : 0);
+  const corrAreaM2 = corrSl * corrSw * 0.00064516;
+  const corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
+
+  const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0);
+  const kappaCost = kappaPr; // Direct Sheet / Board Rate (GSM removed as requested)
+
+  let paperCost = 0;
+  if (currentSubstrateTab === 'corr') {
+    paperCost = corrCost > 0 ? corrCost : printedPaperCost;
+  } else if (currentSubstrateTab === 'kappa') {
+    paperCost = kappaCost > 0 ? kappaCost : printedPaperCost;
+  } else {
+    paperCost = printedPaperCost;
   }
 
-  let kappaCost = 0;
-  if (isKappaEnabled) {
-    const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0);
-    kappaCost = kappaPr; // Direct Sheet / Board Rate (GSM removed as requested)
-  }
-
-  const paperCost = printedPaperCost + corrCost + kappaCost;
   const weightGrams = weightKg * 1000;
 
 

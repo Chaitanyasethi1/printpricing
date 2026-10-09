@@ -442,18 +442,18 @@
               <span>📄</span> Printed Sheet
             </button>
             <button type="button" class="substrate-tab" id="tabCorrSheet" onclick="selectSubstrateTab('corr')">
-              <span>📦</span> Corrugated Sheet <span class="substrate-status-pill" id="badgeCorrStatus" style="background:#e2e8f0; color:#475569;">Off</span>
+              <span>📦</span> Corrugated Sheet
             </button>
             <button type="button" class="substrate-tab" id="tabKappaSheet" onclick="selectSubstrateTab('kappa')">
-              <span>📑</span> Kappa Board <span class="substrate-status-pill" id="badgeKappaStatus" style="background:#e2e8f0; color:#475569;">Off</span>
+              <span>📑</span> Kappa Board
             </button>
           </div>
 
           <!-- 1A. PRIMARY: PRINTED SHEET PANEL -->
-          <div id="panelPrintedSheet" class="sheet-layer-card" style="background:var(--bg-card); border:1.5px solid var(--border); border-radius:var(--radius-md); padding:14px; margin-bottom:10px;">
+          <div id="panelPrintedSheet" class="sheet-layer-card" style="background:var(--bg-card); border:1.5px solid var(--primary); border-radius:var(--radius-md); padding:14px; margin-bottom:10px;">
             <div style="font-size:0.88rem; font-weight:800; color:var(--primary); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
               <span>📄 1A. Printed Sheet (Top Liner / Paper)</span>
-              <span style="font-size:11px; font-weight:700; color:#16a34a; background:#dcfce7; padding:2px 8px; border-radius:10px;">Primary Active</span>
+              <span style="font-size:11px; font-weight:700; color:#16a34a; background:#dcfce7; padding:2px 8px; border-radius:10px;">Active</span>
             </div>
 
             <div class="grid-2">
@@ -521,9 +521,7 @@
           <div id="panelCorrSheet" class="sheet-layer-card" style="display:none; background:var(--bg-card); border:1.5px solid #d97706; border-radius:var(--radius-md); padding:14px; margin-bottom:10px;">
             <div style="font-size:0.88rem; font-weight:800; color:#d97706; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
               <span>📦 1B. Corrugated Sheet (Fluting / Craft Backing)</span>
-              <button type="button" class="btn-pill" id="btnToggleCorrInner" style="font-size:11.5px; padding:4px 12px; background:var(--bg-card-sub); color:var(--text); font-weight:700; border:1px solid var(--border);" onclick="toggleSubstrateLayer('corr')">
-                <span>➕</span> Enable Corrugated Layer
-              </button>
+              <span style="font-size:11px; font-weight:700; color:#d97706; background:#fef3c7; padding:2px 8px; border-radius:10px;">Active</span>
             </div>
             <div class="grid-2">
               <div class="input-field">
@@ -575,9 +573,7 @@
           <div id="panelKappaSheet" class="sheet-layer-card" style="display:none; background:var(--bg-card); border:1.5px solid #7c3aed; border-radius:var(--radius-md); padding:14px; margin-bottom:10px;">
             <div style="font-size:0.88rem; font-weight:800; color:#7c3aed; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
               <span>📑 1C. Kappa Board Sheet (Rigid Hardboard)</span>
-              <button type="button" class="btn-pill" id="btnToggleKappaInner" style="font-size:11.5px; padding:4px 12px; background:var(--bg-card-sub); color:var(--text); font-weight:700; border:1px solid var(--border);" onclick="toggleSubstrateLayer('kappa')">
-                <span>➕</span> Enable Kappa Board Layer
-              </button>
+              <span style="font-size:11px; font-weight:700; color:#7c3aed; background:#ede9fe; padding:2px 8px; border-radius:10px;">Active</span>
             </div>
             <div class="grid-2">
               <div class="input-field">
@@ -3913,7 +3909,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=20261008_right_border_1791479644192"></script>
+  <script src="assets/js/app.js?v=20261009_tabs_auto_active"></script>
 
 
 
