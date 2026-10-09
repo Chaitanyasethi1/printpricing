@@ -533,14 +533,14 @@
               <div class="input-field">
                 <label for="sl">Printed Sheet Length <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="sl" type="number" step="any" placeholder="0" value="0">
+                  <input id="sl" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
               <div class="input-field">
                 <label for="sw">Printed Sheet Width <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="sw" type="number" step="any" placeholder="0" value="0">
+                  <input id="sw" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
@@ -560,7 +560,7 @@
               <div class="input-field">
                 <label for="gsm">GSM (Paper Thickness)</label>
                 <div class="input-wrapper">
-                  <input id="gsm" type="number" step="any" placeholder="0" value="0">
+                  <input id="gsm" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">gsm</span>
                 </div>
                 <div class="chips-row">
@@ -576,7 +576,7 @@
               <div class="input-field">
                 <label for="pr">Paper Rate <span class="unit">(₹ / Kg)</span></label>
                 <div class="input-wrapper">
-                  <input id="pr" type="number" step="any" placeholder="0" value="0">
+                  <input id="pr" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">₹/kg</span>
                 </div>
                 <div class="chips-row">
@@ -600,14 +600,14 @@
               <div class="input-field">
                 <label for="corrSl">Corrugated Sheet Length <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="corrSl" type="number" step="any" placeholder="0" value="0">
+                  <input id="corrSl" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
               <div class="input-field">
                 <label for="corrSw">Corrugated Sheet Width <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="corrSw" type="number" step="any" placeholder="0" value="0">
+                  <input id="corrSw" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
@@ -616,7 +616,7 @@
               <div class="input-field">
                 <label for="corrGsm">Corrugated GSM / Flute Weight</label>
                 <div class="input-wrapper">
-                  <input id="corrGsm" type="number" step="any" placeholder="0" value="0">
+                  <input id="corrGsm" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">gsm</span>
                 </div>
                 <div class="chips-row">
@@ -629,7 +629,7 @@
               <div class="input-field">
                 <label for="corrPr">Corrugated Rate <span class="unit">(₹ / Kg)</span></label>
                 <div class="input-wrapper">
-                  <input id="corrPr" type="number" step="any" placeholder="0" value="0">
+                  <input id="corrPr" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">₹/kg</span>
                 </div>
                 <div class="chips-row">
@@ -652,14 +652,14 @@
               <div class="input-field">
                 <label for="kappaSl">Kappa Board Length <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="kappaSl" type="number" step="any" placeholder="0" value="0">
+                  <input id="kappaSl" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
               <div class="input-field">
                 <label for="kappaSw">Kappa Board Width <span class="unit">(inch)</span></label>
                 <div class="input-wrapper">
-                  <input id="kappaSw" type="number" step="any" placeholder="0" value="0">
+                  <input id="kappaSw" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">in</span>
                 </div>
               </div>
@@ -668,7 +668,7 @@
               <div class="input-field" style="grid-column: span 2;">
                 <label for="kappaPr">Kappa Board Rate <span class="unit">(₹ / Sheet)</span></label>
                 <div class="input-wrapper">
-                  <input id="kappaPr" type="number" step="any" placeholder="0" value="0">
+                  <input id="kappaPr" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
                   <span class="input-suffix">₹/sheet</span>
                 </div>
                 <div class="chips-row">
@@ -831,7 +831,7 @@
 
 
 
-                <input id="divide" type="number" step="any" placeholder="2.5" value="0">
+                <input id="divide" type="number" step="any" placeholder="2.5" value="0" oninput="calculate()">
 
 
 
@@ -939,7 +939,7 @@
 
 
 
-                <input id="ll" type="number" step="any" placeholder="0" value="0">
+                <input id="ll" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -981,7 +981,7 @@
 
 
 
-                <input id="lw" type="number" step="any" placeholder="0" value="0">
+                <input id="lw" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1173,7 +1173,7 @@
 
 
 
-                <input id="leafDivide" type="number" step="any" placeholder="2.5" value="0">
+                <input id="leafDivide" type="number" step="any" placeholder="2.5" value="0" oninput="calculate()">
 
 
 
@@ -1281,7 +1281,7 @@
 
 
 
-                <input id="leafL" type="number" step="any" placeholder="0" value="0">
+                <input id="leafL" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1323,7 +1323,7 @@
 
 
 
-                <input id="leafW" type="number" step="any" placeholder="0" value="0">
+                <input id="leafW" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1365,7 +1365,7 @@
 
 
 
-                <input id="leafBlock" type="number" step="any" placeholder="0" value="0">
+                <input id="leafBlock" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1509,7 +1509,7 @@
 
 
 
-                <input id="printing" type="number" step="any" placeholder="0" value="0">
+                <input id="printing" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1587,7 +1587,7 @@
 
 
 
-                <input id="plates" type="number" step="any" placeholder="0" value="0">
+                <input id="plates" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1731,7 +1731,7 @@
 
 
 
-                <input id="die" type="number" step="any" placeholder="0" value="0">
+                <input id="die" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1809,7 +1809,7 @@
 
 
 
-                <input id="dieCharges" type="number" step="any" placeholder="0" value="0">
+                <input id="dieCharges" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1899,7 +1899,7 @@
 
 
 
-                <input id="pasting" type="number" step="any" placeholder="0" value="0">
+                <input id="pasting" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1941,7 +1941,7 @@
 
 
 
-                <input id="uv" type="number" step="any" placeholder="0" value="0">
+                <input id="uv" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -1983,7 +1983,7 @@
 
 
 
-                <input id="embossed" type="number" step="any" placeholder="0" value="0">
+                <input id="embossed" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -2025,7 +2025,7 @@
 
 
 
-                <input id="other" type="number" step="any" placeholder="0" value="0">
+                <input id="other" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -2133,7 +2133,7 @@
 
 
 
-                <input id="wastage" type="number" step="any" placeholder="0" value="0">
+                <input id="wastage" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -2217,7 +2217,7 @@
 
 
 
-                <input id="profit" type="number" step="any" placeholder="0" value="0">
+                <input id="profit" type="number" step="any" placeholder="0" value="0" oninput="calculate()">
 
 
 
@@ -2535,7 +2535,7 @@
 
 
 
-            <input id="batchQty" type="number" min="1" step="100" placeholder="1000" value="1000">
+            <input id="batchQty" type="number" min="1" step="100" placeholder="1000" value="1000" oninput="calculate()">
 
 
 

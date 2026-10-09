@@ -562,25 +562,10 @@ const PRESETS = {
 
 
 
-function calculate() {
-
-
-
-
-
-  const batchQty = n('batchQty') || 1;
-
-
-
-
-
-
-
-
-
-
-
-  // 1. Paper: square inches -> square meters -> weight -> cost
+function calculate() {
+  const batchQty = n('batchQty') || 1000;
+
+  // 1. Substrates Calculation
   const sl = n('sl');
   const sw = n('sw');
   const gsm = n('gsm');
@@ -608,414 +593,182 @@ function calculate() {
   const kappaCost = kappaPr;
 
   let paperCost = 0;
+  let substrateTitle = '📄 Printed Sheet';
+  let activeHeroWeight = weightGrams;
+
   if (currentSubstrateTab === 'corr') {
     paperCost = corrCost > 0 ? corrCost : printedPaperCost;
+    substrateTitle = '📦 Corrugated Sheet';
+    activeHeroWeight = corrWeightGrams;
   } else if (currentSubstrateTab === 'kappa') {
     paperCost = kappaCost > 0 ? kappaCost : printedPaperCost;
+    substrateTitle = '📑 Kappa Board';
+    activeHeroWeight = 0;
   } else {
     paperCost = printedPaperCost;
+    substrateTitle = '📄 Printed Sheet';
+    activeHeroWeight = weightGrams;
   }
 
-  // 2. Lamination: (Length * Width / Divide By) = Paise -> Rupees
-
-
-
-
-
-  const ll = n('ll');
-
-
-
-
-
-  const lw = n('lw');
-
-
-
-
-
-  const d = n('divide');
-
-
-
-
-
-  const lamType = document.getElementById('lamType') ? document.getElementById('lamType').value : 'None';
-
-
-
-
-
-
-
-
-
-
-
-  let lamPaise = (d && lamType !== 'None') ? ((ll * lw) / d) : 0;
-
-
-
-
-
-  const lamCost = lamPaise / 100;
-
-
-
-
-
-
-
-
-
-
-
-  // 3. Leaf / Foil (Lamination style formula): (Length * Width / Divide By) = Paise -> Rupees + Block
-
-
-
-
-
-  const leafType = document.getElementById('leafType') ? document.getElementById('leafType').value : 'None';
-
-
-
-
-
-  const leafL = n('leafL');
-
-
-
-
-
-  const leafW = n('leafW');
-
-
-
-
-
-  const leafDivide = n('leafDivide') || 2.5;
-
-
-
-
-
-  const leafBlockCharges = n('leafBlock');
-
-
-
-
-
-
-
-
-
-
-
-  let leafPaise = (leafDivide && leafType !== 'None') ? ((leafL * leafW) / leafDivide) : 0;
-
-
-
-
-
-  const leafCostPerSheet = leafPaise / 100;
-
-
-
-
-
-  const leafBlockCostPerSheet = batchQty > 0 ? (leafBlockCharges / batchQty) : 0;
-
-
-
-
-
-  const totalLeafPerSheet = leafCostPerSheet + leafBlockCostPerSheet;
-
-
-
-
-
-
-
-
-
-
-
-  // 4. Printing & Plates Charges
-
-
-
-
-
-  const printing = n('printing');
-
-
-
-
-
-  const plateCharges = n('plates');
-
-
-
-
-
-  const plateCostPerSheet = batchQty > 0 ? (plateCharges / batchQty) : 0;
-
-
-
-
-
-  const totalPrintingPerSheet = printing + plateCostPerSheet;
-
-
-
-
-
-
-
-
-
-
-
-  // 5. Finishing / Job Work: Die Cutting & Die Charges, Pasting, UV, Embossed, Other
-
-
-
-
-
-  const die = n('die');
-
-
-
-
-
-  const dieCharges = n('dieCharges');
-
-
-
-
-
-  const dieCostPerSheet = batchQty > 0 ? (dieCharges / batchQty) : 0;
-
-
-
-
-
-  const totalDiePerSheet = die + dieCostPerSheet;
-
-
-
-
-
-
-
-
-
-
-
-  const pasting = n('pasting');
-
-
-
-
-
-  const uv = n('uv');
-
-
-
-
-
-  const embossed = n('embossed');
-
-
-
-
-
-  const other = n('other');
-
-
-
-
-
-
-
-
-
-
-
-  // Direct Total Cost per Sheet
-
-
-
-
-
-  const direct = paperCost + lamCost + totalLeafPerSheet + totalPrintingPerSheet + totalDiePerSheet + pasting + uv + embossed + other;
-
-
-
-
-
-
-
-
-
-
-
-  // Wastage & Cost
-
-
-
-
-
-  const wastage = n('wastage');
-
-
-
-
-
-  const wastageCost = (direct * wastage) / 100;
-
-
-
-
-
-  const cost = direct + wastageCost;
-
-
-
-
-
-
-
-
-
-
-
-  // Margin & Final Sale Price
-
-
-
-
-
-  const profit = n('profit');
-
-
-
-
-
-  const profitAmount = (cost * profit) / 100;
-
-
-
-
-
-  const finalPrice = cost + profitAmount;
-
-
-
-
-
-
-
-
-
-
-
-  // Batch Totals
-
-
-
-
-
-  const totalBatchCost = cost * batchQty;
-
-
-
-
-
-  const totalBatchPrice = finalPrice * batchQty;
-
-
-
-
-
-  const totalBatchProfit = profitAmount * batchQty;
-
-
-
-
-
-
-
-
-
-
-
-  // Hero Section
-
-
-
-
-
-  updateText('heroFinalPrice', money(finalPrice));
-
-
-
-
-
-  updateText('heroUnitCost', money(cost));
-
-
-
-
-
-  updateText('heroUnitProfit', money(profitAmount));
-
-
-
-
-
-  updateText('heroWeight', weightGrams.toFixed(2) + ' g');
-
-
-
-
-
-
-
-
-
-
-
-  // Itemized Breakdown Substrate Update
-  const subNameEl = document.getElementById('substrateBreakdownName');
-  if (subNameEl) subNameEl.textContent = substrateTitle;
+  // 2. Lamination
+  const ll = n('ll');
+  const lw = n('lw');
+  const d = n('divide');
+  const lamType = document.getElementById('lamType') ? document.getElementById('lamType').value : 'None';
+  let lamPaise = (d && lamType !== 'None') ? ((ll * lw) / d) : 0;
+  const lamCost = lamPaise / 100;
 
-  const subMetaEl = document.getElementById('substrateBreakdownMeta');
-  if (subMetaEl) {
-    if (currentSubstrateTab === 'kappa') {
-      subMetaEl.innerHTML = 'Size: <b>' + (kappaSl || 0) + '×' + (kappaSw || 0) + '"</b> | Flat Rate: <b>₹' + kappaPr + ' / Sheet</b>';
-    } else if (currentSubstrateTab === 'corr') {
-      subMetaEl.innerHTML = 'Size: <b>' + (corrSl || 0) + '×' + (corrSw || 0) + '"</b> | <b>' + corrGsm + ' GSM</b> | Weight: <b>' + (corrWeightKg * 1000).toFixed(2) + ' g</b>';
-    } else {
-      subMetaEl.innerHTML = 'Size: <b>' + (sl || 0) + '×' + (sw || 0) + '"</b> | <b>' + gsm + ' GSM</b> | Weight: <b>' + (weightKg * 1000).toFixed(2) + ' g</b>';
-    }
+  // 3. Leaf / Foil
+  const leafType = document.getElementById('leafType') ? document.getElementById('leafType').value : 'None';
+  const leafL = n('leafL');
+  const leafW = n('leafW');
+  const leafDivide = n('leafDivide') || 2.5;
+  const leafBlockCharges = n('leafBlock');
+  let leafPaise = (leafDivide && leafType !== 'None') ? ((leafL * leafW) / leafDivide) : 0;
+  const leafCost = leafPaise / 100;
+  const leafBlockPerSheet = batchQty > 0 ? (leafBlockCharges / batchQty) : 0;
+  const totalLeafPerSheet = leafCost + leafBlockPerSheet;
+
+  // 4. Printing & Plates
+  const printing = n('printing');
+  const plateCharges = n('plates');
+  const plateCostPerSheet = batchQty > 0 ? (plateCharges / batchQty) : 0;
+  const totalPrintingPerSheet = printing + plateCostPerSheet;
+
+  // 5. Die & Die Charges
+  const die = n('die');
+  const dieCharges = n('dieCharges');
+  const dieCostPerSheet = batchQty > 0 ? (dieCharges / batchQty) : 0;
+  const totalDiePerSheet = die + dieCostPerSheet;
+
+  // 6. Finishing & Job Work
+  const pasting = n('pasting');
+  const uv = n('uv');
+  const embossed = n('embossed');
+  const other = n('other');
+
+  // Direct Unit Cost
+  const direct = paperCost + lamCost + totalLeafPerSheet + totalPrintingPerSheet + totalDiePerSheet + pasting + uv + embossed + other;
+
+  // 7. Wastage & Total Unit Cost
+  const wastage = n('wastage');
+  const wastageCost = (direct * wastage) / 100;
+  const cost = direct + wastageCost;
+
+  // 8. Margin & Final Sale Price
+  const profit = n('profit');
+  const profitAmount = (cost * profit) / 100;
+  const finalPrice = cost + profitAmount;
+
+  // 9. Batch Totals
+  const totalBatchCost = cost * batchQty;
+  const totalBatchPrice = finalPrice * batchQty;
+  const totalBatchProfit = profitAmount * batchQty;
+
+  // ================= UI UPDATES =================
+
+  // Hero Section
+  updateText('heroFinalPrice', money(finalPrice));
+  updateText('heroUnitCost', money(cost));
+  updateText('heroUnitProfit', money(profitAmount));
+  updateText('heroBatchTotal', money(totalBatchPrice));
+  updateText('heroBatchCost', money(totalBatchCost));
+  updateText('heroBatchProfit', money(totalBatchProfit));
+  updateText('heroWeight', activeHeroWeight > 0 ? activeHeroWeight.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
+
+  // Itemized Breakdown: 3 Substrates
+  updateText('printedSheetCost', money(printedPaperCost));
+  const pMeta = document.getElementById('printedSheetMeta');
+  if (pMeta) {
+    pMeta.innerHTML = (sl && sw && gsm) ? 'Size: <b>' + sl + '×' + sw + '"</b> | <b>' + gsm + ' GSM</b> | Weight: <b id="weight">' + weightGrams.toFixed(2) + ' g</b>' : 'Weight: <b id="weight">' + weightGrams.toFixed(2) + ' g</b>';
   }
 
-  const subDotEl = document.getElementById('substrateBreakdownDot');
-  if (subDotEl) subDotEl.style.background = substrateDotColor;
+  updateText('corrSheetCost', money(corrCost));
+  const cMeta = document.getElementById('corrSheetMeta');
+  if (cMeta) {
+    cMeta.innerHTML = (corrSl && corrSw && corrGsm) ? 'Size: <b>' + corrSl + '×' + corrSw + '"</b> | <b>' + corrGsm + ' GSM</b> | Weight: <b id="corrWeight">' + corrWeightGrams.toFixed(2) + ' g</b>' : 'Weight: <b id="corrWeight">' + corrWeightGrams.toFixed(2) + ' g</b>';
+  }
 
-  updateText('weight', activeWeightGrams > 0 ? activeWeightGrams.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
-  updateText('heroWeight', activeWeightGrams > 0 ? activeWeightGrams.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
+  updateText('kappaSheetCost', money(kappaCost));
+  const kMeta = document.getElementById('kappaSheetMeta');
+  if (kMeta) {
+    kMeta.innerHTML = (kappaSl && kappaSw) ? 'Size: <b>' + kappaSl + '×' + kappaSw + '"</b> | Sheet Rate: <b>₹' + kappaPr + '</b> (No GSM)' : 'Direct Sheet Rate: <b>₹' + kappaPr + '</b> (No GSM)';
+  }
+
+  // Highlight active selected substrate row
+  const rowP = document.getElementById('rowPrintedSheetBreakdown');
+  const rowC = document.getElementById('rowCorrSheetBreakdown');
+  const rowK = document.getElementById('rowKappaSheetBreakdown');
+  if (rowP) rowP.style.opacity = (currentSubstrateTab === 'printed' || printedPaperCost > 0) ? '1' : '0.6';
+  if (rowC) rowC.style.opacity = (currentSubstrateTab === 'corr' || corrCost > 0) ? '1' : '0.6';
+  if (rowK) rowK.style.opacity = (currentSubstrateTab === 'kappa' || kappaCost > 0) ? '1' : '0.6';
+
   updateText('paperCost', money(paperCost));
+  updateText('weight', activeHeroWeight > 0 ? activeHeroWeight.toFixed(2) + ' g' : '0 g');
 
-  // Store global result state
+  // Lamination
+  const lamNameEl = document.getElementById('lamName');
+  if (lamNameEl) {
+    lamNameEl.textContent = (lamType === 'None') ? 'Lamination' : lamType + ' Lamination';
+  }
+  const lamCostEl = document.getElementById('lamCost');
+  if (lamCostEl) {
+    lamCostEl.textContent = (lamType === 'None') ? '₹0.00' : `${lamPaise.toFixed(2)}p (${money(lamCost)})`;
+  }
+
+  // Leaf / Foil
+  const leafNameEl = document.getElementById('leafName');
+  if (leafNameEl) {
+    leafNameEl.textContent = (leafType === 'None') ? 'Leaf / Foil Stamping' : leafType + ' Stamping';
+  }
+  const leafCostEl = document.getElementById('leafCost');
+  if (leafCostEl) {
+    leafCostEl.textContent = (leafType === 'None') ? '₹0.00' : `${leafPaise.toFixed(2)}p (${money(totalLeafPerSheet)})`;
+  }
+
+  // Printing & Plates
+  updateText('rPrinting', money(totalPrintingPerSheet));
+  const rPrintingSub = document.getElementById('rPrintingSub');
+  if (rPrintingSub) {
+    rPrintingSub.textContent = plateCharges > 0 
+      ? `Imp: ${money(printing)} + Plates: ${money(plateCostPerSheet)}/sh` 
+      : 'Offset / Digital Impression';
+  }
+
+  // Die Cutting & Die Charges
+  updateText('rDie', money(totalDiePerSheet));
+  const rDieSub = document.getElementById('rDieSub');
+  if (rDieSub) {
+    rDieSub.textContent = dieCharges > 0 
+      ? `Punch: ${money(die)} + Die: ${money(dieCostPerSheet)}/sh` 
+      : 'Punching & Cutting';
+  }
+
+  // Pasting, UV, Embossed, Other, Wastage
+  updateText('rPasting', money(pasting));
+  updateText('rUv', money(uv));
+  updateText('rEmbossed', money(embossed));
+  updateText('rOther', money(other));
+  updateText('rWastage', money(wastageCost));
+
+  // Totals
+  updateText('total', money(cost));
+  updateText('final', money(finalPrice));
+  updateText('batchQuantityDisplay', batchQty.toLocaleString('en-IN') + ' Sheets');
+  updateText('rBatchQty', batchQty.toLocaleString('en-IN'));
+
+  // Visual simulation preview
+  if (typeof updateSheetVisual === 'function') updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType);
+
+  // Sync Global State
   window.currentCalcBreakdown = {
     jobTitle: document.getElementById('jobType')?.value || 'Custom Packaging Box',
     batchQty: batchQty,
     substrateTitle: substrateTitle,
     paperCost: paperCost,
+    printedPaperCost: printedPaperCost,
+    corrCost: corrCost,
+    kappaCost: kappaCost,
     lamCost: lamCost,
     totalLeafPerSheet: totalLeafPerSheet,
     totalPrintingPerSheet: totalPrintingPerSheet,
@@ -1024,473 +777,15 @@ function calculate() {
     uv: uv,
     embossed: embossed,
     other: other,
+    direct: direct,
+    wastageCost: wastageCost,
     cost: cost,
+    profitAmount: profitAmount,
     finalPrice: finalPrice,
-    profitAmount: profitAmount
+    sellingPricePerUnit: finalPrice
   };
+}
 
-  // Lamination
-
-
-
-
-
-  const lamNameEl = document.getElementById('lamName');
-
-
-
-
-
-  if (lamNameEl) {
-
-
-
-
-
-    lamNameEl.textContent = (lamType === 'None') ? 'Lamination' : lamType + ' Lamination';
-
-
-
-
-
-  }
-
-
-
-
-
-  const lamCostEl = document.getElementById('lamCost');
-
-
-
-
-
-  if (lamCostEl) {
-
-
-
-
-
-    lamCostEl.textContent = (lamType === 'None') 
-
-
-
-
-
-      ? '₹0.00' 
-
-
-
-
-
-      : `${lamPaise.toFixed(2)}p (${money(lamCost)})`;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  // Leaf / Foil
-
-
-
-
-
-  const leafNameEl = document.getElementById('leafName');
-
-
-
-
-
-  if (leafNameEl) {
-
-
-
-
-
-    leafNameEl.textContent = (leafType === 'None') ? 'Leaf / Foil Stamping' : leafType + ' Stamping';
-
-
-
-
-
-  }
-
-
-
-
-
-  const leafCostEl = document.getElementById('leafCost');
-
-
-
-
-
-  if (leafCostEl) {
-
-
-
-
-
-    if (leafType === 'None') {
-
-
-
-
-
-      leafCostEl.textContent = '₹0.00';
-
-
-
-
-
-    } else {
-
-
-
-
-
-      leafCostEl.textContent = `${leafPaise.toFixed(2)}p (${money(totalLeafPerSheet)})`;
-
-
-
-
-
-    }
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  // Printing & Plates
-
-
-
-
-
-  updateText('rPrinting', money(totalPrintingPerSheet));
-
-
-
-
-
-  const rPrintingSub = document.getElementById('rPrintingSub');
-
-
-
-
-
-  if (rPrintingSub) {
-
-
-
-
-
-    rPrintingSub.textContent = plateCharges > 0 
-
-
-
-
-
-      ? `Imp: ${money(printing)} + Plates: ${money(plateCostPerSheet)}/sh` 
-
-
-
-
-
-      : 'Offset / Digital Impression';
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  // Die Cutting & Die Charges
-
-
-
-
-
-  updateText('rDie', money(totalDiePerSheet));
-
-
-
-
-
-  const rDieSub = document.getElementById('rDieSub');
-
-
-
-
-
-  if (rDieSub) {
-
-
-
-
-
-    rDieSub.textContent = dieCharges > 0 
-
-
-
-
-
-      ? `Punch: ${money(die)} + Die: ${money(dieCostPerSheet)}/sh` 
-
-
-
-
-
-      : 'Punching & Cutting';
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  updateText('rPasting', money(pasting));
-
-
-
-
-
-  updateText('rUv', money(uv));
-
-
-
-
-
-  updateText('rEmbossed', money(embossed));
-
-
-
-
-
-  updateText('rOther', money(other));
-
-
-
-
-
-  updateText('rWastage', money(wastageCost));
-
-
-
-
-
-  updateText('total', money(cost));
-
-
-
-
-
-  updateText('final', money(finalPrice));
-
-
-
-
-
-
-
-
-
-
-
-  // Batch Multiplier Summary
-
-
-
-
-
-  updateText('batchQuantityDisplay', batchQty.toLocaleString('en-IN') + ' Sheets');
-
-
-
-
-
-  updateText('batchTotalCost', money(totalBatchCost));
-
-
-
-
-
-  updateText('batchTotalPrice', money(totalBatchPrice));
-
-
-
-
-
-  updateText('batchTotalProfit', money(totalBatchProfit));
-
-
-
-
-
-
-
-
-
-
-
-  // Formula Note Updates
-
-
-
-
-
-  const formulaEl = document.getElementById('formula');
-
-
-
-
-
-  if (formulaEl) {
-
-
-
-
-
-    formulaEl.innerHTML = (lamType === 'None')
-
-
-
-
-
-      ? '<span>ℹ️</span> <b>Lamination:</b> None'
-
-
-
-
-
-      : `<span>ℹ️</span> <b>Lamination:</b> ${ll}" × ${lw}" ÷ ${d} = <b>${lamPaise.toFixed(2)} Paise</b> (${money(lamCost)})`;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  const leafFormulaEl = document.getElementById('leafFormula');
-
-
-
-
-
-  if (leafFormulaEl) {
-
-
-
-
-
-    leafFormulaEl.innerHTML = (leafType === 'None')
-
-
-
-
-
-      ? '<span>ℹ️</span> <b>Leaf / Foil:</b> None'
-
-
-
-
-
-      : `<span>ℹ️</span> <b>Leaf:</b> ${leafL}" × ${leafW}" ÷ ${leafDivide} = <b>${leafPaise.toFixed(2)} Paise</b> (${money(leafCostPerSheet)}) + Block ₹${leafBlockCharges}`;
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  updateSheetVisual(sl, sw, ll, lw, lamType, leafL, leafW, leafType);
-
-
-
-
-
-  syncActiveChips();
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
 function updateText(id, text) {
 
 
