@@ -2733,85 +2733,44 @@
 
 
 
-          <div class="breakdown-list">
-
-
-
-
-
-            
-
-
-
-
-
-            <div class="breakdown-row">
-
-
-
-
-
-              <div class="row-meta">
-
-
-
-
-
-                <span class="dot" style="background:#3b82f6;"></span>
-
-
-
-
-
-                <div>
-
-
-
-
-
-                  <div class="name">Paper Substrate</div>
-
-
-
-
-
-                  <div class="sub-text">Weight: <b id="weight">0 g</b></div>
-
-
-
-
-
-                </div>
-
-
-
-
-
-              </div>
-
-
-
-
-
-              <div class="amount" id="paperCost">₹0.00</div>
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-            <div class="breakdown-row">
+          <div class="breakdown-list">
+
+            <!-- 1. Printed Sheet Breakdown Row -->
+            <div class="breakdown-row" id="rowPrintedSheetBreakdown">
+              <div class="row-meta">
+                <span class="dot" style="background:#2563eb;"></span>
+                <div>
+                  <div class="name">📄 Printed Sheet (Top Liner / Paper)</div>
+                  <div class="sub-text" id="printedSheetMeta">Weight: <b id="weight">0 g</b></div>
+                </div>
+              </div>
+              <div class="amount" id="printedSheetCost">₹0.00</div>
+            </div>
+
+            <!-- 2. Corrugated Sheet Breakdown Row -->
+            <div class="breakdown-row" id="rowCorrSheetBreakdown">
+              <div class="row-meta">
+                <span class="dot" style="background:#d97706;"></span>
+                <div>
+                  <div class="name">📦 Corrugated Sheet (Fluting / Craft)</div>
+                  <div class="sub-text" id="corrSheetMeta">Weight: <b id="corrWeight">0 g</b></div>
+                </div>
+              </div>
+              <div class="amount" id="corrSheetCost">₹0.00</div>
+            </div>
+
+            <!-- 3. Kappa Board Breakdown Row -->
+            <div class="breakdown-row" id="rowKappaSheetBreakdown">
+              <div class="row-meta">
+                <span class="dot" style="background:#7c3aed;"></span>
+                <div>
+                  <div class="name">📑 Kappa Board (Rigid Hardboard)</div>
+                  <div class="sub-text" id="kappaSheetMeta">Direct Sheet Rate (No GSM)</div>
+                </div>
+              </div>
+              <div class="amount" id="kappaSheetCost">₹0.00</div>
+            </div>
+<div class="breakdown-row">
 
 
 

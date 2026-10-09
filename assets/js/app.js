@@ -580,46 +580,18 @@ function calculate() {
 
 
 
-  // 1. Paper: square inches -> square meters -> weight -> cost
-
-
-
-
-
-  const sl = n('sl');
-
-
-
-
-
-  const sw = n('sw');
-
-
-
-
-
-  const gsm = n('gsm');
-
-
-
-
-
-  const pr = n('pr') || n('paperRate');
-
-
-
-
-
-
-
-
-
-
-
+  // 1. Paper: square inches -> square meters -> weight -> cost
+  const sl = n('sl');
+  const sw = n('sw');
+  const gsm = n('gsm');
+  const pr = n('pr') || n('paperRate');
+
   const areaM2 = sl * sw * 0.00064516;
   const weightKg = (areaM2 * gsm) / 1000;
   const printedPaperCost = weightKg * pr;
+  const weightGrams = weightKg * 1000;
 
+  // Corrugated Calculation
   const corrSl = (typeof n === 'function' ? n('corrSl') : 0) || sl;
   const corrSw = (typeof n === 'function' ? n('corrSw') : 0) || sw;
   const corrGsm = (typeof n === 'function' ? n('corrGsm') : 0);
@@ -627,45 +599,23 @@ function calculate() {
   const corrAreaM2 = corrSl * corrSw * 0.00064516;
   const corrWeightKg = (corrAreaM2 * corrGsm) / 1000;
   const corrCost = (corrAreaM2 * corrGsm / 1000) * corrPr;
+  const corrWeightGrams = corrWeightKg * 1000;
 
+  // Kappa Board Calculation (No GSM, direct sheet rate)
   const kappaSl = (typeof n === 'function' ? n('kappaSl') : 0) || sl;
   const kappaSw = (typeof n === 'function' ? n('kappaSw') : 0) || sw;
   const kappaPr = (typeof n === 'function' ? n('kappaPr') : 0);
-  const kappaCost = kappaPr; // Direct Sheet / Board Rate (GSM removed as requested)
+  const kappaCost = kappaPr;
 
   let paperCost = 0;
-  let substrateTitle = '📄 Printed Sheet (Top Liner / Paper)';
-  let substrateDotColor = '#2563eb';
-  let activeWeightGrams = 0;
-
   if (currentSubstrateTab === 'corr') {
     paperCost = corrCost > 0 ? corrCost : printedPaperCost;
-    substrateTitle = '📦 Corrugated Sheet (Fluting / Craft)';
-    substrateDotColor = '#d97706';
-    activeWeightGrams = corrWeightKg * 1000;
   } else if (currentSubstrateTab === 'kappa') {
     paperCost = kappaCost > 0 ? kappaCost : printedPaperCost;
-    substrateTitle = '📑 Kappa Board Sheet (Rigid Hardboard)';
-    substrateDotColor = '#7c3aed';
-    activeWeightGrams = 0;
   } else {
     paperCost = printedPaperCost;
-    substrateTitle = '📄 Printed Sheet (Top Liner / Paper)';
-    substrateDotColor = '#2563eb';
-    activeWeightGrams = weightKg * 1000;
   }
-const weightGrams = weightKg * 1000;
-
-
-
-
-
-
-
-
-
-
-
+
   // 2. Lamination: (Length * Width / Divide By) = Paise -> Rupees
 
 
