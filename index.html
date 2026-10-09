@@ -73,7 +73,7 @@
 
 
 
-  <link rel="stylesheet" href="assets/css/style.css?v=20261008_right_border_1791479644192">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261009_mobile_drawer_v2">
 
 
 
@@ -235,34 +235,107 @@
 
 
 
-    <header class="app-header">
-    <div class="header-container">
-      <div class="logo-badge">
-        <div class="logo-icon" style="background:#fff; border-radius:50%; overflow:hidden; padding:2px; display:flex; align-items:center; justify-content:center;">
-          <img src="assets/images/logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;">
-        </div>
-        <div class="logo-text">
-          <h1 style="font-weight:800; letter-spacing:0.5px;">AS PRINT GALLERY</h1>
-          <p>Packaging, Paper Bags, Corrugated Boxes &amp; GST Bill Studio</p>
-        </div>
-      </div>
-      
-      <div class="header-nav-tabs" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-        <button class="btn-pill" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:var(--text);" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-          <span>🧮</span> Calculator
-        </button>
-        <button class="btn-pill primary" style="background:linear-gradient(135deg, #2563eb, #7c3aed); color:#fff; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.35);" onclick="openCustomInvoiceModal(false)">
-          <span>🧾</span> Invoice Studio (अलग बिल)
-        </button>
-        <button class="btn-pill" style="background:#0284c7; color:#fff; font-weight:600;" onclick="openHistoryModal()">
-          <span>🗂️</span> Saved Invoices (<span id="savedCountBadgeNav">0</span>)
-        </button>
-        <button class="btn-icon" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-          <span id="themeIcon">🌙</span>
-        </button>
-      </div>
-    </div>
-  </header>
+    <header class="app-header">
+    <div class="header-container">
+      <div class="logo-badge" onclick="window.scrollTo({top:0, behavior:'smooth'})" style="cursor:pointer;">
+        <div class="logo-icon" style="background:#fff; border-radius:50%; overflow:hidden; padding:2px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+          <img src="assets/images/logo.png" alt="AS Print Gallery" style="width:36px; height:36px; object-fit:contain; border-radius:50%;">
+        </div>
+        <div class="logo-text">
+          <h1 style="font-weight:800; letter-spacing:0.5px;">AS PRINT GALLERY</h1>
+          <p class="brand-subtext">Packaging, Paper Bags, Corrugated Boxes &amp; GST Bill Studio</p>
+        </div>
+      </div>
+      
+      <!-- Desktop Navigation Tabs -->
+      <div class="header-nav-desktop">
+        <button type="button" class="btn-pill" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:var(--text);" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+          <span>🧮</span> Calculator
+        </button>
+        <button type="button" class="btn-pill primary" style="background:linear-gradient(135deg, #2563eb, #7c3aed); color:#fff; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.35);" onclick="openCustomInvoiceModal(false)">
+          <span>🧾</span> Invoice Studio (अलग बिल)
+        </button>
+        <button type="button" class="btn-pill" style="background:#0284c7; color:#fff; font-weight:600;" onclick="openHistoryModal()">
+          <span>🗂️</span> Saved Invoices (<span id="savedCountBadgeNav">0</span>)
+        </button>
+        <button type="button" class="btn-icon" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+
+      <!-- Mobile Hamburger Button (3 lines) -->
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileDrawer()" aria-label="Open Navigation Menu" title="Open Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Slide-over Drawer / Menu -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="closeMobileDrawer()"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-header">
+      <div class="logo-badge" style="gap:10px;">
+        <div class="logo-icon" style="background:#fff; border-radius:50%; padding:2px; display:flex; align-items:center; justify-content:center; width:34px; height:34px; box-shadow:0 1px 4px rgba(0,0,0,0.1);">
+          <img src="assets/images/logo.png" alt="Logo" style="width:28px; height:28px; object-fit:contain; border-radius:50%;">
+        </div>
+        <div class="logo-text">
+          <h2 style="font-size:1.05rem; font-weight:800; margin:0;">AS PRINT GALLERY</h2>
+          <p style="font-size:0.7rem; color:var(--text-muted); margin:0;">Estimation &amp; Billing Studio</p>
+        </div>
+      </div>
+      <button type="button" class="btn-icon" onclick="closeMobileDrawer()" aria-label="Close Menu" style="font-size:16px; width:34px; height:34px;">✕</button>
+    </div>
+
+    <div class="mobile-drawer-body">
+      <div class="mobile-drawer-section-label">Quick Navigation</div>
+      
+      <button type="button" class="mobile-drawer-item active" onclick="closeMobileDrawer(); window.scrollTo({top:0, behavior:'smooth'});">
+        <div class="mobile-drawer-icon" style="background:#eff6ff; color:#2563eb;">🧮</div>
+        <div class="mobile-drawer-text">
+          <div class="item-title">Cost Calculator</div>
+          <div class="item-desc">Printing &amp; Finishing Estimation</div>
+        </div>
+        <span class="drawer-arrow">›</span>
+      </button>
+
+      <button type="button" class="mobile-drawer-item" onclick="closeMobileDrawer(); openCustomInvoiceModal(false);">
+        <div class="mobile-drawer-icon" style="background:#f5f3ff; color:#7c3aed;">🧾</div>
+        <div class="mobile-drawer-text">
+          <div class="item-title">Invoice Studio (अलग बिल)</div>
+          <div class="item-desc">Create Multi-Item GST Bill</div>
+        </div>
+        <span class="drawer-arrow">›</span>
+      </button>
+
+      <button type="button" class="mobile-drawer-item" onclick="closeMobileDrawer(); openHistoryModal();">
+        <div class="mobile-drawer-icon" style="background:#e0f2fe; color:#0284c7;">🗂️</div>
+        <div class="mobile-drawer-text">
+          <div class="item-title">Saved Invoices &amp; Records</div>
+          <div class="item-desc">View &amp; re-print saved bills</div>
+        </div>
+        <span class="mobile-drawer-badge" id="savedCountBadgeMobile">0</span>
+      </button>
+
+      <div class="mobile-drawer-section-label" style="margin-top:16px;">Preferences</div>
+
+      <button type="button" class="mobile-drawer-item" onclick="toggleTheme()">
+        <div class="mobile-drawer-icon" style="background:#fef3c7; color:#d97706;" id="mobileThemeIcon">🌙</div>
+        <div class="mobile-drawer-text">
+          <div class="item-title">Color Mode</div>
+          <div class="item-desc" id="mobileThemeLabel">Dark / Light Mode</div>
+        </div>
+        <span class="drawer-arrow">⇄</span>
+      </button>
+    </div>
+
+    <div class="mobile-drawer-footer">
+      <div style="font-size:11px; font-weight:700; color:var(--text); margin-bottom:4px;">AS PRINT GALLERY</div>
+      <div style="font-size:11px; color:var(--text-muted);">📱 Helpline: +91 9911678386</div>
+      <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">GSTIN: 09AWKPN5910E1ZG</div>
+    </div>
+  </aside>
 
 
 
@@ -3909,7 +3982,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=20261009_tabs_auto_active"></script>
+  <script src="assets/js/app.js?v=20261009_mobile_drawer_v2"></script>
 
 
 

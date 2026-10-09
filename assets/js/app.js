@@ -3452,11 +3452,40 @@ function incrementNextInvoiceNumber() {
   return String(next).padStart(2, '0');
 }
 
+function toggleMobileDrawer() {
+  const drawer = document.getElementById('mobileDrawer');
+  const overlay = document.getElementById('mobileDrawerOverlay');
+  if (!drawer) return;
+  const isActive = drawer.classList.contains('active');
+  if (isActive) {
+    closeMobileDrawer();
+  } else {
+    openMobileDrawer();
+  }
+}
+
+function openMobileDrawer() {
+  const drawer = document.getElementById('mobileDrawer');
+  const overlay = document.getElementById('mobileDrawerOverlay');
+  if (drawer) drawer.classList.add('active');
+  if (overlay) overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  updateSavedCountBadges();
+}
+
+function closeMobileDrawer() {
+  const drawer = document.getElementById('mobileDrawer');
+  const overlay = document.getElementById('mobileDrawerOverlay');
+  if (drawer) drawer.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 function updateSavedCountBadges() {
   try {
     const history = getSavedInvoicesList();
     const count = history.length;
-    ['savedCountBadgeNav', 'savedCountBadge2', 'savedCountBadge3', 'savedCountBadge'].forEach(id => {
+    ['savedCountBadgeNav', 'savedCountBadgeMobile', 'savedCountBadge2', 'savedCountBadge3', 'savedCountBadge'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = count;
     });
@@ -4629,66 +4658,22 @@ function shareWhatsApp() {
 
 
 
-function toggleTheme() {
-
-
-
-
-
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-
-
-
-
-
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-
-
-
-
-  document.documentElement.setAttribute('data-theme', newTheme);
-
-
-
-
-
-  localStorage.setItem('calc_theme', newTheme);
-
-
-
-
-
-  
-
-
-
-
-
-  const icon = document.getElementById('themeIcon');
-
-
-
-
-
-  if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('calc_theme', newTheme);
+  
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+
+  const mIcon = document.getElementById('mobileThemeIcon');
+  if (mIcon) mIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+
+  const mLabel = document.getElementById('mobileThemeLabel');
+  if (mLabel) mLabel.textContent = newTheme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   syncActiveChips();
 
