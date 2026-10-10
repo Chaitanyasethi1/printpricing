@@ -5240,7 +5240,7 @@ body {
   background: #ffffff !important;
   color: #000000 !important;
   border: 2px solid #000000 !important;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   font-size: 11.5px !important;
   line-height: 1.35 !important;
   width: 100% !important;
@@ -5272,15 +5272,16 @@ body {
 
 .bill-doc-title {
   text-align: center !important;
-  font-size: 15px !important;
+  font-size: 14.5px !important;
   font-weight: 900 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 
 .bill-header-center {
   text-align: center !important;
-  padding: 8px 12px 6px !important;
+  padding: 6px 12px 6px !important;
   border-bottom: 1.5px solid #000000 !important;
   display: flex !important;
   align-items: center !important;
@@ -5288,14 +5289,15 @@ body {
 }
 
 .bill-brand-logo-box {
-  width: 80px !important;
+  width: 75px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
 }
 
 .bill-brand-logo {
-  max-height: 68px !important;
+  max-height: 56px !important;
+  max-width: 75px !important;
   width: auto !important;
   object-fit: contain !important;
 }
@@ -5307,33 +5309,34 @@ body {
 
 .bill-brand-name {
   font-family: 'Swiss 721', 'Swis721 BT', 'Swiss721 Blk BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, 'Arial Black', Arial, sans-serif !important;
-  font-size: 34px !important;
+  font-size: 26px !important;
   font-weight: 900 !important;
-  letter-spacing: 0.04em !important;
-  line-height: 1.05 !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.1 !important;
   margin: 0 !important;
   color: #000000 !important;
-  transform: translateX(-15px) !important;
+  white-space: nowrap !important;
+  text-transform: uppercase !important;
 }
 
 .bill-mfd-tag {
-  font-size: 10px !important;
+  font-size: 9.5px !important;
   font-weight: 800 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.03em !important;
-  margin-top: 4px !important;
-  transform: translateX(-15px) !important;
+  margin-top: 3px !important;
+  line-height: 1.25 !important;
 }
 
 .bill-address-tag {
-  font-size: 10px !important;
+  font-size: 9.5px !important;
   font-weight: 600 !important;
   margin-top: 2px !important;
-  transform: translateX(-15px) !important;
+  line-height: 1.25 !important;
 }
 
 .bill-brand-right-spacer {
-  width: 80px !important;
+  width: 75px !important;
 }
 
 .bill-meta-bar {
@@ -5477,7 +5480,7 @@ body {
 }
 
 .bill-sign-box {
-  padding: 6px 14px !important;
+  padding: 6px 28px 6px 10px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;

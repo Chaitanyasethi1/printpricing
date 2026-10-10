@@ -3196,10 +3196,10 @@ function renderQuotationPreview() {
               <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 14px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:5px 18px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
@@ -3234,9 +3234,9 @@ function renderQuotationPreview() {
           <div>Branch : <b>LONI GHAZIABAD</b></div>
         </div>
 
-        <div class="bill-sign-box">
-          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
-          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
+        <div class="bill-sign-box" style="padding-right:28px;">
+          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px; font-weight:700;">Authorised Signatory</div>
         </div>
       </div>
 
@@ -4378,10 +4378,10 @@ function renderCustomInvoicePreview() {
               <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 14px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:5px 18px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
@@ -4416,9 +4416,9 @@ function renderCustomInvoicePreview() {
           <div>Branch : <b>LONI GHAZIABAD</b></div>
         </div>
 
-        <div class="bill-sign-box">
-          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
-          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
+        <div class="bill-sign-box" style="padding-right:28px;">
+          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px; font-weight:700;">Authorised Signatory</div>
         </div>
       </div>
 
