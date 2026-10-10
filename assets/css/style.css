@@ -3490,8 +3490,8 @@ body {
    ============================================================ */
 .invoice-item-fields-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr 1.2fr;
-  gap: 10px;
+  grid-template-columns: 2fr 1fr 0.9fr 0.9fr 1fr 1.15fr 1.2fr;
+  gap: 8px;
   align-items: flex-end;
 }
 
@@ -3910,7 +3910,7 @@ body {
     grid-column: span 2 !important;
   }
 
-  .invoice-item-fields-grid > div:nth-child(6) {
+  .invoice-item-fields-grid > div:nth-child(7) {
     grid-column: span 2 !important;
   }
 

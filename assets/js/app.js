@@ -4012,6 +4012,49 @@ function handleCustGstTypeChange() {
   renderCustomInvoicePreview();
 }
 
+function handleGlobalDefaultGstChange() {
+  const newRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
+  const container = document.getElementById('invoiceItemsBuilder');
+  if (container) {
+    const rows = container.querySelectorAll('.invoice-item-row');
+    if (rows.length === 1) {
+      const inputEl = rows[0].querySelector('.item-gst-rate-input');
+      const selectEl = rows[0].querySelector('.item-gst-select');
+      if (inputEl) inputEl.value = newRate;
+      if (selectEl) {
+        if ([0, 5, 12, 18, 28].includes(newRate)) selectEl.value = String(newRate);
+        else selectEl.value = 'custom';
+      }
+    }
+  }
+  renderCustomInvoicePreview();
+}
+
+function onItemGstPresetChange(selectEl) {
+  const row = selectEl.closest('.invoice-item-row');
+  if (!row) return;
+  const inputEl = row.querySelector('.item-gst-rate-input');
+  if (selectEl.value !== 'custom') {
+    if (inputEl) inputEl.value = selectEl.value;
+  }
+  renderCustomInvoicePreview();
+}
+
+function onItemGstInputChange(inputEl) {
+  const row = inputEl.closest('.invoice-item-row');
+  if (!row) return;
+  const selectEl = row.querySelector('.item-gst-select');
+  if (selectEl) {
+    const val = parseFloat(inputEl.value);
+    if ([0, 5, 12, 18, 28].includes(val)) {
+      selectEl.value = String(val);
+    } else {
+      selectEl.value = 'custom';
+    }
+  }
+  renderCustomInvoicePreview();
+}
+
 function addInvoiceItemRow(data = null) {
   const container = document.getElementById('invoiceItemsBuilder');
   if (!container) return;
@@ -4025,12 +4068,14 @@ function addInvoiceItemRow(data = null) {
   row.id = rowId;
   row.style.cssText = 'background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:10px; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.03);';
 
+  const defaultGst = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
   const titleVal = data?.title !== undefined ? data.title : ('PRODUCT ' + currentCount);
   const descVal = data?.desc !== undefined ? data.desc : '';
   const hsnVal = data?.hsn !== undefined ? data.hsn : '58079090';
   const qtyVal = data?.qty !== undefined ? data.qty : 1000;
   const unitVal = data?.unit !== undefined ? data.unit : 'NOS';
   const rateVal = data?.rate !== undefined ? data.rate : 1.00;
+  const gstRateVal = data?.gstRate !== undefined ? data.gstRate : (data?.gstPercent !== undefined ? data.gstPercent : defaultGst);
 
   row.innerHTML = `
     <!-- Row Header: S.No & Delete -->
@@ -4044,7 +4089,7 @@ function addInvoiceItemRow(data = null) {
       </button>
     </div>
 
-    <!-- Row Main Fields: Title, HSN, Qty, Unit, Rate, Amount -->
+    <!-- Row Main Fields: Title, HSN, Qty, Unit, Rate, GST %, Amount -->
     <div class="invoice-item-fields-grid">
       <div>
         <label style="font-size:11px; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Product / Item Title *</label>
@@ -4076,6 +4121,20 @@ function addInvoiceItemRow(data = null) {
         <input type="number" step="any" class="item-rate-input" placeholder="1.00" value="${rateVal}" oninput="renderCustomInvoicePreview()" style="padding:8px 10px; font-size:13px; font-weight:700; width:100%; border:1px solid var(--border); border-radius:6px;">
       </div>
       <div>
+        <label style="font-size:11px; font-weight:700; color:var(--primary); display:block; margin-bottom:4px;">GST Rate (%) *</label>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <select class="item-gst-select" onchange="onItemGstPresetChange(this)" style="padding:8px 4px; font-size:12px; font-weight:700; border:1.5px solid var(--primary); border-radius:6px; background:var(--bg-card); color:var(--text-main); flex:1;">
+            <option value="18" ${Number(gstRateVal) === 18 ? 'selected' : ''}>18%</option>
+            <option value="12" ${Number(gstRateVal) === 12 ? 'selected' : ''}>12%</option>
+            <option value="5" ${Number(gstRateVal) === 5 ? 'selected' : ''}>5%</option>
+            <option value="0" ${Number(gstRateVal) === 0 ? 'selected' : ''}>0%</option>
+            <option value="28" ${Number(gstRateVal) === 28 ? 'selected' : ''}>28%</option>
+            <option value="custom" ${![0, 5, 12, 18, 28].includes(Number(gstRateVal)) ? 'selected' : ''}>Other</option>
+          </select>
+          <input type="number" step="any" min="0" max="100" class="item-gst-rate-input" value="${gstRateVal}" oninput="onItemGstInputChange(this)" style="width:52px; padding:8px 2px; font-size:12.5px; font-weight:800; border:1.5px solid var(--primary); border-radius:6px; text-align:center; background:var(--bg-card); color:var(--text-main);" placeholder="%">
+        </div>
+      </div>
+      <div>
         <label style="font-size:11px; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Amount (₹)</label>
         <div class="item-amount-display" style="padding:8px 10px; font-size:13px; font-weight:800; background:var(--bg-card-sub); border:1px solid var(--border); border-radius:6px; color:#1e3a8a; text-align:right;">
           ₹${((parseFloat(qtyVal) || 0) * (parseFloat(rateVal) || 0)).toFixed(2)}
@@ -4089,7 +4148,7 @@ function addInvoiceItemRow(data = null) {
         <span>Description / Size Breakdown (विवरण / साइज़ लिस्ट व विवरण) :</span>
         <span style="font-weight:400; font-size:10px; color:var(--text-muted);">Multiline Breakdown Support (enter sizes/details line by line)</span>
       </label>
-      <textarea class="item-desc-input" rows="2" placeholder="e.g.\n32B - 12235\n34B - 10400\n36B - 8480" oninput="renderCustomInvoicePreview()" style="width:100%; font-size:12px; font-family:inherit; padding:8px 10px; border:1px solid var(--border); border-radius:6px; resize:vertical;">${descVal}</textarea>
+      <textarea class="item-desc-input" rows="2" placeholder="e.g.\\n32B - 12235\\n34B - 10400\\n36B - 8480" oninput="renderCustomInvoicePreview()" style="width:100%; font-size:12px; font-family:inherit; padding:8px 10px; border:1px solid var(--border); border-radius:6px; resize:vertical;">${descVal}</textarea>
     </div>
   `;
 
@@ -4129,6 +4188,8 @@ function renumberInvoiceRows() {
 function getInvoiceCustomItemsData() {
   const container = document.getElementById('invoiceItemsBuilder');
   const items = [];
+  const defaultGst = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
+
   if (container) {
     const rows = container.querySelectorAll('.invoice-item-row');
     rows.forEach(r => {
@@ -4138,12 +4199,17 @@ function getInvoiceCustomItemsData() {
       const qty = parseFloat(r.querySelector('.item-qty-input')?.value) || 0;
       const unit = r.querySelector('.item-unit-select')?.value || 'NOS';
       const rate = parseFloat(r.querySelector('.item-rate-input')?.value) || 0;
+
+      const inputGst = parseFloat(r.querySelector('.item-gst-rate-input')?.value);
+      const selectGst = parseFloat(r.querySelector('.item-gst-select')?.value);
+      const gstRate = !isNaN(inputGst) ? inputGst : (!isNaN(selectGst) ? selectGst : defaultGst);
+
       const amt = qty * rate;
 
       const amtDisp = r.querySelector('.item-amount-display');
       if (amtDisp) amtDisp.textContent = '₹' + amt.toFixed(2);
 
-      items.push({ title: title || (desc ? '' : 'Product'), desc, hsn, qty, unit, rate, amount: amt });
+      items.push({ title: title || (desc ? '' : 'Product'), desc, hsn, qty, unit, rate, gstRate, amount: amt });
     });
   }
 
@@ -4156,6 +4222,7 @@ function getInvoiceCustomItemsData() {
       qty: 63500,
       unit: 'NOS',
       rate: 0.26,
+      gstRate: defaultGst,
       amount: 16510
     });
   }
@@ -4181,7 +4248,7 @@ function renderCustomInvoicePreview() {
   const vehicleNo = document.getElementById('custVehicleNo')?.value || '';
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
-  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
+  const defaultGstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
   const reverseCharge = document.getElementById('custReverseCharge')?.value || 'No';
   const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
   const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
@@ -4192,53 +4259,88 @@ function renderCustomInvoicePreview() {
   items.forEach(it => { subtotal += it.amount; });
   const taxableTotal = Math.max(0, subtotal - discount + transportCharges);
 
-  let cgstRate = 0, cgstAmt = 0;
-  let sgstRate = 0, sgstAmt = 0;
-  let igstRate = 0, igstAmt = 0;
+  // Group taxes by rate for per-product GST calculation
+  const rateBreakdown = {};
+  let totalGst = 0;
 
-  if (gstType === 'cgst_sgst' && gstRate > 0) {
-    const half = gstRate / 2;
-    cgstRate = half;
-    cgstAmt = (taxableTotal * half) / 100;
-    sgstRate = half;
-    sgstAmt = (taxableTotal * half) / 100;
-  } else if (gstType === 'igst' && gstRate > 0) {
-    igstRate = gstRate;
-    igstAmt = (taxableTotal * gstRate) / 100;
-  } else if (gstType === 'extra' && gstRate > 0) {
-    const half = gstRate / 2;
-    cgstRate = half;
-    cgstAmt = (taxableTotal * half) / 100;
-    sgstRate = half;
-    sgstAmt = (taxableTotal * half) / 100;
+  if (gstType !== 'exempt') {
+    items.forEach(it => {
+      const r = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
+      if (!rateBreakdown[r]) {
+        rateBreakdown[r] = { taxable: 0, tax: 0 };
+      }
+      rateBreakdown[r].taxable += it.amount;
+      const t = (it.amount * r) / 100;
+      rateBreakdown[r].tax += t;
+      totalGst += t;
+    });
+
+    if (transportCharges > 0) {
+      const transRate = items.length > 0 ? Math.max(...items.map(it => it.gstRate !== undefined ? it.gstRate : defaultGstRate)) : defaultGstRate;
+      if (!rateBreakdown[transRate]) {
+        rateBreakdown[transRate] = { taxable: 0, tax: 0 };
+      }
+      rateBreakdown[transRate].taxable += transportCharges;
+      const transTax = (transportCharges * transRate) / 100;
+      rateBreakdown[transRate].tax += transTax;
+      totalGst += transTax;
+    }
   }
 
-  const totalGst = cgstAmt + sgstAmt + igstAmt;
-  const totalTaxAmount = totalGst;
   const grandTotal = Math.round(taxableTotal + totalGst);
   const wordsText = numberToIndianWords(grandTotal);
   const taxWordsText = totalGst > 0 ? numberToIndianWords(Math.round(totalGst)) : 'Zero Rupees Only';
 
+  const uniqueRates = Object.keys(rateBreakdown).map(Number).sort((a, b) => b - a);
+  let taxSummaryText = '';
+
+  if (gstType === 'exempt' || totalGst === 0 || uniqueRates.length === 0) {
+    taxSummaryText = 'GST: Nil / Exempt';
+  } else if (uniqueRates.length === 1) {
+    const singleRate = uniqueRates[0];
+    if (gstType === 'igst') {
+      taxSummaryText = `IGST (${singleRate}%): ₹${totalGst.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}`;
+    } else {
+      const half = singleRate / 2;
+      const halfAmt = totalGst / 2;
+      taxSummaryText = `CGST (${half}%): ₹${halfAmt.toFixed(2)} | SGST (${half}%): ₹${halfAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}`;
+    }
+  } else {
+    // Multi-rate GST breakdown across items
+    if (gstType === 'igst') {
+      const parts = uniqueRates.map(r => `IGST ${r}%: ₹${rateBreakdown[r].tax.toFixed(2)}`);
+      taxSummaryText = `${parts.join(' | ')} | Tax: ₹${totalGst.toFixed(2)}`;
+    } else {
+      const parts = uniqueRates.map(r => {
+        const half = r / 2;
+        const halfAmt = rateBreakdown[r].tax / 2;
+        return `${r}% (CGST ${half}%: ₹${halfAmt.toFixed(2)} + SGST ${half}%: ₹${halfAmt.toFixed(2)})`;
+      });
+      taxSummaryText = `${parts.join(' | ')} | Tax: ₹${totalGst.toFixed(2)}`;
+    }
+  }
+
   const itemRowsHtml = items.map((it, idx) => {
     let descHtml = '';
-    if (it.title && it.desc) {
-      descHtml = `<div class="bill-item-main-title">${it.title}</div><div class="bill-item-sub-desc">${it.desc}</div>`;
-    } else if (it.title) {
-      descHtml = `<div class="bill-item-main-title">${it.title}</div>`;
-    } else {
-      descHtml = `<div class="bill-item-sub-desc" style="font-weight:600;">${it.desc}</div>`;
+    if (it.desc) {
+      descHtml = `<div class="bill-item-sub-desc">${it.desc}</div>`;
     }
+    const itemGst = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
 
     return `
       <tr>
-        <td style="text-align:center; font-weight:bold; width:36px;">${idx + 1}</td>
-   <td style="text-align:left;">
-     ${descHtml}
-   </td>
-   <td style="text-align:center; font-weight:bold; width:75px;">${it.hsn || '-'}</td>
-   <td style="text-align:center; font-weight:bold; width:88px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
-   <td style="text-align:right; width:75px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
-   <td style="text-align:right; font-weight:bold; width:100px;">${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="text-align:center; font-weight:bold; width:38px;">${idx + 1}</td>
+        <td style="text-align:left; padding-left:8px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+            <span class="bill-item-main-title" style="font-weight:900;">${it.title}</span>
+            <span style="font-size:9.5px; font-weight:800; color:#0f172a; background:#f1f5f9; border:1px solid #000; border-radius:3px; padding:1px 5px; white-space:nowrap;">GST: ${itemGst}%</span>
+          </div>
+          ${descHtml}
+        </td>
+        <td style="text-align:center; font-weight:bold; width:78px;">${it.hsn || '-'}</td>
+        <td style="text-align:center; font-weight:bold; width:85px;">${it.qty > 0 ? (it.qty.toLocaleString('en-IN') + ' ' + (it.unit || '')) : '-'}</td>
+        <td style="text-align:right; width:75px;">${it.rate > 0 ? it.rate.toFixed(2) : '-'}</td>
+        <td style="text-align:right; font-weight:bold; width:105px; padding-right:8px;">₹${it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       </tr>
     `;
   }).join('');
@@ -4366,12 +4468,12 @@ function renderCustomInvoicePreview() {
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
                   <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
                   <span style="font-weight:bold; color:#0f172a;">
-                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                    ${taxSummaryText}
                   </span>
                 </div>
               </td>
               <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap;">Total Before Tax</td>
-              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; white-space:nowrap;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; white-space:nowrap;">₹${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
 
             <!-- Final Grand Total Row -->
@@ -4580,8 +4682,19 @@ function saveCustomBillInvoice() {
   const taxableAmt = Math.max(0, subtotal + transportCharges - discount);
 
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
-  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const totalGst = gstType === 'exempt' ? 0 : (taxableAmt * gstRate) / 100;
+  const defaultGstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
+
+  let totalGst = 0;
+  if (gstType !== 'exempt') {
+    items.forEach(it => {
+      const r = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
+      totalGst += (it.amount * r) / 100;
+    });
+    if (transportCharges > 0) {
+      const transRate = items.length > 0 ? Math.max(...items.map(it => it.gstRate !== undefined ? it.gstRate : defaultGstRate)) : defaultGstRate;
+      totalGst += (transportCharges * transRate) / 100;
+    }
+  }
   const grandTotal = Math.round(taxableAmt + totalGst);
 
   const billObj = {
@@ -4605,7 +4718,7 @@ function saveCustomBillInvoice() {
     discount: discount,
     subtotal: subtotal,
     gstType: gstType,
-    gstPercent: gstRate,
+    gstPercent: defaultGstRate,
     totalGst: totalGst,
     grandTotal: grandTotal,
     savedAt: new Date().toISOString()
@@ -4636,6 +4749,10 @@ function copyCustomBillText() {
   const receiverName = document.getElementById('custReceiverName')?.value || '';
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const items = getInvoiceCustomItemsData();
+  const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
+  const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
+  const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
+  const defaultGstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
 
   let text = `*AS PRINT GALLERY*\n`;
   text += `GSTIN: 09AWKPN5910E1ZG | Mob: 9911678386\n`;
@@ -4647,22 +4764,30 @@ function copyCustomBillText() {
   text += `*Items / Products:*\n`;
 
   let sub = 0;
+  let totalGst = 0;
   items.forEach((it, i) => {
     sub += it.amount;
-    text += `${i + 1}. *${it.title}* (${it.qty} ${it.unit} @ ₹${it.rate}) = ₹${it.amount.toFixed(2)}\n`;
+    const r = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
+    if (gstType !== 'exempt') {
+      totalGst += (it.amount * r) / 100;
+    }
+    text += `${i + 1}. *${it.title}* [GST: ${r}%] (${it.qty} ${it.unit} @ ₹${it.rate}) = ₹${it.amount.toFixed(2)}\n`;
     if (it.desc) {
       text += `   ${it.desc.replace(/\n/g, '\n   ')}\n`;
     }
   });
 
-  const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
-  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
-  const gstAmt = gstType === 'exempt' ? 0 : (sub * gstRate) / 100;
-  const tot = Math.round(sub + gstAmt);
+  if (transportCharges > 0 && gstType !== 'exempt') {
+    const transRate = items.length > 0 ? Math.max(...items.map(it => it.gstRate !== undefined ? it.gstRate : defaultGstRate)) : defaultGstRate;
+    totalGst += (transportCharges * transRate) / 100;
+  }
+  const tot = Math.round(sub + transportCharges - discount + totalGst);
 
   text += `-----------------------------------------\n`;
   text += `Sub Total: ₹${sub.toFixed(2)}\n`;
-  if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
+  if (transportCharges > 0) text += `Transport: ₹${transportCharges.toFixed(2)}\n`;
+  if (discount > 0) text += `Discount: -₹${discount.toFixed(2)}\n`;
+  if (totalGst > 0) text += `Total GST: ₹${totalGst.toFixed(2)}\n`;
   text += `*GRAND TOTAL: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
   text += `Bank: HDFC Bank | A/C: 50200098986238 | IFSC: HDFC0004729\n`;
@@ -4680,15 +4805,25 @@ function shareCustomBillWhatsApp() {
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const items = getInvoiceCustomItemsData();
   const gstType = document.getElementById('custGstType')?.value || 'cgst_sgst';
-  const gstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 0;
+  const defaultGstRate = parseFloat(document.getElementById('custGstRateInput')?.value) || 18;
   const transportCharges = parseFloat(document.getElementById('custTransportCharges')?.value) || 0;
   const discount = parseFloat(document.getElementById('custDiscount')?.value) || 0;
 
   let sub = 0;
-  items.forEach((it) => { sub += it.amount; });
-  const taxable = Math.max(0, sub - discount + transportCharges);
-  const gstAmt = gstType === 'exempt' ? 0 : (taxable * gstRate) / 100;
-  const tot = Math.round(taxable + gstAmt);
+  let totalGst = 0;
+  items.forEach((it) => {
+    sub += it.amount;
+    const r = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
+    if (gstType !== 'exempt') {
+      totalGst += (it.amount * r) / 100;
+    }
+  });
+
+  if (transportCharges > 0 && gstType !== 'exempt') {
+    const transRate = items.length > 0 ? Math.max(...items.map(it => it.gstRate !== undefined ? it.gstRate : defaultGstRate)) : defaultGstRate;
+    totalGst += (transportCharges * transRate) / 100;
+  }
+  const tot = Math.round(sub + transportCharges - discount + totalGst);
 
   // Generate shareable link
   const billPayload = {
@@ -4703,7 +4838,7 @@ function shareCustomBillWhatsApp() {
     transportMode: document.getElementById('custTransportMode')?.value || '',
     vehicleNo: document.getElementById('custVehicleNo')?.value || '',
     gstType: gstType,
-    gstPercent: gstRate,
+    gstPercent: defaultGstRate,
     transportCharges: transportCharges,
     discount: discount,
     items: items
@@ -4725,7 +4860,8 @@ function shareCustomBillWhatsApp() {
   text += `-----------------------------------------\n`;
 
   items.forEach((it, i) => {
-    text += `▪ *${it.title}*\n   Qty: ${it.qty} ${it.unit} @ ₹${it.rate} = ₹${it.amount.toFixed(2)}\n`;
+    const r = it.gstRate !== undefined ? it.gstRate : defaultGstRate;
+    text += `▪ *${it.title}* [GST: ${r}%]\n   Qty: ${it.qty} ${it.unit} @ ₹${it.rate} = ₹${it.amount.toFixed(2)}\n`;
     if (it.desc) {
       text += `   ${it.desc.replace(/\n/g, '\n   ')}\n`;
     }
@@ -4735,7 +4871,7 @@ function shareCustomBillWhatsApp() {
   text += `Items Subtotal: ₹${sub.toFixed(2)}\n`;
   if (transportCharges > 0) text += `🚚 Transport / Cartage: ₹${transportCharges.toFixed(2)}\n`;
   if (discount > 0) text += `🏷️ Discount: -₹${discount.toFixed(2)}\n`;
-  if (gstAmt > 0) text += `GST (${gstRate}%): ₹${gstAmt.toFixed(2)}\n`;
+  if (totalGst > 0) text += `Total GST: ₹${totalGst.toFixed(2)}\n`;
   text += `*Grand Total: ₹${tot.toLocaleString('en-IN')}*\n`;
   text += `-----------------------------------------\n`;
   text += `📄 *View / Download Official A4 PDF Bill:*\n${shareableUrl}\n`;

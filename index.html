@@ -73,7 +73,7 @@
 
 
 
-  <link rel="stylesheet" href="assets/css/style.css?v=20261010_v6_singlepage">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261010_v7_item_gst">
 
 
 
@@ -3807,9 +3807,9 @@
               </div>
             </div>
             <div class="input-field">
-              <label style="font-weight:700;">GST Rate (%)</label>
+              <label style="font-weight:700;">Default GST Rate (%)</label>
               <div class="input-wrapper">
-                <input id="custGstRateInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 5 or 18" value="18" oninput="renderCustomInvoicePreview()" style="font-weight:700;">
+                <input id="custGstRateInput" type="number" step="0.1" min="0" max="100" placeholder="e.g. 5, 12, 18" value="18" oninput="handleGlobalDefaultGstChange()" style="font-weight:700;">
                 <span class="input-suffix">%</span>
               </div>
             </div>
@@ -4011,7 +4011,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=20261010_v6_singlepage"></script>
+  <script src="assets/js/app.js?v=20261010_v7_item_gst"></script>
 
 
 
