@@ -2702,11 +2702,25 @@ function openQuotationModal() {
     const b = window.currentCalcBreakdown || {};
     const rateInput = document.getElementById('customBillingRate');
     if (rateInput && (!rateInput.value || parseFloat(rateInput.value) <= 0)) {
-      if (b.finalPrice > 0) rateInput.value = b.finalPrice.toFixed(2);
+      if (b.finalPrice > 0) {
+        rateInput.value = b.finalPrice.toFixed(2);
+      } else {
+        const heroPriceText = document.getElementById('heroFinalPrice')?.innerText || document.getElementById('final')?.innerText || '';
+        const parsedHero = parseFloat(heroPriceText.replace(/[^0-9.]/g, ''));
+        if (!isNaN(parsedHero) && parsedHero > 0) {
+          rateInput.value = parsedHero.toFixed(2);
+        } else {
+          rateInput.value = '1.85';
+        }
+      }
     }
     const qtyInput = document.getElementById('customBillingQty');
     if (qtyInput && (!qtyInput.value || parseFloat(qtyInput.value) <= 0)) {
-      if (b.batchQty > 0) qtyInput.value = b.batchQty;
+      if (b.batchQty > 0) {
+        qtyInput.value = b.batchQty;
+      } else {
+        qtyInput.value = 1000;
+      }
     }
     
     renderQuotationPreview();
@@ -2959,13 +2973,23 @@ function renderQuotationPreview() {
   const cost = direct + wastageCost;
   const profit = n('profit');
   const profitAmount = cost * profit / 100;
-  const calcFinalPricePerSheet = (b.finalPrice && b.finalPrice > 0) ? b.finalPrice : (cost + profitAmount);
+  let calcFinalPricePerSheet = (b.finalPrice && b.finalPrice > 0) ? b.finalPrice : (cost + profitAmount);
+  if (!calcFinalPricePerSheet || calcFinalPricePerSheet <= 0) {
+    const heroPriceText = document.getElementById('heroFinalPrice')?.innerText || document.getElementById('final')?.innerText || '';
+    const parsedHero = parseFloat(heroPriceText.replace(/[^0-9.]/g, ''));
+    if (!isNaN(parsedHero) && parsedHero > 0) {
+      calcFinalPricePerSheet = parsedHero;
+    } else {
+      calcFinalPricePerSheet = 1.85;
+    }
+  }
 
   // Manual Billing Qty & Rate overrides
   let billQty = parseFloat(document.getElementById('customBillingQty')?.value);
   if (isNaN(billQty) || billQty <= 0) {
     billQty = (billingUnit === 'KGS' && totalWeightAllSheets > 0) ? parseFloat(totalWeightAllSheets.toFixed(2)) : calcBatchQty;
   }
+  if (!billQty || billQty <= 0) billQty = 1000;
 
   let billRate = parseFloat(document.getElementById('customBillingRate')?.value);
   if (isNaN(billRate) || billRate <= 0) {
@@ -2974,6 +2998,9 @@ function renderQuotationPreview() {
     } else {
       billRate = calcFinalPricePerSheet;
     }
+  }
+  if (!billRate || billRate <= 0) {
+    billRate = calcFinalPricePerSheet > 0 ? calcFinalPricePerSheet : 1.85;
   }
 
   const taxableTotal = billQty * billRate;
@@ -3147,86 +3174,66 @@ function renderQuotationPreview() {
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            <!-- Exact Match to Physical Yellow Bill Book: Colspan 3 + Colspan 2 + Colspan 1 -->
-            <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
-              <td colspan="3" rowspan="5" style="vertical-align:top; padding:8px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
-                <div style="font-size:11px; margin-bottom:6px; line-height:1.45;">
-                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:65%;">${wordsText}</span>
-                </div>
-                <div style="font-size:11px; margin-bottom:8px; line-height:1.45;">
-                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:55%;">${taxWordsText}</span>
-                </div>
-                <div style="font-size:10.5px; margin-top:8px; font-weight:700; display:flex; align-items:center; gap:8px;">
-                  <span>Amount Of Tax Subject To Revrese Charge :</span>
-                  <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
-                  <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
+            <!-- Summary Rows: Colspan 3 + Colspan 2 + Colspan 1 -->
+            <tr class="bill-summary-row" style="background:#fafafa;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-size:10px; padding:4px 6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
+                  <span style="font-weight:bold; color:#0f172a;">
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalTaxAmount.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                  </span>
                 </div>
               </td>
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
-                Total Amount Before Tax
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </td>
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap;">Total Before Tax</td>
+              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; white-space:nowrap;">₹${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
 
-            <tr class="bill-summary-row">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
+            <!-- Final Grand Total Row -->
+            <tr class="bill-total-final-row" style="background:#fafafa;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
+                GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${cgstAmt > 0 ? `${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (igstAmt > 0 ? `${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00')}
+              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; white-space:nowrap;">
+                Total Amount After Tax
               </td>
-            </tr>
-
-            <tr class="bill-summary-row">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${sgstAmt > 0 ? `${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00'}
-              </td>
-            </tr>
-
-            <tr class="bill-summary-row" style="background:#f8fafc;">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                Total Tax Amount
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </td>
-            </tr>
-
-            <tr class="bill-total-final-row" style="background:#f1f5f9;">
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
-                GST Total Amount After Tax
-              </td>
-              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
+              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 8px; white-space:nowrap;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
           </tbody>
         </table>
+
+        <!-- Amount In Words Box -->
+        <div class="bill-words-section">
+          <div style="margin-bottom:3px;">
+            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
+          </div>
+          <div>
+            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Bottom Section: Terms, Bank Details & Signature -->
       <div class="bill-footer-section">
         <div class="bill-terms-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px; text-transform:uppercase;">TERMS &amp; CONDITIONS</div>
-          <div>1. Goods once should will not be taken back.</div>
-          <div>2. All disputes are subject to Ghaziabad Jurisdiction only.</div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
+          <div>1. Goods once sold will not be taken back.</div>
+          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
+          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
         </div>
 
         <div class="bill-bank-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details.:</div>
-          <div>Bank Name : <b>HDFC</b></div>
-          <div>BANK A/C : <b>50200098986238</b></div>
-          <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
+          <div>Bank : <b>HDFC BANK</b></div>
+          <div>A/c No. : <b>50200098986238</b></div>
+          <div>IFSC : <b>HDFC0004729</b></div>
+          <div>Branch : <b>LONI GHAZIABAD</b></div>
         </div>
 
         <div class="bill-sign-box">
-          <div style="font-weight:bold; font-size:11.5px;">For: <b>${companyName}</b></div>
-          <div style="font-size:11px; font-weight:bold; margin-top:35px;">Signature</div>
+          <div style="font-weight:bold; font-size:11px;">For AS PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
         </div>
       </div>
 
@@ -4349,86 +4356,66 @@ function renderCustomInvoicePreview() {
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            <!-- Exact Match to Physical Yellow Bill Book: Colspan 3 + Colspan 2 + Colspan 1 -->
-            <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
-              <td colspan="3" rowspan="5" style="vertical-align:top; padding:8px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
-                <div style="font-size:11px; margin-bottom:6px; line-height:1.45;">
-                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:65%;">${wordsText}</span>
-                </div>
-                <div style="font-size:11px; margin-bottom:8px; line-height:1.45;">
-                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:55%;">${taxWordsText}</span>
-                </div>
-                <div style="font-size:10.5px; margin-top:8px; font-weight:700; display:flex; align-items:center; gap:8px;">
-                  <span>Amount Of Tax Subject To Revrese Charge :</span>
-                  <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
-                  <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
+            <!-- Summary Rows: Colspan 3 + Colspan 2 + Colspan 1 -->
+            <tr class="bill-summary-row" style="background:#fafafa;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-size:10px; padding:4px 6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                  <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
+                  <span style="font-weight:bold; color:#0f172a;">
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalGst.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                  </span>
                 </div>
               </td>
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
-                Total Amount Before Tax
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </td>
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap;">Total Before Tax</td>
+              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; white-space:nowrap;">${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
 
-            <tr class="bill-summary-row">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
+            <!-- Final Grand Total Row -->
+            <tr class="bill-total-final-row" style="background:#fafafa;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
+                GST on Reverse Charge: ₹0.00
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${cgstAmt > 0 ? `${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (igstAmt > 0 ? `${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00')}
+              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; white-space:nowrap;">
+                Total Amount After Tax
               </td>
-            </tr>
-
-            <tr class="bill-summary-row">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${sgstAmt > 0 ? `${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00'}
-              </td>
-            </tr>
-
-            <tr class="bill-summary-row" style="background:#f8fafc;">
-              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
-                Total Tax Amount
-              </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
-                ${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </td>
-            </tr>
-
-            <tr class="bill-total-final-row" style="background:#f1f5f9;">
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
-                GST Total Amount After Tax
-              </td>
-              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
+              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 8px; white-space:nowrap;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
           </tbody>
         </table>
+
+        <!-- Amount In Words Box -->
+        <div class="bill-words-section">
+          <div style="margin-bottom:3px;">
+            <b>Total Amount in Words :</b> <span style="text-transform:capitalize; font-weight:bold; margin-left:4px;">${wordsText}</span>
+          </div>
+          <div>
+            <b>Tax Amount in Words :</b> <span style="text-transform:capitalize; margin-left:4px;">${taxWordsText}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Bottom Section: Terms, Bank Details & Signature -->
       <div class="bill-footer-section">
         <div class="bill-terms-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px; text-transform:uppercase;">TERMS &amp; CONDITIONS</div>
-          <div>1. Goods once should will not be taken back.</div>
-          <div>2. All disputes are subject to Ghaziabad Jurisdiction only.</div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Terms &amp; Conditions:</div>
+          <div>1. Goods once sold will not be taken back.</div>
+          <div>2. Interest @ 18% p.a. will be charged after due date.</div>
+          <div>3. All disputes subject to Ghaziabad Jurisdiction only.</div>
         </div>
 
         <div class="bill-bank-box">
-          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details.:</div>
-          <div>Bank Name : <b>HDFC</b></div>
-          <div>BANK A/C : <b>50200098986238</b></div>
-          <div>RTGS/NEFT/IFSC CODE : <b>HDFC0004729</b></div>
+          <div style="font-weight:bold; text-decoration:underline; margin-bottom:3px;">Bank Details:</div>
+          <div>Bank : <b>HDFC BANK</b></div>
+          <div>A/c No. : <b>50200098986238</b></div>
+          <div>IFSC : <b>HDFC0004729</b></div>
+          <div>Branch : <b>LONI GHAZIABAD</b></div>
         </div>
 
         <div class="bill-sign-box">
-          <div style="font-weight:bold; font-size:11.5px;">For: <b>A S PRINT GALLERY</b></div>
-          <div style="font-size:11px; font-weight:bold; margin-top:35px;">Signature</div>
+          <div style="font-weight:bold; font-size:11px;">For AS PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
         </div>
       </div>
 
