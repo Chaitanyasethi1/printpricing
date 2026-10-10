@@ -2690,47 +2690,19 @@ function setQuoteMode(mode) {
 
 
 function openQuotationModal() {
-
   const modal = document.getElementById('quotationModal');
-
   if (modal) {
-
-    // Populate default invoice number and date if empty
-
-    const invInput = document.getElementById('invoiceNoInput');
-
-    if (invInput && !invInput.value) {
-
-      invInput.value = getNextInvoiceNumber();
-
+    if (typeof calculate === 'function') calculate();
+    
+    const quoteInv = document.getElementById('quoteInvoiceNo');
+    if (quoteInv && !quoteInv.value) {
+      quoteInv.value = getNextInvoiceNumber();
     }
-
-    const dateInput = document.getElementById('invoiceDateInput');
-
-    if (dateInput && !dateInput.value) {
-
-      dateInput.value = new Date().toLocaleDateString('en-IN', {
-
-        day: '2-digit',
-
-        month: 'short',
-
-        year: 'numeric'
-
-      });
-
-    }
-
-
-
-    updateSavedCountBadge();
-
+    
     renderQuotationPreview();
-
+    updateSavedCountBadges();
     modal.classList.add('active');
-
   }
-
 }
 
 
@@ -2900,9 +2872,9 @@ function numberToIndianWords(num) {
 
 
 function renderQuotationPreview() {
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-  const invoiceDate = document.getElementById('invoiceDateInput')?.value || new Date().toLocaleDateString('en-IN', {
+  const docTitle = document.getElementById('quoteDocTitle')?.value || document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
+  const invoiceNo = document.getElementById('quoteInvoiceNo')?.value || document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const invoiceDate = new Date().toLocaleDateString('en-IN', {
     day: '2-digit', month: '2-digit', year: 'numeric'
   });
 
@@ -2912,10 +2884,10 @@ function renderQuotationPreview() {
   const companyMfd = 'Mfd. by : Hang Tag, Printed Label, Barcode Sticker, Packaging Box, Paper Bag, Corrugated Box';
   const companyAddress = 'Add: Kh.no.2326/2, Shankar Garden, Ashok Vihar, Loni, Ghaziabad, (U.P) 201102';
 
-  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
+  const clientName = document.getElementById('quoteClientName')?.value || 'Valued Client';
   const clientAddress = document.getElementById('clientAddressInput')?.value || '';
   const clientState = document.getElementById('clientStateInput')?.value || 'Uttar Pradesh (09)';
-  const clientPhone = document.getElementById('clientPhoneInput')?.value || '';
+  const clientPhone = document.getElementById('quoteClientPhone')?.value || document.getElementById('clientPhoneInput')?.value || '';
   const clientGstin = document.getElementById('clientGstinInput')?.value || '';
   
   const transportMode = document.getElementById('transportModeInput')?.value || 'Direct Dispatch / By Hand';
@@ -4217,6 +4189,7 @@ function renderCustomInvoicePreview() {
   }
 
   const totalGst = cgstAmt + sgstAmt + igstAmt;
+  const totalTaxAmount = totalGst;
   const grandTotal = Math.round(taxableTotal + totalGst);
   const wordsText = numberToIndianWords(grandTotal);
   const taxWordsText = totalGst > 0 ? numberToIndianWords(Math.round(totalGst)) : 'Zero Rupees Only';
@@ -4458,35 +4431,38 @@ function openCustomInvoiceModal(fromCalc = false) {
   const container = document.getElementById('invoiceItemsBuilder');
   if (container) {
     if (fromCalc) {
-      calculateCosts();
-      const jobQty = Math.max(1, parseFloat(document.getElementById('jobQty')?.value || '1000'));
-      const jobType = document.getElementById('jobType')?.value || 'Packaging Box';
-      const paperType = document.getElementById('paperType')?.value || 'Board';
-      const gsm = document.getElementById('gsm')?.value || '250';
-      const lam = document.getElementById('laminationType')?.value || 'none';
-      const uv = document.getElementById('spotUv')?.value || 'none';
-      const foil = document.getElementById('foiling')?.value || 'none';
+      if (typeof calculate === 'function') calculate();
+      const jobQty = Math.max(1, n('batchQty') || 1000);
+      const jobTitle = document.getElementById('jobType')?.value || 'PRINTED PACKAGING BOX';
+      const sl = n('sl'), sw = n('sw'), gsm = n('gsm');
+      const lamType = document.getElementById('lamType')?.value || 'None';
+      const leafType = document.getElementById('leafType')?.value || 'None';
+      const calcGstRate = n('calcGstRate') || 0;
 
-      let finishes = [];
-      if (lam && lam !== 'none') finishes.push(lam.toUpperCase() + ' Lam');
-      if (uv && uv !== 'none') finishes.push('Spot UV');
-      if (foil && foil !== 'none') finishes.push('Foiling');
+      const specs = [];
+      if (sl && sw) specs.push(`Size: ${sl}" × ${sw}" | ${gsm} GSM`);
+      if (lamType && lamType !== 'None') specs.push(`${lamType} Lam`);
+      if (leafType && leafType !== 'None') specs.push(`${leafType}`);
+      if (n('die') > 0 || n('dieCharges') > 0) specs.push('Die-Cut');
+      if (n('pasting') > 0) specs.push('Pasting');
+      if (n('uv') > 0) specs.push('UV');
+      if (n('embossed') > 0) specs.push('Embossed');
 
-      let desc = `Material: ${gsm} GSM ${paperType}`;
-      if (finishes.length > 0) desc += ` | ${finishes.join(' + ')}`;
+      const desc = specs.length > 0 ? specs.join(' | ') : 'Custom Offset Printing & Finishing';
+      let unitRate = window.currentCalcBreakdown?.finalPrice || 1.00;
+      unitRate = parseFloat(Number(unitRate).toFixed(2));
 
-      let unitRate = 1.00;
-      if (currentResults && currentResults.sellingPricePerUnit) {
-        unitRate = parseFloat(currentResults.sellingPricePerUnit.toFixed(2));
-      } else if (currentResults && currentResults.totalCost && jobQty > 0) {
-        unitRate = parseFloat((currentResults.totalCost / jobQty).toFixed(2));
+      // Sync GST if selected in calculator
+      const gstInput = document.getElementById('custGstRateInput');
+      if (gstInput && calcGstRate > 0) {
+        gstInput.value = calcGstRate;
       }
 
       container.innerHTML = '';
       addInvoiceItemRow({
-        title: jobType.toUpperCase(),
+        title: jobTitle.toUpperCase(),
         desc: desc,
-        hsn: '58079090',
+        hsn: '4819',
         qty: jobQty,
         unit: 'NOS',
         rate: unitRate
@@ -4494,12 +4470,12 @@ function openCustomInvoiceModal(fromCalc = false) {
     } else if (container.children.length === 0) {
       container.innerHTML = '';
       addInvoiceItemRow({
-        title: 'PRINTED PACKAGING',
-        desc: '32B - 12235\n34B - 10400\n36B - 8480\n40B - 3315',
-        hsn: '58079090',
-        qty: 63500,
+        title: 'PRINTED PACKAGING BOX',
+        desc: 'Custom Offset Printing & Fabrication',
+        hsn: '4819',
+        qty: 1000,
         unit: 'NOS',
-        rate: 0.26
+        rate: 10.00
       });
     }
   }
@@ -4852,6 +4828,68 @@ async function generateA4PDFBlob(elementId, filename) {
   }
 }
 
+// Bulletproof Single-Page High-Res A4 PDF Export Engine
+async function exportBillBookToA4PDF(sourceElementId, filename) {
+  const sourceEl = document.getElementById(sourceElementId);
+  if (!sourceEl) {
+    showToast('⚠️ Document preview not ready, opening Print dialog...');
+    window.print();
+    return;
+  }
+
+  showToast(`⏳ Generating crisp single-page A4 PDF (${filename})...`);
+
+  // Offscreen container fixed at exact standard A4 width (794px at 96 DPI)
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed; left:-9999px; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0;';
+
+  const clone = sourceEl.cloneNode(true);
+  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; height:1115px !important; min-height:1115px !important; max-height:1115px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important;';
+
+  // Make sure table fills available height cleanly without spilling
+  const fillerRow = clone.querySelector('.bill-items-table tr[style*="height"]');
+  if (fillerRow) {
+    fillerRow.style.height = '140px';
+  }
+
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  const opt = {
+    margin: [2, 2, 2, 2],
+    filename: filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      width: 794,
+      windowWidth: 794,
+      scrollX: 0,
+      scrollY: 0
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  try {
+    if (typeof html2pdf !== 'undefined') {
+      await html2pdf().set(opt).from(clone).save();
+      showToast(`✅ PDF Downloaded: ${filename}`);
+    } else {
+      window.print();
+    }
+  } catch (err) {
+    console.error('Direct PDF export error, fallback to print:', err);
+    showToast('⚠️ Opening Print/Save as PDF dialog...');
+    window.print();
+  } finally {
+    if (container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+  }
+}
+
 function downloadCustomBillPDF() {
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
@@ -4859,89 +4897,25 @@ function downloadCustomBillPDF() {
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
   const filename = `${baseName}.pdf`;
   
-  const originalTitle = document.title;
-  document.title = baseName;
-
   if (typeof renderCustomInvoicePreview === 'function') {
     renderCustomInvoicePreview();
   }
-
-  const element = document.getElementById('printableInvoice');
-  if (!element) {
-    showToast('⚠️ Preview not ready, opening Print/PDF dialog...');
-    window.print();
-    setTimeout(() => { document.title = originalTitle; }, 2500);
-    return;
-  }
-
-  if (typeof html2pdf !== 'undefined') {
-    showToast(`⏳ Generating ${baseName}.pdf...`);
-    const opt = {
-      margin: [2, 3, 2, 3],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save().then(() => {
-      showToast(`✅ PDF downloaded: ${filename}`);
-      document.title = originalTitle;
-    }).catch((err) => {
-      console.warn('html2pdf direct save failed, opening print dialog:', err);
-      showToast('⚠️ Direct PDF export issue, opening Print dialog...');
-      window.print();
-      document.title = originalTitle;
-    });
-  } else {
-    window.print();
-    setTimeout(() => { document.title = originalTitle; }, 2500);
-  }
+  
+  exportBillBookToA4PDF('printableInvoice', filename);
 }
 
 function downloadQuotationPDF() {
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'QUOTATION';
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+  const docTitle = document.getElementById('quoteDocTitle')?.value || document.getElementById('docTitleSelect')?.value || 'QUOTATION';
+  const invoiceNo = document.getElementById('quoteInvoiceNo')?.value || document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('quoteClientName')?.value || document.getElementById('clientNameInput')?.value || 'Client';
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
   const filename = `${baseName}.pdf`;
   
-  const originalTitle = document.title;
-  document.title = baseName;
-
   if (typeof renderQuotationPreview === 'function') {
     renderQuotationPreview();
   }
-
-  const element = document.getElementById('printableQuotation');
-  if (!element) {
-    showToast('⚠️ Preview not ready, opening Print/PDF dialog...');
-    window.print();
-    setTimeout(() => { document.title = originalTitle; }, 2500);
-    return;
-  }
-
-  if (typeof html2pdf !== 'undefined') {
-    showToast(`⏳ Generating ${baseName}.pdf...`);
-    const opt = {
-      margin: [2, 3, 2, 3],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save().then(() => {
-      showToast(`✅ PDF downloaded: ${filename}`);
-      document.title = originalTitle;
-    }).catch((err) => {
-      console.warn('html2pdf direct save failed, opening print dialog:', err);
-      showToast('⚠️ Direct PDF export issue, opening Print dialog...');
-      window.print();
-      document.title = originalTitle;
-    });
-  } else {
-    window.print();
-    setTimeout(() => { document.title = originalTitle; }, 2500);
-  }
+  
+  exportBillBookToA4PDF('printableQuotation', filename);
 }
 
 

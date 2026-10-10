@@ -3882,11 +3882,43 @@
         <button class="btn-icon" onclick="closeQuotationModal()" style="width:32px; height:32px; font-size:14px;">✕</button>
       </div>
       
-      <div class="modal-body">
-        <div class="mobile-scroll-tip no-print" style="display:none; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; padding:6px 10px; font-size:11.5px; font-weight:600; margin-bottom:8px;"><span>👉</span> <span>Mobile Screen: Swipe / Scroll horizontally to preview full Quotation format.</span></div>
+      <div class="modal-body">
+        <!-- Live Quotation Config Inputs -->
+        <div class="no-print" style="margin-bottom:12px; background:var(--bg-card); border:1.5px solid var(--border); border-radius:var(--radius-md); padding:10px 14px;">
+          <div style="font-size:11.5px; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span>✏️</span> Quotation Party &amp; Document Details (पार्टी का नाम और डिटेल यहाँ लिखें) :
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">Quoted To (Party / Client Name):</label>
+              <input id="quoteClientName" type="text" placeholder="e.g. Ramesh Packaging / Client Name" value="" oninput="renderQuotationPreview()" style="font-weight:700; padding:7px 10px; font-size:13px; border:1.5px solid var(--primary); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+            </div>
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">Client Mobile No.:</label>
+              <input id="quoteClientPhone" type="tel" placeholder="10-digit mobile" value="" oninput="renderQuotationPreview()" style="padding:7px 10px; font-size:13px; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+            </div>
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">Quotation / Bill No.:</label>
+              <input id="quoteInvoiceNo" type="text" placeholder="#01" value="" oninput="renderQuotationPreview()" style="font-weight:800; padding:7px 10px; font-size:13px; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+            </div>
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">Document Title:</label>
+              <select id="quoteDocTitle" onchange="renderQuotationPreview()" style="padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+                <option value="ESTIMATION / QUOTATION" selected>ESTIMATION / QUOTATION</option>
+                <option value="TAX INVOICE">TAX INVOICE</option>
+                <option value="PERFORMA INVOICE">PERFORMA INVOICE</option>
+                <option value="DELIVERY CHALLAN">DELIVERY CHALLAN</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-scroll-tip no-print" style="display:none; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; padding:6px 10px; font-size:11.5px; font-weight:600; margin-bottom:8px;">
+          <span>👉</span> <span>Mobile Screen: Swipe / Scroll horizontally to preview full Quotation format.</span>
+        </div>
         <div class="bill-preview-scroll-wrapper">
           <div id="quotationPreview"></div>
-        </div>
+        </div>
       </div>
 
       <div class="modal-footer modal-footer-quote">
