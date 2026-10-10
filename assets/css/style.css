@@ -5206,9 +5206,9 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 100% !important;
-    height: 290mm !important;
-    max-height: 290mm !important;
-    min-height: 290mm !important;
+    height: 282mm !important;
+    max-height: 284mm !important;
+    min-height: 275mm !important;
     margin: 0 !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
@@ -5217,6 +5217,7 @@ body {
     page-break-after: avoid !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
+    overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;

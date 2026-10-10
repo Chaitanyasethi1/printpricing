@@ -2698,6 +2698,16 @@ function openQuotationModal() {
     if (quoteInv && !quoteInv.value) {
       quoteInv.value = getNextInvoiceNumber();
     }
+
+    const b = window.currentCalcBreakdown || {};
+    const rateInput = document.getElementById('customBillingRate');
+    if (rateInput && (!rateInput.value || parseFloat(rateInput.value) <= 0)) {
+      if (b.finalPrice > 0) rateInput.value = b.finalPrice.toFixed(2);
+    }
+    const qtyInput = document.getElementById('customBillingQty');
+    if (qtyInput && (!qtyInput.value || parseFloat(qtyInput.value) <= 0)) {
+      if (b.batchQty > 0) qtyInput.value = b.batchQty;
+    }
     
     renderQuotationPreview();
     updateSavedCountBadges();
@@ -2898,7 +2908,8 @@ function renderQuotationPreview() {
   const billingUnit = document.getElementById('billingUnitSelect')?.value || 'NOS';
   const customDesc = document.getElementById('customItemDescInput')?.value?.trim() || '';
 
-  const sl = n('sl'), sw = n('sw'), gsm = n('gsm'), pr = n('paperRate');
+  const sl = n('sl'), sw = n('sw'), gsm = n('gsm');
+  const pr = n('pr') || n('paperRate');
   const ll = n('ll'), lw = n('lw'), d = n('divide');
   const lamType = document.getElementById('lamType')?.value || 'None';
 
@@ -2906,40 +2917,41 @@ function renderQuotationPreview() {
   const leafType = document.getElementById('leafType')?.value || 'None';
   const leafBlock = n('leafBlock');
 
-  const calcBatchQty = n('batchQty') || 1000;
+  const b = window.currentCalcBreakdown || {};
+  const calcBatchQty = b.batchQty || n('batchQty') || 1000;
 
   // Paper Weight & Cost
   const areaM2 = sl * sw * 0.00064516;
   const weightKg = (areaM2 * gsm) / 1000;
-  const paperCost = weightKg * pr;
+  const paperCost = (b.paperCost !== undefined) ? b.paperCost : (weightKg * pr);
   const totalWeightAllSheets = weightKg * calcBatchQty;
 
   // Lamination
   let lamPaise = (d && lamType !== 'None') ? (ll * lw / d) : 0;
-  const lamCost = lamPaise / 100;
+  const lamCost = (b.lamCost !== undefined) ? b.lamCost : (lamPaise / 100);
 
   // Leaf Foil
   let leafPaise = (leafDivide && leafType !== 'None') ? (leafL * leafW / leafDivide) : 0;
   const leafCost = leafPaise / 100;
   const leafBlockPerSheet = calcBatchQty > 0 ? (leafBlock / calcBatchQty) : 0;
-  const totalLeafPerSheet = leafCost + leafBlockPerSheet;
+  const totalLeafPerSheet = (b.totalLeafPerSheet !== undefined) ? b.totalLeafPerSheet : (leafCost + leafBlockPerSheet);
 
   // Printing & Plates
   const printing = n('printing');
   const plates = n('plates');
   const plateCostPerSheet = calcBatchQty > 0 ? (plates / calcBatchQty) : 0;
-  const totalPrintingPerSheet = printing + plateCostPerSheet;
+  const totalPrintingPerSheet = (b.totalPrintingPerSheet !== undefined) ? b.totalPrintingPerSheet : (printing + plateCostPerSheet);
 
   // Die & Die Charges
   const die = n('die');
   const dieCharges = n('dieCharges');
   const dieCostPerSheet = calcBatchQty > 0 ? (dieCharges / calcBatchQty) : 0;
-  const totalDiePerSheet = die + dieCostPerSheet;
+  const totalDiePerSheet = (b.totalDiePerSheet !== undefined) ? b.totalDiePerSheet : (die + dieCostPerSheet);
 
-  const pasting = n('pasting');
-  const uv = n('uv');
-  const embossed = n('embossed');
-  const other = n('other');
+  const pasting = (b.pasting !== undefined) ? b.pasting : n('pasting');
+  const uv = (b.uv !== undefined) ? b.uv : n('uv');
+  const embossed = (b.embossed !== undefined) ? b.embossed : n('embossed');
+  const other = (b.other !== undefined) ? b.other : n('other');
 
   const direct = paperCost + lamCost + totalLeafPerSheet + totalPrintingPerSheet + totalDiePerSheet + pasting + uv + embossed + other;
   const wastage = n('wastage');
@@ -2947,7 +2959,7 @@ function renderQuotationPreview() {
   const cost = direct + wastageCost;
   const profit = n('profit');
   const profitAmount = cost * profit / 100;
-  const calcFinalPricePerSheet = cost + profitAmount;
+  const calcFinalPricePerSheet = (b.finalPrice && b.finalPrice > 0) ? b.finalPrice : (cost + profitAmount);
 
   // Manual Billing Qty & Rate overrides
   let billQty = parseFloat(document.getElementById('customBillingQty')?.value);
@@ -3011,25 +3023,27 @@ function renderQuotationPreview() {
 
   const itemRowsHtml = `
     <tr>
-      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">1</td>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px; width:38px;">1</td>
       <td style="text-align:left; border-right:1.5px solid #000; padding:6px 8px;">
         <div style="font-weight:900; font-size:12px; color:#000;">${jobTitle}</div>
         <div style="font-size:10.5px; color:#334155; margin-top:3px; line-height:1.35;">${displayDesc}</div>
       </td>
-      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">${hsn}</td>
-      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
-      <td style="text-align:right; font-weight:bold; border-right:1.5px solid #000; padding:6px 6px;">₹${billRate.toFixed(2)}</td>
-      <td style="text-align:right; font-weight:bold; padding:6px 8px;">₹${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px; width:78px;">${hsn}</td>
+      <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px; width:85px;">${billQty.toLocaleString('en-IN')} ${billingUnit}</td>
+      <td style="text-align:right; font-weight:bold; border-right:1.5px solid #000; padding:6px 6px; width:75px;">₹${billRate.toFixed(2)}</td>
+      <td style="text-align:right; font-weight:bold; padding:6px 8px; width:105px;">₹${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
     </tr>
   `;
 
   let emptyRowsHtml = `
-    <tr style="height:320px;">
+    <tr style="height:140px;">
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
-      <td style="border-right:1.5px solid #000;"></td><td style="border-right:1.5px solid #000;"></td></tr>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+    </tr>
   `;
 
   previewEl.innerHTML = `
@@ -3109,85 +3123,85 @@ function renderQuotationPreview() {
 
       <!-- Middle Fill Section: Table & Financial Breakdown -->
       <div class="bill-middle-fill">
-                <!-- Goods / Item Table with Exact Fixed Column Widths -->
+        <!-- Goods / Item Table with Exact Fixed Column Widths -->
         <table class="bill-items-table">
           <colgroup>
-            <col style="width:40px;">
+            <col style="width:38px;">
             <col style="width:auto;">
             <col style="width:78px;">
             <col style="width:85px;">
-            <col style="width:90px;">
+            <col style="width:75px;">
             <col style="width:105px;">
           </colgroup>
           <thead>
             <tr>
-              <th style="text-align:center;">S.No.</th>
+              <th style="width:38px; text-align:center;">S.No.</th>
               <th style="text-align:left; padding-left:8px;">DESCRIPTION OF GOODS</th>
-              <th style="text-align:center;">HSN CODE</th>
-              <th style="text-align:center;">QTY.</th>
-              <th style="text-align:right;">RATE</th>
-              <th style="text-align:right; padding-right:8px;">Amount</th>
+              <th style="width:78px; text-align:center;">HSN CODE</th>
+              <th style="width:85px; text-align:center;">QTY.</th>
+              <th style="width:75px; text-align:right;">RATE</th>
+              <th style="width:105px; text-align:right; padding-right:8px;">Amount</th>
             </tr>
           </thead>
           <tbody>
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-            <!-- Exact Match to Physical Yellow Bill Book -->
+            <!-- Exact Match to Physical Yellow Bill Book: Colspan 3 + Colspan 2 + Colspan 1 -->
             <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
-              <td colspan="4" rowspan="5" style="vertical-align:top; padding:6px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
-                <div style="font-size:11px; margin-bottom:6px; line-height:1.4;">
-                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:70%;">${wordsText}</span>
+              <td colspan="3" rowspan="5" style="vertical-align:top; padding:8px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
+                <div style="font-size:11px; margin-bottom:6px; line-height:1.45;">
+                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:65%;">${wordsText}</span>
                 </div>
-                <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
-                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:60%;">${taxWordsText}</span>
+                <div style="font-size:11px; margin-bottom:8px; line-height:1.45;">
+                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:55%;">${taxWordsText}</span>
                 </div>
-                <div style="font-size:10.5px; margin-top:6px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                <div style="font-size:10.5px; margin-top:8px; font-weight:700; display:flex; align-items:center; gap:8px;">
                   <span>Amount Of Tax Subject To Revrese Charge :</span>
                   <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
                   <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
                 </div>
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
                 Total Amount Before Tax
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+              <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
                 ${taxableTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
 
             <tr class="bill-summary-row">
-              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
                 ${cgstAmt > 0 ? `${cgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (igstAmt > 0 ? `${igstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00')}
               </td>
             </tr>
 
             <tr class="bill-summary-row">
-              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
                 ${sgstAmt > 0 ? `${sgstAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '0.00'}
               </td>
             </tr>
 
             <tr class="bill-summary-row" style="background:#f8fafc;">
-              <td style="text-align:right; font-weight:bold; font-size:10px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 Total Tax Amount
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
+              <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
                 ${totalTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
 
             <tr class="bill-total-final-row" style="background:#f1f5f9;">
-              <td style="text-align:right; font-size:11px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
                 GST Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:12px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
@@ -4219,14 +4233,16 @@ function renderCustomInvoicePreview() {
   }).join('');
 
   // Clean continuous vertical column lines extending to summary (no horizontal empty lines or row numbers)
-  const fillerHeight = Math.max(160, 360 - (items.length * 40));
+  const fillerHeight = Math.max(60, 200 - (items.length * 32));
   const emptyRowsHtml = `
     <tr style="height:${fillerHeight}px;">
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
-      <td style="border-right:1.5px solid #000;"></td><td style="border-right:1.5px solid #000;"></td></tr>
+      <td style="border-right:1.5px solid #000;"></td>
+      <td style="border-right:1.5px solid #000;"></td>
+    </tr>
   `;
 
   previewEl.innerHTML = `
@@ -4309,38 +4325,46 @@ function renderCustomInvoicePreview() {
 
       <!-- Middle Fill Section: Table & Financial Breakdown -->
       <div class="bill-middle-fill">
-        <!-- Goods / Item Table -->
+        <!-- Goods / Item Table with Exact Fixed Column Widths -->
         <table class="bill-items-table">
+          <colgroup>
+            <col style="width:38px;">
+            <col style="width:auto;">
+            <col style="width:78px;">
+            <col style="width:85px;">
+            <col style="width:75px;">
+            <col style="width:105px;">
+          </colgroup>
           <thead>
             <tr>
-              <th style="width:38px;">S.No.</th>
-              <th style="text-align:left;">DESCRIPTION OF GOODS</th>
-              <th style="width:80px;">HSN CODE</th>
-              <th style="width:95px;">QTY.</th>
-              <th style="width:80px; text-align:right;">RATE</th>
-              <th style="width:105px; text-align:right;">Amount</th>
+              <th style="width:38px; text-align:center;">S.No.</th>
+              <th style="text-align:left; padding-left:8px;">DESCRIPTION OF GOODS</th>
+              <th style="width:78px; text-align:center;">HSN CODE</th>
+              <th style="width:85px; text-align:center;">QTY.</th>
+              <th style="width:75px; text-align:right;">RATE</th>
+              <th style="width:105px; text-align:right; padding-right:8px;">Amount</th>
             </tr>
           </thead>
           <tbody>
             ${itemRowsHtml}
             ${emptyRowsHtml}
 
-                                    <!-- Exact Match to Physical Yellow Bill Book -->
+            <!-- Exact Match to Physical Yellow Bill Book: Colspan 3 + Colspan 2 + Colspan 1 -->
             <tr class="bill-summary-row" style="border-top:1.5px solid #000; background:#fff;">
-              <td colspan="4" rowspan="5" style="vertical-align:top; padding:6px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
-                <div style="font-size:11px; margin-bottom:6px; line-height:1.4;">
-                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:70%;">${wordsText}</span>
+              <td colspan="3" rowspan="5" style="vertical-align:top; padding:8px 10px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; background:#fff;">
+                <div style="font-size:11px; margin-bottom:6px; line-height:1.45;">
+                  <b>Amount In Words :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:65%;">${wordsText}</span>
                 </div>
-                <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
-                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:60%;">${taxWordsText}</span>
+                <div style="font-size:11px; margin-bottom:8px; line-height:1.45;">
+                  <b>Total Tax Amount in words. :</b> <span style="font-style:italic; font-weight:700; border-bottom:1px dotted #64748b; display:inline-block; min-width:55%;">${taxWordsText}</span>
                 </div>
-                <div style="font-size:10.5px; margin-top:6px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                <div style="font-size:10.5px; margin-top:8px; font-weight:700; display:flex; align-items:center; gap:8px;">
                   <span>Amount Of Tax Subject To Revrese Charge :</span>
                   <span>Yes [ ${reverseCharge === 'Yes' ? '✓' : '&nbsp;'} ]</span>
                   <span>No [ ${reverseCharge === 'No' ? '✓' : '&nbsp;'} ]</span>
                 </div>
               </td>
-              <td style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:11px; padding:4px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap; background:#f8fafc;">
                 Total Amount Before Tax
               </td>
               <td style="text-align:right; font-weight:bold; font-size:11.5px; padding:4px 8px; border-bottom:1px solid #000; white-space:nowrap;">
@@ -4349,7 +4373,7 @@ function renderCustomInvoicePreview() {
             </tr>
 
             <tr class="bill-summary-row">
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 ${cgstAmt > 0 ? `CGST (${cgstRate}%)` : (igstAmt > 0 ? `IGST (${igstRate}%)` : 'CGST')}
               </td>
               <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
@@ -4358,7 +4382,7 @@ function renderCustomInvoicePreview() {
             </tr>
 
             <tr class="bill-summary-row">
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 ${sgstAmt > 0 ? `SGST (${sgstRate}%)` : 'SGST'}
               </td>
               <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
@@ -4367,7 +4391,7 @@ function renderCustomInvoicePreview() {
             </tr>
 
             <tr class="bill-summary-row" style="background:#f8fafc;">
-              <td style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-weight:bold; font-size:10.5px; padding:3px 8px; border-right:1.5px solid #000; border-bottom:1px solid #000; white-space:nowrap;">
                 Total Tax Amount
               </td>
               <td style="text-align:right; font-weight:bold; font-size:11px; padding:3px 8px; border-bottom:1px solid #000; white-space:nowrap;">
@@ -4376,7 +4400,7 @@ function renderCustomInvoicePreview() {
             </tr>
 
             <tr class="bill-total-final-row" style="background:#f1f5f9;">
-              <td style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
+              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 8px; border-right:1.5px solid #000; border-bottom:1.5px solid #000; white-space:nowrap;">
                 GST Total Amount After Tax
               </td>
               <td style="text-align:right; font-size:12.5px; font-weight:900; padding:5px 8px; border-bottom:1.5px solid #000; white-space:nowrap; color:#000;">
@@ -4740,16 +4764,8 @@ function shareCustomBillWhatsApp() {
 
   // 1. Auto download high-res A4 PDF file directly to computer/phone
   const filename = `AS_Print_Gallery_Bill_${invoiceNo}_${receiverName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-  const el = document.getElementById('printableInvoice');
-  if (el && typeof html2pdf !== 'undefined') {
-    const opt = {
-      margin: [3, 4, 3, 4],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(el).save();
+  if (typeof exportBillBookToA4PDF === 'function') {
+    exportBillBookToA4PDF('printableInvoice', filename);
   }
 
   // 2. Open Direct WhatsApp Chat with Bill details & Clickable Online PDF Link
@@ -4813,7 +4829,7 @@ async function generateA4PDFBlob(elementId, filename) {
   }
 
   const opt = {
-    margin: [3, 4, 3, 4],
+    margin: [2, 2, 2, 2],
     filename: filename || 'Invoice.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true, logging: false },
@@ -4844,12 +4860,12 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
   container.style.cssText = 'position:fixed; left:-9999px; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0;';
 
   const clone = sourceEl.cloneNode(true);
-  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; height:1115px !important; min-height:1115px !important; max-height:1115px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important;';
+  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1030px !important; max-height:1050px !important; overflow:hidden !important;';
 
   // Make sure table fills available height cleanly without spilling
   const fillerRow = clone.querySelector('.bill-items-table tr[style*="height"]');
   if (fillerRow) {
-    fillerRow.style.height = '140px';
+    fillerRow.style.height = '100px';
   }
 
   container.appendChild(clone);
