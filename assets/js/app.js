@@ -8,11 +8,11 @@ function selectSubstrateTab(tab) {
   const pPrinted = document.getElementById('panelPrintedSheet');
   const pCorr = document.getElementById('panelCorrSheet');
   const pKappa = document.getElementById('panelKappaSheet');
-  
+
   const tPrinted = document.getElementById('tabPrintedSheet');
   const tCorr = document.getElementById('tabCorrSheet');
   const tKappa = document.getElementById('tabKappaSheet');
-  
+
   if (tPrinted && pPrinted) {
     if (currentSubstrateTab === 'printed') {
       tPrinted.classList.add('active');
@@ -703,10 +703,10 @@ function calculate() {
   updateText('heroBatchProfit', money(totalBatchProfit));
   updateText('batchTotalCost', money(totalBatchCost));
   updateText('batchTotalProfit', money(totalBatchProfit));
-  
+
   updateText('calcGstAmount', calcGstRate > 0 ? `+${money(gstUnitAmount)} (${calcGstRate}%)` : '+₹0.00');
   updateText('calcFinalPriceWithGst', money(finalPriceWithGst));
-  
+
   if (calcGstRate > 0) {
     updateText('heroFinalPrice', money(finalPriceWithGst));
     updateText('batchTotalPrice', money(totalBatchPriceWithGst));
@@ -722,7 +722,7 @@ function calculate() {
     if (bgstEl) bgstEl.style.display = 'none';
   }
   updateText('heroWeight', activeHeroWeight > 0 ? activeHeroWeight.toFixed(2) + ' g' : (currentSubstrateTab === 'kappa' ? 'Rigid Board' : '0 g'));
-  
+
   if (typeof syncBatchPills === 'function') syncBatchPills(batchQty);
 
   // Itemized Breakdown: 3 Substrates
@@ -779,8 +779,8 @@ function calculate() {
   updateText('rPrinting', money(totalPrintingPerSheet));
   const rPrintingSub = document.getElementById('rPrintingSub');
   if (rPrintingSub) {
-    rPrintingSub.textContent = plateCharges > 0 
-      ? `Imp: ${money(printing)} + Plates: ${money(plateCostPerSheet)}/sh` 
+    rPrintingSub.textContent = plateCharges > 0
+      ? `Imp: ${money(printing)} + Plates: ${money(plateCostPerSheet)}/sh`
       : 'Offset / Digital Impression';
   }
 
@@ -788,8 +788,8 @@ function calculate() {
   updateText('rDie', money(totalDiePerSheet));
   const rDieSub = document.getElementById('rDieSub');
   if (rDieSub) {
-    rDieSub.textContent = dieCharges > 0 
-      ? `Punch: ${money(die)} + Die: ${money(dieCostPerSheet)}/sh` 
+    rDieSub.textContent = dieCharges > 0
+      ? `Punch: ${money(die)} + Die: ${money(dieCostPerSheet)}/sh`
       : 'Punching & Cutting';
   }
 
@@ -2559,16 +2559,16 @@ function incrementNextInvoiceNumber() {
   let next = current + 1;
   localStorage.setItem('as_bill_seq_v5', String(next));
   localStorage.setItem('as_next_invoice_seq', String(next));
-  
+
   const custInv = document.getElementById('custInvoiceNo');
   if (custInv) custInv.value = String(next).padStart(2, '0');
-  
+
   const quoteInv = document.getElementById('invoiceNoInput');
   if (quoteInv) quoteInv.value = String(next).padStart(2, '0');
-  
+
   const statSeq = document.getElementById('statNextSeq');
   if (statSeq) statSeq.textContent = '#' + String(next).padStart(2, '0');
-  
+
   const nextBadge = document.getElementById('nextBillNumBadge');
   if (nextBadge) nextBadge.textContent = String(next).padStart(2, '0');
 
@@ -2612,10 +2612,10 @@ function updateSavedCountBadges() {
       const el = document.getElementById(id);
       if (el) el.textContent = count;
     });
-    
+
     const statTotal = document.getElementById('statTotalBills');
     if (statTotal) statTotal.textContent = count;
-    
+
     let sum = 0;
     history.forEach(item => {
       let amt = parseFloat(item.grandTotal || item.totalAmount || item.customRate * item.customQty || 0);
@@ -2647,7 +2647,7 @@ function getSavedInvoicesList() {
 
     return JSON.parse(localStorage.getItem('as_saved_invoices') || '[]');
 
-  } catch(e) {
+  } catch (e) {
 
     return [];
 
@@ -2693,7 +2693,7 @@ function openQuotationModal() {
   const modal = document.getElementById('quotationModal');
   if (modal) {
     if (typeof calculate === 'function') calculate();
-    
+
     const quoteInv = document.getElementById('quoteInvoiceNo');
     if (quoteInv && !quoteInv.value) {
       quoteInv.value = getNextInvoiceNumber();
@@ -2722,7 +2722,7 @@ function openQuotationModal() {
         qtyInput.value = 1000;
       }
     }
-    
+
     renderQuotationPreview();
     updateSavedCountBadges();
     modal.classList.add('active');
@@ -2779,7 +2779,7 @@ function handleUnitChange() {
 
   const batchQty = n('batchQty') || 1000;
 
-  
+
 
   const areaM2 = sl * sw * 0.00064516;
 
@@ -2787,7 +2787,7 @@ function handleUnitChange() {
 
   const totalWeightKg = singleWeightKg * batchQty;
 
-  
+
 
   const qtyInput = document.getElementById('customBillingQty');
 
@@ -2913,7 +2913,7 @@ function renderQuotationPreview() {
   const clientState = document.getElementById('clientStateInput')?.value || 'Uttar Pradesh (09)';
   const clientPhone = document.getElementById('quoteClientPhone')?.value || document.getElementById('clientPhoneInput')?.value || '';
   const clientGstin = document.getElementById('clientGstinInput')?.value || '';
-  
+
   const transportMode = document.getElementById('transportModeInput')?.value || 'Direct Dispatch / By Hand';
   const vehicleNo = document.getElementById('vehicleNoInput')?.value || '-';
 
@@ -3176,6 +3176,7 @@ function renderQuotationPreview() {
           <tbody>
             ${itemRowsHtml}
             ${emptyRowsHtml}
+            
 
             <!-- Summary Rows: Colspan 3 + Colspan 2 + Colspan 1 -->
             <tr class="bill-summary-row" style="background:#fafafa;">
@@ -3196,10 +3197,10 @@ function renderQuotationPreview() {
               <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:5px 18px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 14px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
@@ -3234,9 +3235,9 @@ function renderQuotationPreview() {
           <div>Branch : <b>LONI GHAZIABAD</b></div>
         </div>
 
-        <div class="bill-sign-box" style="padding-right:28px;">
-          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
-          <div style="font-size:10px; margin-top:28px; font-weight:700;">Authorised Signatory</div>
+        <div class="bill-sign-box">
+          <div style="font-weight:900; font-size:11px; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">For AS PRINT GALLERY</div>
+          <div style="font-size:10px; margin-top:28px;">Authorised Signatory</div>
         </div>
       </div>
 
@@ -3266,7 +3267,7 @@ function saveCurrentInvoice() {
 
   const history = getSavedInvoicesList();
 
-  
+
 
   const record = {
 
@@ -3332,7 +3333,7 @@ function saveCurrentInvoice() {
 
   incrementNextInvoiceNumber();
 
-  
+
 
   // Set next number in input for convenience
 
@@ -3355,7 +3356,7 @@ function getSavedInvoicesList() {
   try {
     const rawV3 = localStorage.getItem('as_saved_invoices_v3');
     let list = rawV3 ? JSON.parse(rawV3) : [];
-    
+
     // Check if there are legacy invoices in as_saved_invoices
     const rawLegacy = localStorage.getItem('as_saved_invoices');
     if (rawLegacy) {
@@ -3396,7 +3397,7 @@ function getSavedInvoicesList() {
           });
           localStorage.setItem('as_saved_invoices_v3', JSON.stringify(list));
         }
-      } catch (err) {}
+      } catch (err) { }
     }
     return Array.isArray(list) ? list : [];
   } catch (e) {
@@ -3481,21 +3482,21 @@ function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
       </thead>
       <tbody>
         ${filtered.map((item, idx) => {
-          const docType = item.docTitle || item.docType || 'TAX INVOICE';
-          let badgeClass = 'tax_invoice';
-          if (docType.includes('QUOTE')) badgeClass = 'quotation';
-          else if (docType.includes('ESTIMATE')) badgeClass = 'estimate';
-          else if (docType.includes('CHALLAN')) badgeClass = 'challan';
+    const docType = item.docTitle || item.docType || 'TAX INVOICE';
+    let badgeClass = 'tax_invoice';
+    if (docType.includes('QUOTE')) badgeClass = 'quotation';
+    else if (docType.includes('ESTIMATE')) badgeClass = 'estimate';
+    else if (docType.includes('CHALLAN')) badgeClass = 'challan';
 
-          const client = item.clientName || item.buyerName || 'Valued Client';
-          const phone = item.receiverPhone || '';
-          const itemsDesc = item.items && item.items.length > 0
-            ? `${item.items[0].title} ${item.items.length > 1 ? '<span style="color:#64748b; font-weight:normal;">(+' + (item.items.length - 1) + ' more)</span>' : ''}`
-            : (item.jobTitle || 'Print Work');
-          const totalAmt = Math.round(item.grandTotal || item.totalAmount || 0);
-          const serialNo = String(idx + 1).padStart(2, '0');
+    const client = item.clientName || item.buyerName || 'Valued Client';
+    const phone = item.receiverPhone || '';
+    const itemsDesc = item.items && item.items.length > 0
+      ? `${item.items[0].title} ${item.items.length > 1 ? '<span style="color:#64748b; font-weight:normal;">(+' + (item.items.length - 1) + ' more)</span>' : ''}`
+      : (item.jobTitle || 'Print Work');
+    const totalAmt = Math.round(item.grandTotal || item.totalAmount || 0);
+    const serialNo = String(idx + 1).padStart(2, '0');
 
-          return `
+    return `
             <tr>
               <td style="font-family:monospace; font-weight:700; color:#64748b; font-size:12px;">
                 ${serialNo}
@@ -3538,7 +3539,7 @@ function renderHistoryTable(filterText = '', typeFilter = 'ALL') {
               </td>
             </tr>
           `;
-        }).join('')}
+  }).join('')}
       </tbody>
     </table>
   `;
@@ -3618,12 +3619,12 @@ function shareSavedInvoiceWhatsApp(id) {
 // Delete single saved record
 function deleteSavedInvoice(id) {
   if (!confirm('Are you sure you want to delete this bill record from your database?')) return;
-  
+
   let history = getSavedInvoicesList();
   history = history.filter(item => String(item.id) !== String(id));
   localStorage.setItem('as_saved_invoices_v3', JSON.stringify(history));
   localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-  
+
   if (history.length === 0) {
     localStorage.setItem('as_bill_seq_v5', '1');
     localStorage.setItem('as_next_invoice_seq', '1');
@@ -3637,7 +3638,7 @@ function deleteSavedInvoice(id) {
     localStorage.setItem('as_bill_seq_v5', String(nextNum));
     localStorage.setItem('as_next_invoice_seq', String(nextNum));
   }
-  
+
   updateSavedCountBadges();
   renderHistoryTable();
   showToast('🗑️ Record deleted from database');
@@ -3646,12 +3647,12 @@ function deleteSavedInvoice(id) {
 // Clear all records
 function clearAllHistory() {
   if (!confirm('⚠️ Are you sure you want to clear all saved invoice records? This cannot be undone.')) return;
-  
+
   localStorage.removeItem('as_saved_invoices_v3');
   localStorage.removeItem('as_saved_invoices');
   localStorage.setItem('as_bill_seq_v5', '1');
   localStorage.setItem('as_next_invoice_seq', '1');
-  
+
   updateSavedCountBadges();
   renderHistoryTable();
   showToast('🗑️ All saved records cleared. Next Bill sequence reset to 01.');
@@ -3667,7 +3668,7 @@ function exportHistoryAsJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(history, null, 2));
   const downloadAnchor = document.createElement('a');
   downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `AS_Print_Gallery_Billing_Backup_${new Date().toISOString().slice(0,10)}.json`);
+  downloadAnchor.setAttribute("download", `AS_Print_Gallery_Billing_Backup_${new Date().toISOString().slice(0, 10)}.json`);
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
@@ -3680,7 +3681,7 @@ function importHistoryFromJSON(event) {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     try {
       const imported = JSON.parse(e.target.result);
       if (Array.isArray(imported)) {
@@ -3788,7 +3789,7 @@ function toggleTheme() {
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', newTheme);
   localStorage.setItem('calc_theme', newTheme);
-  
+
   const icon = document.getElementById('themeIcon');
   if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
 
@@ -3856,7 +3857,7 @@ document.addEventListener('DOMContentLoaded', () => {
       calculate();
     });
     if (input.tagName === 'INPUT') {
-      input.addEventListener('focus', function() {
+      input.addEventListener('focus', function () {
         this.select();
       });
     }
@@ -4531,14 +4532,14 @@ function printCustomInvoice() {
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
   const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
   const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
-  
+
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
   const originalTitle = document.title;
   document.title = baseName;
-  
+
   renderCustomInvoicePreview();
   window.print();
-  
+
   setTimeout(() => {
     document.title = originalTitle;
   }, 2500);
@@ -4548,16 +4549,16 @@ function printQuotation() {
   const docTitle = document.getElementById('docTitleSelect')?.value || 'QUOTATION';
   const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
   const clientName = document.getElementById('clientNameInput')?.value || 'Client';
-  
+
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
   const originalTitle = document.title;
   document.title = baseName;
-  
+
   if (typeof renderQuotationPreview === 'function') {
     renderQuotationPreview();
   }
   window.print();
-  
+
   setTimeout(() => {
     document.title = originalTitle;
   }, 2500);
@@ -4569,7 +4570,7 @@ function saveCustomBillInvoice() {
   const receiverName = document.getElementById('custReceiverName')?.value || 'Valued Client';
   const invoiceDate = document.getElementById('custInvoiceDate')?.value || new Date().toLocaleDateString('en-IN');
   const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
-  
+
   const items = getInvoiceCustomItemsData();
   let subtotal = 0;
   items.forEach(it => { subtotal += (parseFloat(it.amount) || 0); });
@@ -4618,7 +4619,7 @@ function saveCustomBillInvoice() {
   } else {
     list.unshift(billObj);
   }
-  
+
   localStorage.setItem('as_saved_invoices_v3', JSON.stringify(list));
   localStorage.setItem('as_saved_invoices', JSON.stringify(list));
 
@@ -4644,11 +4645,11 @@ function copyCustomBillText() {
   text += `Billed To: *${receiverName}*\n`;
   text += `-----------------------------------------\n`;
   text += `*Items / Products:*\n`;
-  
+
   let sub = 0;
   items.forEach((it, i) => {
     sub += it.amount;
-    text += `${i+1}. *${it.title}* (${it.qty} ${it.unit} @ ₹${it.rate}) = ₹${it.amount.toFixed(2)}\n`;
+    text += `${i + 1}. *${it.title}* (${it.qty} ${it.unit} @ ₹${it.rate}) = ₹${it.amount.toFixed(2)}\n`;
     if (it.desc) {
       text += `   ${it.desc.replace(/\n/g, '\n   ')}\n`;
     }
@@ -4712,7 +4713,7 @@ function shareCustomBillWhatsApp() {
   try {
     const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(billPayload))));
     shareableUrl += '?billData=' + encodeURIComponent(b64);
-  } catch(e) {}
+  } catch (e) { }
 
   let text = `*AS PRINT GALLERY*\n`;
   text += `GSTIN: 09AWKPN5910E1ZG | Phone: 9911678386\n`;
@@ -4722,7 +4723,7 @@ function shareCustomBillWhatsApp() {
     text += `Mobile: *${receiverPhone}*\n`;
   }
   text += `-----------------------------------------\n`;
-  
+
   items.forEach((it, i) => {
     text += `▪ *${it.title}*\n   Qty: ${it.qty} ${it.unit} @ ₹${it.rate} = ₹${it.amount.toFixed(2)}\n`;
     if (it.desc) {
@@ -4759,10 +4760,10 @@ function shareCustomBillWhatsApp() {
   }
 
   // 2. Open Direct WhatsApp Chat with Bill details & Clickable Online PDF Link
-  const url = cleanPhone 
+  const url = cleanPhone
     ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
     : `https://wa.me/?text=${encodeURIComponent(text)}`;
-  
+
   if (cleanPhone) {
     showToast(`🚀 WhatsApp chat opened for +${cleanPhone}! PDF downloaded to your device.`);
   } else {
@@ -4783,7 +4784,7 @@ function showToast(msg) {
   toast.innerHTML = msg;
   toast.style.opacity = '1';
   toast.style.transform = 'translateY(0)';
-  
+
   setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transform = 'translateY(10px)';
@@ -4902,11 +4903,11 @@ function downloadCustomBillPDF() {
   const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
   const filename = `${baseName}.pdf`;
-  
+
   if (typeof renderCustomInvoicePreview === 'function') {
     renderCustomInvoicePreview();
   }
-  
+
   exportBillBookToA4PDF('printableInvoice', filename);
 }
 
@@ -4916,11 +4917,11 @@ function downloadQuotationPDF() {
   const clientName = document.getElementById('quoteClientName')?.value || document.getElementById('clientNameInput')?.value || 'Client';
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
   const filename = `${baseName}.pdf`;
-  
+
   if (typeof renderQuotationPreview === 'function') {
     renderQuotationPreview();
   }
-  
+
   exportBillBookToA4PDF('printableQuotation', filename);
 }
 
@@ -5020,11 +5021,11 @@ function resequenceSavedInvoices() {
   history.reverse();
   localStorage.setItem('as_saved_invoices_v3', JSON.stringify(history));
   localStorage.setItem('as_saved_invoices', JSON.stringify(history));
-  
+
   let nextNum = history.length + 1;
   localStorage.setItem('as_bill_seq_v5', String(nextNum));
   localStorage.setItem('as_next_invoice_seq', String(nextNum));
-  
+
   updateSavedCountBadges();
   renderHistoryTable();
   showToast('✅ Saved bills re-sequenced starting from #01!');
@@ -5033,7 +5034,7 @@ function resequenceSavedInvoices() {
 document.addEventListener('DOMContentLoaded', () => {
   updateSavedCountBadges();
   checkAndLoadSharedBillFromURL();
-  
+
   // Attach real-time input & change event listeners to all calculator form controls
   const formInputs = document.querySelectorAll('input, select');
   formInputs.forEach(input => {

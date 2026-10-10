@@ -5480,13 +5480,17 @@ body {
 }
 
 .bill-sign-box {
-  padding: 6px 28px 6px 10px !important;
+  padding: 6px 14px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
   text-align: right !important;
   min-height: 60px !important;
   font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.bill-sign-box > div {
+  margin-right: 30px !important;
 }
 
 /* Universal Solid Right Border for Table */
