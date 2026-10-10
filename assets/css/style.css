@@ -5306,13 +5306,14 @@ body {
 }
 
 .bill-brand-name {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss721 Blk BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, 'Arial Black', Arial, sans-serif !important;
   font-size: 34px !important;
   font-weight: 900 !important;
   letter-spacing: 0.04em !important;
   line-height: 1.05 !important;
   margin: 0 !important;
   color: #000000 !important;
+  transform: translateX(-15px) !important;
 }
 
 .bill-mfd-tag {
@@ -5321,12 +5322,14 @@ body {
   text-transform: uppercase !important;
   letter-spacing: 0.03em !important;
   margin-top: 4px !important;
+  transform: translateX(-15px) !important;
 }
 
 .bill-address-tag {
   font-size: 10px !important;
   font-weight: 600 !important;
   margin-top: 2px !important;
+  transform: translateX(-15px) !important;
 }
 
 .bill-brand-right-spacer {
@@ -5439,9 +5442,10 @@ body {
   border-top: 1.5px solid #000000 !important;
   border-right: 1.5px solid #000000 !important;
   border-bottom: 1.5px solid #000000 !important;
-  padding: 5px 8px !important;
+  padding: 5px 12px !important;
   vertical-align: middle !important;
   background: #fafafa !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, 'Arial Black', Arial, sans-serif !important;
 }
 
 /* Footer Section */
@@ -5473,12 +5477,13 @@ body {
 }
 
 .bill-sign-box {
-  padding: 6px 10px !important;
+  padding: 6px 14px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
   text-align: right !important;
   min-height: 60px !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 
 /* Universal Solid Right Border for Table */
