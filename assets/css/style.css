@@ -3114,18 +3114,22 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 5mm 6mm;
+    margin: 0 !important;
   }
 
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
     font-size: 10pt !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    overflow: visible !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
     margin: 0 !important;
     padding: 0 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   /* Completely hide all non-printable chrome and non-active modals */
@@ -3154,10 +3158,14 @@ body {
     background: transparent !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
     min-height: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .modal-backdrop.active .modal-content {
@@ -3168,36 +3176,50 @@ body {
     width: 100% !important;
     max-height: none !important;
     height: 100% !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     transform: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .modal-backdrop.active .modal-body {
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     height: 100% !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   /* Printable Sheet Styles - Full A4 Fit */
-  .billbook-container {
+  .billbook-container,
+  #printableInvoice,
+  #printableQuotation {
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     visibility: visible !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 282mm !important;
-    min-height: 282mm !important;
-    margin: 0 auto !important;
+    width: 200mm !important;
+    max-width: 200mm !important;
+    min-width: 200mm !important;
+    height: 278mm !important;
+    max-height: 278mm !important;
+    min-height: 270mm !important;
+    margin: 5mm auto !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: 2px solid #000000 !important;
     background: #ffffff !important;
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .bill-middle-fill {
@@ -3922,33 +3944,41 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 4mm 6mm !important;
+    margin: 0 !important;
   }
 
   html, body {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
     background: #fff !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
-  .billbook-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 270mm !important;
-    max-height: 270mm !important;
-    min-height: 0 !important;
-    margin: 0 auto !important;
+  .billbook-container,
+  #printableInvoice,
+  #printableQuotation {
+    width: 200mm !important;
+    max-width: 200mm !important;
+    height: 278mm !important;
+    max-height: 278mm !important;
+    min-height: 270mm !important;
+    margin: 5mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
     break-inside: avoid !important;
+    break-after: avoid !important;
+    break-before: avoid !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 }
 
@@ -4785,18 +4815,21 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 4mm 5mm !important;
+    margin: 0 !important;
   }
 
   html, body {
-    width: 100% !important;
-    height: 100% !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
-    font-size: 10pt !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .app-header,
@@ -4824,9 +4857,20 @@ body {
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
-  .modal-content {
+  .modal-content,
+  .modal-body,
+  .bill-preview-scroll-wrapper,
+  #customInvoicePreview,
+  #quotationPreview {
     background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -4834,40 +4878,32 @@ body {
     border: none !important;
     max-width: 100% !important;
     width: 100% !important;
-  }
-
-  .modal-body {
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    max-height: none !important;
-  }
-
-  .bill-preview-scroll-wrapper {
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .billbook-container,
   #printableInvoice,
   #printableQuotation {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 275mm !important;
-    max-height: 275mm !important;
+    width: 200mm !important;
+    max-width: 200mm !important;
+    min-width: 200mm !important;
+    height: 278mm !important;
+    max-height: 278mm !important;
     min-height: 270mm !important;
-    margin: 0 auto !important;
+    margin: 5mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
+    overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
@@ -4877,6 +4913,7 @@ body {
   .bill-meta-bar,
   .bill-summary-row,
   .bill-total-final-row td {
+    background: #f1f5f9 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -5145,19 +5182,25 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 3mm 4mm !important;
+    margin: 0 !important;
   }
 
   html, body {
-    width: 100% !important;
-    height: 100% !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
   }
 
   .app-header,
@@ -5185,11 +5228,20 @@ body {
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .modal-content,
   .modal-body,
-  .bill-preview-scroll-wrapper {
+  .bill-preview-scroll-wrapper,
+  #customInvoicePreview,
+  #quotationPreview {
     background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -5197,24 +5249,29 @@ body {
     border: none !important;
     max-width: 100% !important;
     width: 100% !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .billbook-container,
   #printableInvoice,
   #printableQuotation {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-    height: 282mm !important;
-    max-height: 284mm !important;
-    min-height: 275mm !important;
-    margin: 0 !important;
+    width: 200mm !important;
+    max-width: 200mm !important;
+    min-width: 200mm !important;
+    height: 278mm !important;
+    max-height: 278mm !important;
+    min-height: 270mm !important;
+    margin: 5mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
     overflow: hidden !important;
@@ -5445,10 +5502,22 @@ body {
   border-top: 1.5px solid #000000 !important;
   border-right: 1.5px solid #000000 !important;
   border-bottom: 1.5px solid #000000 !important;
-  padding: 5px 12px !important;
+  padding: 4px 6px !important;
   vertical-align: middle !important;
   background: #fafafa !important;
   font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, 'Arial Black', Arial, sans-serif !important;
+}
+
+.bill-total-final-row td.bill-total-label,
+.bill-total-label {
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  padding: 4px 8px !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.1px !important;
+  border-right: 1.5px solid #000000 !important;
+  font-family: 'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 
 /* Footer Section */

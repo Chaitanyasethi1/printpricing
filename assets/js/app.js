@@ -3063,7 +3063,7 @@ function renderQuotationPreview() {
   `;
 
   let emptyRowsHtml = `
-    <tr style="height:140px;">
+    <tr style="height:110px;">
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
       <td style="border-right:1.5px solid #000;"></td>
@@ -3194,13 +3194,13 @@ function renderQuotationPreview() {
 
             <!-- Final Grand Total Row -->
             <tr class="bill-total-final-row" style="background:#fafafa;">
-              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td colspan="2" style="text-align:right; font-size:11.5px; font-weight:900; padding:5px 14px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td colspan="2" class="bill-total-label" style="text-align:right; font-size:9.5px; font-weight:800; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing:-0.1px;">
                 Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 8px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
@@ -4244,7 +4244,7 @@ function renderCustomInvoicePreview() {
   }).join('');
 
   // Clean continuous vertical column lines extending to summary (no horizontal empty lines or row numbers)
-  const fillerHeight = Math.max(60, 200 - (items.length * 32));
+  const fillerHeight = Math.max(50, 160 - (items.length * 28));
   const emptyRowsHtml = `
     <tr style="height:${fillerHeight}px;">
       <td style="border-right:1.5px solid #000;"></td>
@@ -4376,13 +4376,13 @@ function renderCustomInvoicePreview() {
 
             <!-- Final Grand Total Row -->
             <tr class="bill-total-final-row" style="background:#fafafa;">
-              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:5px 6px;">
+              <td colspan="3" style="border-right:1.5px solid #000; font-weight:bold; font-size:10.5px; padding:4px 6px;">
                 GST on Reverse Charge: ₹0.00
               </td>
-              <td colspan="2" style="text-align:right; font-size:11px; font-weight:900; padding:5px 18px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td colspan="2" class="bill-total-label" style="text-align:right; font-size:9.5px; font-weight:800; padding:4px 8px; border-right:1.5px solid #000; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing:-0.1px;">
                 Total Amount After Tax
               </td>
-              <td style="text-align:right; font-size:13px; font-weight:900; padding:5px 10px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+              <td style="text-align:right; font-size:12.5px; font-weight:900; padding:4px 8px; white-space:nowrap; font-family:'Swiss 721', 'Swis721 BT', 'Swiss 721 Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
                 ₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
             </tr>
