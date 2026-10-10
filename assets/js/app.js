@@ -57,6 +57,10 @@ function selectSubstrateTab(tab) {
   }
 
   if (typeof calculate === 'function') calculate();
+  const mobileSubSelect = document.getElementById('mobileSubstrateSelect');
+  if (mobileSubSelect && mobileSubSelect.value !== currentSubstrateTab) {
+    mobileSubSelect.value = currentSubstrateTab;
+  }
 }
 
 function toggleSubstrateLayer(type) {
@@ -106,6 +110,8 @@ function handleJobTypeInput(val) {
     const customChip = document.getElementById('preset-custom');
     if (customChip) customChip.classList.add('active');
   }
+  const mobileSelect = document.getElementById('mobilePresetSelect');
+  if (mobileSelect) mobileSelect.value = matchedKey || 'custom';
   calculate();
 }
 
@@ -2298,6 +2304,8 @@ function setCustomPresetActive() {
   document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
   const customChip = document.getElementById('preset-custom');
   if (customChip) customChip.classList.add('active');
+  const mobileSelect = document.getElementById('mobilePresetSelect');
+  if (mobileSelect) mobileSelect.value = 'custom';
 }
 
 function loadPreset(key) {
@@ -2350,6 +2358,8 @@ function loadPreset(key) {
   document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active'));
   const activeChip = document.getElementById('preset-' + key);
   if (activeChip) activeChip.classList.add('active');
+  const mobileSelect = document.getElementById('mobilePresetSelect');
+  if (mobileSelect) mobileSelect.value = key;
 
   if (typeof syncBatchPills === 'function') syncBatchPills(p.batchQty);
   if (typeof syncActiveChips === 'function') syncActiveChips();

@@ -3768,35 +3768,64 @@ body {
     display: flex !important;
   }
 
-  /* Substrate category nav on mobile - 3 equal compact columns */
-  .substrate-category-nav {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 4px !important;
-    padding: 4px !important;
+  /* Mobile Dropdowns for Quick Presets & Substrates */
+  .mobile-preset-dropdown-wrap,
+  .mobile-substrate-dropdown-wrap {
+    display: block !important;
+    margin-bottom: 8px !important;
     width: 100% !important;
+  }
+
+  .desktop-preset-chips,
+  .presets-container {
+    display: none !important;
+  }
+
+  .desktop-substrate-nav,
+  .substrate-category-nav {
+    display: none !important;
+  }
+
+  .mobile-custom-select {
+    width: 100% !important;
+    height: 44px !important;
+    background-color: var(--bg-card, #ffffff) !important;
+    border: 1.5px solid var(--primary, #2563eb) !important;
+    border-radius: 12px !important;
+    padding: 8px 38px 8px 14px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: var(--text-main, #0f172a) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%232563eb'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpolyline%20points='6%209%2012%2015%2018%209'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 16px 16px !important;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.12) !important;
+    outline: none !important;
+    cursor: pointer !important;
     box-sizing: border-box !important;
   }
 
-  .substrate-tab {
-    padding: 8px 2px !important;
-    font-size: 11px !important;
-    flex-direction: column !important;
-    gap: 2px !important;
-    text-align: center !important;
-    justify-content: center !important;
-    line-height: 1.2 !important;
-    white-space: normal !important;
+  .mobile-custom-select:focus {
+    border-color: var(--primary, #2563eb) !important;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2) !important;
   }
 
-  /* Presets on mobile */
-  .presets-container {
-    gap: 6px !important;
+  /* Single-row swipe for quick chips on mobile */
+  .chips-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 6px !important;
+    scrollbar-width: none !important;
   }
-
-  .preset-chip {
-    padding: 6px 10px !important;
-    font-size: 11.5px !important;
+  .chips-row::-webkit-scrollbar {
+    display: none !important;
+  }
+  .chip {
+    flex-shrink: 0 !important;
   }
 
   /* Modals on Mobile - Clean Full Height App Sheet */
@@ -5628,4 +5657,11 @@ body {
   border-radius: 9999px;
   font-weight: 700;
 }
+
+/* Default: Hide mobile dropdowns on desktop */
+.mobile-preset-dropdown-wrap,
+.mobile-substrate-dropdown-wrap {
+  display: none;
+}
+
 

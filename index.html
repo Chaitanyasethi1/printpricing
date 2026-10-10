@@ -73,7 +73,7 @@
 
 
 
-  <link rel="stylesheet" href="assets/css/style.css?v=20261010_v7_item_gst">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261010_v8_mobile_dropdowns">
 
 
 
@@ -482,7 +482,18 @@
           <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:4px;">
             <span>⚡ Or Choose Quick Preset:</span>
           </div>
-          <div class="presets-container" style="margin-bottom:0; padding-bottom:0; display:flex; flex-wrap:wrap; gap:8px;">
+          <!-- Mobile Dropdown Selector (Active on Mobile Screens) -->
+          <div class="mobile-preset-dropdown-wrap">
+            <select id="mobilePresetSelect" class="mobile-custom-select" onchange="loadPreset(this.value)">
+              <option value="custom">✏️ Custom Job</option>
+              <option value="sweetBox">🍬 Sweet Box Packaging</option>
+              <option value="visitingCard">💳 Visiting Card Sheet</option>
+              <option value="monocarton">📦 Monocarton Box</option>
+              <option value="bookCover">📚 Book Cover</option>
+              <option value="flyer">📄 Flyer / Brochure</option>
+            </select>
+          </div>
+          <div class="presets-container desktop-preset-chips" style="margin-bottom:0; padding-bottom:0; display:flex; flex-wrap:wrap; gap:8px;">
             <button type="button" class="preset-chip active" id="preset-custom" onclick="loadPreset('custom')" style="font-weight:700;">✏️ Custom Job</button>
             <button type="button" class="preset-chip" id="preset-sweetBox" onclick="loadPreset('sweetBox')">🍬 Sweet Box</button>
             <button type="button" class="preset-chip" id="preset-visitingCard" onclick="loadPreset('visitingCard')">💳 Visiting Card Sheet</button>
@@ -509,8 +520,18 @@
             <div style="font-size:12px; color:var(--text-muted); font-weight:600;">Click category tab to switch &amp; configure</div>
           </div>
 
-          <!-- 3 Substrate Category Selector Tabs -->
-          <div class="substrate-category-nav">
+          <!-- Mobile Dropdown Selector for Substrate Tabs (Active on Mobile Screens) -->
+          <div class="mobile-substrate-dropdown-wrap">
+            <label for="mobileSubstrateSelect" style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px; display:block;">SELECT ACTIVE SUBSTRATE LAYER:</label>
+            <select id="mobileSubstrateSelect" class="mobile-custom-select" onchange="selectSubstrateTab(this.value)">
+              <option value="printed">📄 1A. Printed Sheet (Top Liner / Paper)</option>
+              <option value="corr">📦 1B. Corrugated Sheet (Fluting / Ply)</option>
+              <option value="kappa">📑 1C. Kappa Board (Rigid Box Board)</option>
+            </select>
+          </div>
+
+          <!-- 3 Substrate Category Selector Tabs (Desktop) -->
+          <div class="substrate-category-nav desktop-substrate-nav">
             <button type="button" class="substrate-tab active" id="tabPrintedSheet" onclick="selectSubstrateTab('printed')">
               <span>📄</span> Printed Sheet
             </button>
@@ -4011,7 +4032,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=20261010_v7_item_gst"></script>
+  <script src="assets/js/app.js?v=20261010_v8_mobile_dropdowns"></script>
 
 
 
