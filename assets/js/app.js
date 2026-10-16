@@ -2733,8 +2733,7 @@ function autoFitBillPreview(modalId, forcedMode) {
       actualBtn.classList.remove('active');
     } else {
       fitBtn.classList.remove('active');
-      actualBtn.clas
-      sList.add('active');
+      actualBtn.classList.add('active');
     }
   }
 
