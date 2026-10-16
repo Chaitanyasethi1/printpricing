@@ -73,7 +73,7 @@
 
 
 
-  <link rel="stylesheet" href="assets/css/style.css?v=20261010_v8_mobile_dropdowns">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261014_v9_mobile_fit">
 
 
 
@@ -3869,8 +3869,15 @@
             </span>
             <span style="font-size:11px; color:#10b981; font-weight:700;">● Live Updated</span>
           </div>
-          <div class="mobile-scroll-tip no-print" style="display:none; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; padding:6px 10px; font-size:11.5px; font-weight:600; margin-bottom:8px;">
-            <span>👉</span> <span>Mobile Screen: Swipe / Scroll horizontally to inspect full A4 Bill Book sheet.</span>
+          <div class="bill-preview-toolbar no-print">
+            <div class="view-mode-group">
+              <span style="font-size:11px; font-weight:800; color:var(--text-sub);">📐 View:</span>
+              <button type="button" class="view-btn active btn-fit-screen" onclick="toggleBillViewMode('customInvoiceModal', 'fit')">📱 Fit Screen (पूरा पेज)</button>
+              <button type="button" class="view-btn btn-actual-zoom" onclick="toggleBillViewMode('customInvoiceModal', 'actual')">🔍 100% Zoom</button>
+            </div>
+            <div class="badge-a4-tag">
+              <span>●</span> Live A4 Format
+            </div>
           </div>
           <div class="bill-preview-scroll-wrapper">
             <div id="customInvoicePreview"></div>
@@ -3931,11 +3938,40 @@
                 <option value="DELIVERY CHALLAN">DELIVERY CHALLAN</option>
               </select>
             </div>
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">GST Tax Type:</label>
+              <select id="quoteGstType" onchange="handleGstTypeChange()" style="padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+                <option value="cgst_sgst" selected>CGST + SGST (Local UP State)</option>
+                <option value="igst">IGST (Inter-State)</option>
+                <option value="exempt">GST Nil / Exempted (0%)</option>
+              </select>
+            </div>
+            <div class="input-field" id="customGstRateField">
+              <label style="font-size:11.5px; font-weight:700;">GST Rate (%):</label>
+              <div class="input-wrapper">
+                <input id="quoteGstPercentInput" type="number" step="0.1" min="0" max="100" placeholder="18" value="18" oninput="renderQuotationPreview()" style="font-weight:700; padding:7px 10px; font-size:13px; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="input-field">
+              <label style="font-size:11.5px; font-weight:700;">Reverse Charge:</label>
+              <select id="reverseChargeSelect" onchange="renderQuotationPreview()" style="padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main);">
+                <option value="No" selected>No [✓]</option>
+                <option value="Yes">Yes [✓]</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div class="mobile-scroll-tip no-print" style="display:none; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; padding:6px 10px; font-size:11.5px; font-weight:600; margin-bottom:8px;">
-          <span>👉</span> <span>Mobile Screen: Swipe / Scroll horizontally to preview full Quotation format.</span>
+        <div class="bill-preview-toolbar no-print">
+          <div class="view-mode-group">
+            <span style="font-size:11px; font-weight:800; color:var(--text-sub);">📐 View:</span>
+            <button type="button" class="view-btn active btn-fit-screen" onclick="toggleBillViewMode('quotationModal', 'fit')">📱 Fit Screen (पूरा पेज)</button>
+            <button type="button" class="view-btn btn-actual-zoom" onclick="toggleBillViewMode('quotationModal', 'actual')">🔍 100% Zoom</button>
+          </div>
+          <div class="badge-a4-tag">
+            <span>●</span> Live A4 Format
+          </div>
         </div>
         <div class="bill-preview-scroll-wrapper">
           <div id="quotationPreview"></div>
@@ -4032,7 +4068,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="assets/js/app.js?v=20261010_v8_mobile_dropdowns"></script>
+  <script src="assets/js/app.js?v=20261016_v10_quotation_gst"></script>
 
 
 

@@ -2690,14 +2690,114 @@ function setQuoteMode(mode) {
       internBtn.classList.add('active');
 
     }
-
   }
-
   renderQuotationPreview();
-
 }
 
+/* ============================================================
+   MOBILE RESPONSIVE A4 BILL SCALER & ZOOM CONTROLLER
+   Fits authentic A4 sheet 100% inside mobile phone screen with NO cut-offs
+   ============================================================ */
+let currentBillViewMode = {
+  quotationModal: 'fit',
+  customInvoiceModal: 'fit'
+};
 
+function toggleBillViewMode(modalId, mode) {
+  currentBillViewMode[modalId] = mode;
+  autoFitBillPreview(modalId, mode);
+}
+
+function autoFitBillPreview(modalId, forcedMode) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+
+  if (forcedMode) {
+    currentBillViewMode[modalId] = forcedMode;
+  }
+  const mode = currentBillViewMode[modalId] || 'fit';
+
+  const scrollWrapper = modal.querySelector('.bill-preview-scroll-wrapper');
+  const bill = modal.querySelector('.billbook-container');
+  if (!scrollWrapper || !bill) return;
+
+  const isMobile = window.innerWidth <= 768;
+  const baseWidth = 760;
+
+  // Update button active state
+  const fitBtn = modal.querySelector('.btn-fit-screen');
+  const actualBtn = modal.querySelector('.btn-actual-zoom');
+  if (fitBtn && actualBtn) {
+    if (mode === 'fit' && isMobile) {
+      fitBtn.classList.add('active');
+      actualBtn.classList.remove('active');
+    } else {
+      fitBtn.classList.remove('active');
+      actualBtn.clas
+      sList.add('active');
+    }
+  }
+
+  if (!isMobile) {
+    // Desktop: Natural width, no scaling needed
+    bill.style.zoom = '1';
+    bill.style.transform = '';
+    bill.style.transformOrigin = '';
+    bill.style.width = '100%';
+    bill.style.maxWidth = '780px';
+    bill.style.minWidth = '0';
+    bill.style.margin = '0 auto';
+    scrollWrapper.style.overflowX = 'visible';
+    return;
+  }
+
+  // Mobile Viewport:
+  scrollWrapper.style.maxWidth = '100%';
+  scrollWrapper.style.boxSizing = 'border-box';
+
+  const availableWidth = Math.max(280, scrollWrapper.clientWidth - 16);
+
+  if (mode === 'fit') {
+    const scale = Math.min(1, Math.max(0.30, availableWidth / baseWidth));
+    
+    // Modern Blink / WebKit zoom support (Android Chrome, iOS Safari 16.4+)
+    if (typeof bill.style.zoom !== 'undefined') {
+      bill.style.zoom = scale;
+      bill.style.width = baseWidth + 'px';
+      bill.style.minWidth = baseWidth + 'px';
+      bill.style.maxWidth = baseWidth + 'px';
+      bill.style.margin = '0 auto';
+      bill.style.transform = '';
+    } else {
+      bill.style.width = baseWidth + 'px';
+      bill.style.minWidth = baseWidth + 'px';
+      bill.style.maxWidth = baseWidth + 'px';
+      bill.style.transformOrigin = 'top center';
+      bill.style.transform = `scale(${scale})`;
+      bill.style.margin = '0 auto';
+      bill.style.marginBottom = `-${(1 - scale) * (bill.offsetHeight || 980)}px`;
+    }
+    scrollWrapper.style.overflowX = 'hidden';
+  } else {
+    // 100% Actual size with horizontal scroll
+    bill.style.zoom = '1';
+    bill.style.transform = '';
+    bill.style.width = baseWidth + 'px';
+    bill.style.minWidth = baseWidth + 'px';
+    bill.style.maxWidth = baseWidth + 'px';
+    bill.style.margin = '0';
+    scrollWrapper.style.overflowX = 'auto';
+  }
+}
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('quotationModal')?.classList.contains('active')) {
+    autoFitBillPreview('quotationModal');
+  }
+  if (document.getElementById('customInvoiceModal')?.classList.contains('active')) {
+    autoFitBillPreview('customInvoiceModal');
+  }
+});
 
 function openQuotationModal() {
   const modal = document.getElementById('quotationModal');
@@ -2733,9 +2833,18 @@ function openQuotationModal() {
       }
     }
 
+    const gstPercentInput = document.getElementById('quoteGstPercentInput');
+    if (gstPercentInput && (!gstPercentInput.value || gstPercentInput.value === '0')) {
+      const type = document.getElementById('quoteGstType')?.value;
+      if (type !== 'exempt') {
+        gstPercentInput.value = '18';
+      }
+    }
+
     renderQuotationPreview();
     updateSavedCountBadges();
     modal.classList.add('active');
+    setTimeout(() => autoFitBillPreview('quotationModal'), 40);
   }
 }
 
@@ -3017,7 +3126,10 @@ function renderQuotationPreview() {
 
   // GST Calculations
   const gstType = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
-  const gstRatePercent = parseFloat(document.getElementById('quoteGstPercentInput')?.value) || 0;
+  const gstInputEl = document.getElementById('quoteGstPercentInput');
+  const gstRatePercent = gstInputEl 
+    ? (parseFloat(gstInputEl.value) >= 0 ? parseFloat(gstInputEl.value) : (gstType === 'exempt' ? 0 : 18))
+    : (gstType === 'exempt' ? 0 : 18);
   const reverseCharge = document.getElementById('reverseChargeSelect')?.value || 'No';
 
   let cgstRate = 0, cgstAmt = 0;
@@ -3062,7 +3174,10 @@ function renderQuotationPreview() {
     <tr>
       <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px; width:38px;">1</td>
       <td style="text-align:left; border-right:1.5px solid #000; padding:6px 8px;">
-        <div style="font-weight:900; font-size:12px; color:#000;">${jobTitle}</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+          <div style="font-weight:900; font-size:12px; color:#000;">${jobTitle}</div>
+          ${gstRatePercent > 0 ? `<span style="font-size:9.5px; font-weight:800; color:#0f172a; background:#f1f5f9; border:1px solid #000; border-radius:3px; padding:1px 5px; white-space:nowrap;">GST: ${gstRatePercent}%</span>` : ''}
+        </div>
         <div style="font-size:10.5px; color:#334155; margin-top:3px; line-height:1.35;">${displayDesc}</div>
       </td>
       <td style="text-align:center; font-weight:bold; border-right:1.5px solid #000; padding:6px 4px; width:78px;">${hsn}</td>
@@ -3194,7 +3309,7 @@ function renderQuotationPreview() {
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
                   <span><b>Reverse Charge:</b> Yes [ ${reverseCharge === 'Yes' ? '✓' : ' '} ] &nbsp; No [ ${reverseCharge === 'No' ? '✓' : ' '} ]</span>
                   <span style="font-weight:bold; color:#0f172a;">
-                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalTaxAmount.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)}` : 'GST: Nil / Exempt')}
+                    ${cgstAmt > 0 ? `CGST (${cgstRate}%): ₹${cgstAmt.toFixed(2)} | SGST (${sgstRate}%): ₹${sgstAmt.toFixed(2)} | Tax: ₹${totalTaxAmount.toFixed(2)}` : (igstAmt > 0 ? `IGST (${igstRate}%): ₹${igstAmt.toFixed(2)} | Tax: ₹${totalTaxAmount.toFixed(2)}` : 'GST: Nil / Exempt')}
                   </span>
                 </div>
               </td>
@@ -3253,6 +3368,7 @@ function renderQuotationPreview() {
 
     </div>
   `;
+  autoFitBillPreview('quotationModal');
 }
 
 function saveCurrentInvoice() {
@@ -4537,6 +4653,7 @@ function renderCustomInvoicePreview() {
 
     </div>
   `;
+  autoFitBillPreview('customInvoiceModal');
 }
 
 function openCustomInvoiceModal(fromCalc = false) {
@@ -4610,6 +4727,7 @@ function openCustomInvoiceModal(fromCalc = false) {
   renderCustomInvoicePreview();
   updateSavedCountBadges();
   modal.classList.add('active');
+  setTimeout(() => autoFitBillPreview('customInvoiceModal'), 40);
 }
 
 function closeCustomInvoiceModal() {
