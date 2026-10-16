@@ -5114,7 +5114,7 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
   container.style.cssText = 'position:fixed; left:-9999px; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0;';
 
   const clone = sourceEl.cloneNode(true);
-  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1030px !important; max-height:1050px !important; overflow:hidden !important;';
+  clone.style.cssText = 'width:755px !important; max-width:755px !important; min-width:755px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1010px !important; max-height:1030px !important; overflow:hidden !important;';
 
   // Make sure table fills available height cleanly without spilling
   const fillerRow = clone.querySelector('.bill-items-table tr[style*="height"]');
@@ -5126,7 +5126,7 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
   document.body.appendChild(container);
 
   const opt = {
-    margin: [2, 2, 2, 2],
+    margin: [5, 7, 5, 7],
     filename: filename,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -5134,8 +5134,8 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
       useCORS: true,
       allowTaint: true,
       logging: false,
-      width: 794,
-      windowWidth: 794,
+      width: 755,
+      windowWidth: 755,
       scrollX: 0,
       scrollY: 0
     },

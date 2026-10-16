@@ -3201,13 +3201,13 @@ body {
     flex-direction: column !important;
     justify-content: space-between !important;
     visibility: visible !important;
-    width: 200mm !important;
-    max-width: 200mm !important;
-    min-width: 200mm !important;
-    height: 278mm !important;
-    max-height: 278mm !important;
-    min-height: 270mm !important;
-    margin: 5mm auto !important;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    min-width: 190mm !important;
+    height: 270mm !important;
+    max-height: 270mm !important;
+    min-height: 260mm !important;
+    margin: 6mm auto !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: 2px solid #000000 !important;
@@ -4122,12 +4122,13 @@ body {
   .billbook-container,
   #printableInvoice,
   #printableQuotation {
-    width: 200mm !important;
-    max-width: 200mm !important;
-    height: 278mm !important;
-    max-height: 278mm !important;
-    min-height: 270mm !important;
-    margin: 5mm auto !important;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    min-width: 190mm !important;
+    height: 270mm !important;
+    max-height: 270mm !important;
+    min-height: 260mm !important;
+    margin: 6mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
@@ -5053,13 +5054,13 @@ body {
   .billbook-container,
   #printableInvoice,
   #printableQuotation {
-    width: 200mm !important;
-    max-width: 200mm !important;
-    min-width: 200mm !important;
-    height: 278mm !important;
-    max-height: 278mm !important;
-    min-height: 270mm !important;
-    margin: 5mm auto !important;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    min-width: 190mm !important;
+    height: 270mm !important;
+    max-height: 270mm !important;
+    min-height: 260mm !important;
+    margin: 6mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
@@ -5424,13 +5425,13 @@ body {
   .billbook-container,
   #printableInvoice,
   #printableQuotation {
-    width: 200mm !important;
-    max-width: 200mm !important;
-    min-width: 200mm !important;
-    height: 278mm !important;
-    max-height: 278mm !important;
-    min-height: 270mm !important;
-    margin: 5mm auto !important;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    min-width: 190mm !important;
+    height: 270mm !important;
+    max-height: 270mm !important;
+    min-height: 260mm !important;
+    margin: 6mm auto !important;
     padding: 0 !important;
     border: 2px solid #000000 !important;
     page-break-inside: avoid !important;
