@@ -3865,16 +3865,50 @@ function copyQuoteToClipboard() {
 
 function shareWhatsApp() {
   const b = window.currentCalcBreakdown || {};
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-  const clientName = document.getElementById('clientNameInput')?.value || 'Valued Client';
-  const clientPhone = document.getElementById('clientPhoneInput')?.value || '';
-  const jobTitle = document.getElementById('jobType')?.value || 'Custom Packaging Box';
-  const batchQty = n('batchQty') || 1000;
-  const rate = b.finalPrice ? b.finalPrice.toFixed(2) : '0.00';
-  const total = b.finalPrice ? (b.finalPrice * batchQty).toFixed(2) : '0.00';
+  const docTitle = document.getElementById('quoteDocTitle')?.value || document.getElementById('docTitleSelect')?.value || 'ESTIMATION / QUOTATION';
+  const invoiceNo = document.getElementById('quoteInvoiceNo')?.value || document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('quoteClientName')?.value || document.getElementById('clientNameInput')?.value || 'Valued Client';
+  const clientPhone = document.getElementById('quoteClientPhone')?.value || document.getElementById('clientPhoneInput')?.value || '';
+  const jobTitle = document.getElementById('jobTitleInput')?.value || document.getElementById('jobType')?.value || 'Custom Packaging Box';
 
-  let msg = `🧾 *ESTIMATION QUOTATION #${invoiceNo}*\n` +
+  let billQty = parseFloat(document.getElementById('customBillingQty')?.value);
+  if (isNaN(billQty) || billQty <= 0) {
+    billQty = n('batchQty') || 1000;
+  }
+
+  let rate = parseFloat(document.getElementById('customBillingRate')?.value);
+  if (isNaN(rate) || rate <= 0) {
+    rate = b.finalPrice || 0;
+  }
+  if (!rate || rate <= 0) {
+    const heroPriceText = document.getElementById('heroFinalPrice')?.innerText || document.getElementById('final')?.innerText || '';
+    const parsedHero = parseFloat(heroPriceText.replace(/[^0-9.]/g, ''));
+    if (!isNaN(parsedHero) && parsedHero > 0) rate = parsedHero;
+  }
+  if (!rate || rate <= 0) rate = 0;
+
+  const taxableTotal = billQty * rate;
+
+  const gstType = document.getElementById('quoteGstType')?.value || 'cgst_sgst';
+  const gstInputEl = document.getElementById('quoteGstPercentInput');
+  const gstRatePercent = gstInputEl 
+    ? (parseFloat(gstInputEl.value) >= 0 ? parseFloat(gstInputEl.value) : (gstType === 'exempt' ? 0 : 18))
+    : (gstType === 'exempt' ? 0 : 18);
+
+  const taxAmount = (taxableTotal * gstRatePercent) / 100;
+  const grandTotal = Math.round(taxableTotal + taxAmount);
+
+  let gstLine = '';
+  if (gstType === 'exempt' || gstRatePercent === 0) {
+    gstLine = '📊 *GST:* Nil / Exempt\n';
+  } else if (gstType === 'igst') {
+    gstLine = `📊 *IGST (${gstRatePercent}%):* ₹${taxAmount.toFixed(2)}\n`;
+  } else {
+    const half = gstRatePercent / 2;
+    gstLine = `📊 *GST (${gstRatePercent}%):* ₹${taxAmount.toFixed(2)} (CGST ${half}% + SGST ${half}%)\n`;
+  }
+
+  let msg = `🧾 *${docTitle.toUpperCase()} #${invoiceNo}*\n` +
     `🏢 *AS PRINT GALLERY*\n` +
     `📍 Ghaziabad, U.P. | 📞 9911678386\n` +
     `--------------------------------\n` +
@@ -3883,18 +3917,11 @@ function shareWhatsApp() {
     msg += `📱 *Mobile:* ${clientPhone}\n`;
   }
   msg += `📦 *Job Name:* ${jobTitle}\n` +
-    `🔢 *Quantity:* ${batchQty.toLocaleString('en-IN')} Units\n` +
+    `🔢 *Quantity:* ${billQty.toLocaleString('en-IN')} Units\n` +
     `--------------------------------\n` +
-    `*ITEMIZED COST:*\n` +
-    `• ${b.substrateTitle || 'Substrate'}: ₹${(b.paperCost || 0).toFixed(2)} / sheet\n` +
-    `• Lamination: ₹${(b.lamCost || 0).toFixed(2)} / sheet\n` +
-    `• Leaf / Foil: ₹${(b.totalLeafPerSheet || 0).toFixed(2)} / sheet\n` +
-    `• Printing & Plates: ₹${(b.totalPrintingPerSheet || 0).toFixed(2)} / sheet\n` +
-    `• Die Cutting: ₹${(b.totalDiePerSheet || 0).toFixed(2)} / sheet\n` +
-    `• Pasting & Extras: ₹${((b.pasting || 0) + (b.uv || 0) + (b.embossed || 0) + (b.other || 0)).toFixed(2)} / sheet\n` +
-    `--------------------------------\n` +
-    `🏷️ *Final Price / Unit:* ₹${rate}\n` +
-    `💰 *Grand Total:* ₹${Number(total).toLocaleString('en-IN')}\n` +
+    `🏷️ *Final Price / Unit:* ₹${Number(rate).toFixed(2)}\n` +
+    `${gstLine}` +
+    `💰 *Grand Total:* ₹${grandTotal.toLocaleString('en-IN')}\n` +
     `--------------------------------\n` +
     `*GSTIN:* 09AWKPN5910E1ZG\n` +
     `Thank you for your business!`;
