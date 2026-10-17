@@ -5138,9 +5138,11 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
 
   // Offscreen container fixed at exact standard A4 width (794px at 96 DPI) at 0,0 behind everything
   const container = document.createElement('div');
-  container.style.cssText = 'position:fixed; left:0; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0; pointer-events:none;';
+  container.id = 'pdfExportWrapper';
+  container.style.cssText = 'position:fixed; left:0; top:0; width:794px; background:#ffffff; z-index:-99999; box-sizing:border-box; margin:0; padding:0; pointer-events:none; opacity:0;';
 
   const clone = sourceEl.cloneNode(true);
+  clone.id = sourceElementId + '_pdfExportClone';
   
   // Explicitly reset any mobile zoom or transform from autoFitBillPreview so clone renders at 100% full A4
   clone.style.zoom = '1';
@@ -5159,7 +5161,7 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
   document.body.appendChild(container);
 
   const opt = {
-    margin: [4, 5, 4, 5],
+    margin: [4, 4, 4, 4],
     filename: filename,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -5168,9 +5170,26 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
       allowTaint: true,
       logging: false,
       width: 794,
-      windowWidth: 794,
+      windowWidth: 820,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      x: 0,
+      y: 0,
+      onclone: function(clonedDoc) {
+        // Enforce full A4 geometry inside html2canvas's cloned document
+        const bill = clonedDoc.getElementById(sourceElementId + '_pdfExportClone') || clonedDoc.querySelector('.billbook-container');
+        if (bill) {
+          bill.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 !important; padding:0 !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1080px !important; max-height:1100px !important; overflow:hidden !important; zoom:1 !important; transform:none !important; -webkit-transform:none !important;';
+        }
+        const overlay = clonedDoc.querySelector('.html2pdf__overlay');
+        if (overlay) {
+          overlay.style.cssText = 'position:fixed !important; left:0 !important; top:0 !important; width:820px !important; min-width:820px !important; right:auto !important; overflow:visible !important; opacity:0 !important; z-index:-99999 !important;';
+        }
+        const cont = clonedDoc.querySelector('.html2pdf__container');
+        if (cont) {
+          cont.style.cssText = 'position:absolute !important; left:0 !important; top:0 !important; width:794px !important; min-width:794px !important; max-width:794px !important; right:auto !important; margin:0 !important; padding:0 !important; overflow:visible !important;';
+        }
+      }
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };

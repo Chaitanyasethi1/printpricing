@@ -5803,4 +5803,60 @@ body {
   display: none;
 }
 
+/* ============================================================
+   HTML2PDF A4 EXPORT ENGINE - PREVENT MOBILE CLIPPING & 50% SHRINK
+   ============================================================ */
+.html2pdf__overlay {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 820px !important;
+  min-width: 820px !important;
+  max-width: none !important;
+  right: auto !important;
+  bottom: auto !important;
+  height: 1200px !important;
+  overflow: visible !important;
+  z-index: -99999 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  background: #ffffff !important;
+}
+
+.html2pdf__container {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 794px !important;
+  min-width: 794px !important;
+  max-width: 794px !important;
+  right: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+}
+
+.html2pdf__container .billbook-container,
+.html2pdf__container #printableInvoice,
+.html2pdf__container #printableQuotation {
+  width: 794px !important;
+  min-width: 794px !important;
+  max-width: 794px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  zoom: 1 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  border: 2px solid #000000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-shadow: none !important;
+}
+
+
 
