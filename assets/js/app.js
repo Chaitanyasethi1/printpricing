@@ -5136,24 +5136,30 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
 
   showToast(`⏳ Generating crisp single-page A4 PDF (${filename})...`);
 
-  // Offscreen container fixed at exact standard A4 width (794px at 96 DPI)
+  // Offscreen container fixed at exact standard A4 width (794px at 96 DPI) at 0,0 behind everything
   const container = document.createElement('div');
-  container.style.cssText = 'position:fixed; left:-9999px; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0;';
+  container.style.cssText = 'position:fixed; left:0; top:0; width:794px; background:#ffffff; z-index:-9999; box-sizing:border-box; margin:0; padding:0; pointer-events:none;';
 
   const clone = sourceEl.cloneNode(true);
-  clone.style.cssText = 'width:755px !important; max-width:755px !important; min-width:755px !important; box-sizing:border-box !important; margin:0 auto !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1010px !important; max-height:1030px !important; overflow:hidden !important;';
+  
+  // Explicitly reset any mobile zoom or transform from autoFitBillPreview so clone renders at 100% full A4
+  clone.style.zoom = '1';
+  clone.style.transform = 'none';
+  clone.style.webkitTransform = 'none';
+  clone.style.transformOrigin = 'unset';
+  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 !important; padding:0 !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1080px !important; max-height:1100px !important; overflow:hidden !important; zoom:1 !important; transform:none !important; -webkit-transform:none !important;';
 
   // Make sure table fills available height cleanly without spilling
   const fillerRow = clone.querySelector('.bill-items-table tr[style*="height"]');
   if (fillerRow) {
-    fillerRow.style.height = '100px';
+    fillerRow.style.height = '110px';
   }
 
   container.appendChild(clone);
   document.body.appendChild(container);
 
   const opt = {
-    margin: [5, 7, 5, 7],
+    margin: [4, 5, 4, 5],
     filename: filename,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -5161,8 +5167,8 @@ async function exportBillBookToA4PDF(sourceElementId, filename) {
       useCORS: true,
       allowTaint: true,
       logging: false,
-      width: 755,
-      windowWidth: 755,
+      width: 794,
+      windowWidth: 794,
       scrollX: 0,
       scrollY: 0
     },
