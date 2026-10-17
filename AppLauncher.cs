@@ -1,39 +1,45 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace ASPrintGallery
 {
     static class Program
     {
-        private static HttpListener _listener;
-        private static string _appDir;
-
         [STAThread]
         static void Main()
         {
             try
             {
-                // 1. Resolve Application Directory
-                _appDir = AppDomain.CurrentDomain.BaseDirectory;
-                if (!File.Exists(Path.Combine(_appDir, "index.html")))
+                // Resolve application directory
+                string appDir = AppDomain.CurrentDomain.BaseDirectory;
+                string htmlFile = Path.Combine(appDir, "index.html");
+
+                if (!File.Exists(htmlFile))
                 {
-                    string fallback = @"c:\Users\Chait\OneDrive\Desktop\printpricing";
-                    if (File.Exists(Path.Combine(fallback, "index.html")))
+                    string installFallback = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        @"Programs\AS_Print_Gallery\index.html"
+                    );
+                    if (File.Exists(installFallback))
                     {
-                        _appDir = fallback;
+                        htmlFile = installFallback;
+                    }
+                    else
+                    {
+                        string desktopFallback = @"c:\Users\Chait\OneDrive\Desktop\printpricing\index.html";
+                        if (File.Exists(desktopFallback))
+                        {
+                            htmlFile = desktopFallback;
+                        }
                     }
                 }
 
-                if (!File.Exists(Path.Combine(_appDir, "index.html")))
+                if (!File.Exists(htmlFile))
                 {
                     MessageBox.Show(
-                        "index.html not found! Please place AS_Print_Gallery.exe inside the printpricing folder.",
+                        "Application files not found!\nPlease run AS_Print_Gallery_Setup.exe to install.",
                         "AS Print Gallery",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -41,87 +47,52 @@ namespace ASPrintGallery
                     return;
                 }
 
-                // 2. Find a free TCP port
-                int port = GetFreePort();
+                string fileUri = "file:///" + htmlFile.Replace('\\', '/');
 
-                // 3. Start Local HTTP Server
-                _listener = new HttpListener();
-                _listener.Prefixes.Add("http://127.0.0.1:" + port + "/");
-                _listener.Start();
-
-                Thread serverThread = new Thread(RunServer);
-                serverThread.IsBackground = true;
-                serverThread.Start();
-
-                // 4. Find Browser Executable (Edge or Chrome)
-                string browserPath = FindBrowser();
-                string appUrl = "http://127.0.0.1:" + port + "/index.html";
-
-                // Isolated user data directory for local database persistence
-                string dataDir = Path.Combine(
+                // Dedicated isolated user data directory for local storage
+                string userDataDir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "AS_Print_Gallery",
-                    "UserData"
+                    "Profile"
                 );
-                Directory.CreateDirectory(dataDir);
+                Directory.CreateDirectory(userDataDir);
 
-                Process browserProc = null;
+                string browser = FindBrowser();
 
-                if (!string.IsNullOrEmpty(browserPath))
+                if (!string.IsNullOrEmpty(browser))
                 {
+                    string args = string.Format(
+                        "--app=\"{0}\" --window-size=1380,920 --user-data-dir=\"{1}\" --enable-features=msEdgeAppTitlebar",
+                        fileUri,
+                        userDataDir
+                    );
+
                     ProcessStartInfo psi = new ProcessStartInfo
                     {
-                        FileName = browserPath,
-                        Arguments = string.Format(
-                            "--app=\"{0}\" --window-size=1380,920 --user-data-dir=\"{1}\" --enable-features=msEdgeAppTitlebar",
-                            appUrl,
-                            dataDir
-                        ),
+                        FileName = browser,
+                        Arguments = args,
                         UseShellExecute = false
                     };
-                    browserProc = Process.Start(psi);
+                    Process.Start(psi);
                 }
                 else
                 {
-                    // Fallback to default browser
-                    Process.Start(appUrl);
-                }
-
-                if (browserProc != null)
-                {
-                    browserProc.WaitForExit();
-                }
-                else
-                {
-                    // If no direct process handle, keep server alive for session
-                    Thread.Sleep(3000);
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = fileUri,
+                        UseShellExecute = true
+                    });
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Error launching AS Print Gallery:\n" + ex.Message,
+                    "Error starting application:\n" + ex.Message,
                     "AS Print Gallery",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                    MessageBoxIcon.Error
                 );
             }
-            finally
-            {
-                if (_listener != null && _listener.IsListening)
-                {
-                    try { _listener.Stop(); } catch { }
-                }
-            }
-        }
-
-        private static int GetFreePort()
-        {
-            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
-            l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
-            l.Stop();
-            return port;
         }
 
         private static string FindBrowser()
@@ -142,76 +113,6 @@ namespace ASPrintGallery
             }
 
             return null;
-        }
-
-        private static void RunServer()
-        {
-            while (_listener != null && _listener.IsListening)
-            {
-                try
-                {
-                    HttpListenerContext context = _listener.GetContext();
-                    ThreadPool.QueueUserWorkItem((state) => HandleRequest(context));
-                }
-                catch
-                {
-                    break;
-                }
-            }
-        }
-
-        private static void HandleRequest(HttpListenerContext context)
-        {
-            try
-            {
-                string rawUrl = context.Request.Url.AbsolutePath;
-                if (rawUrl == "/" || string.IsNullOrEmpty(rawUrl))
-                {
-                    rawUrl = "/index.html";
-                }
-
-                rawUrl = rawUrl.Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar);
-                string filePath = Path.Combine(_appDir, rawUrl);
-
-                if (!File.Exists(filePath))
-                {
-                    context.Response.StatusCode = 404;
-                    byte[] notFound = Encoding.UTF8.GetBytes("File Not Found");
-                    context.Response.OutputStream.Write(notFound, 0, notFound.Length);
-                    context.Response.Close();
-                    return;
-                }
-
-                string ext = Path.GetExtension(filePath).ToLower();
-                string mime = "application/octet-stream";
-                switch (ext)
-                {
-                    case ".html": mime = "text/html; charset=utf-8"; break;
-                    case ".css":  mime = "text/css; charset=utf-8"; break;
-                    case ".js":   mime = "application/javascript; charset=utf-8"; break;
-                    case ".png":  mime = "image/png"; break;
-                    case ".jpg":
-                    case ".jpeg": mime = "image/jpeg"; break;
-                    case ".svg":  mime = "image/svg+xml"; break;
-                    case ".ico":  mime = "image/x-icon"; break;
-                    case ".json": mime = "application/json; charset=utf-8"; break;
-                    case ".woff": mime = "font/woff"; break;
-                    case ".woff2": mime = "font/woff2"; break;
-                    case ".ttf":  mime = "font/ttf"; break;
-                }
-
-                byte[] data = File.ReadAllBytes(filePath);
-                context.Response.ContentType = mime;
-                context.Response.ContentLength64 = data.Length;
-                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                context.Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
-                context.Response.OutputStream.Write(data, 0, data.Length);
-                context.Response.Close();
-            }
-            catch
-            {
-                try { context.Response.Close(); } catch { }
-            }
         }
     }
 }
