@@ -4802,9 +4802,9 @@ function printCustomInvoice() {
 }
 
 function printQuotation() {
-  const docTitle = document.getElementById('docTitleSelect')?.value || 'QUOTATION';
-  const invoiceNo = document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-  const clientName = document.getElementById('clientNameInput')?.value || 'Client';
+  const docTitle = document.getElementById('quoteDocTitle')?.value || document.getElementById('docTitleSelect')?.value || 'QUOTATION';
+  const invoiceNo = document.getElementById('quoteInvoiceNo')?.value || document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
+  const clientName = document.getElementById('quoteClientName')?.value || document.getElementById('clientNameInput')?.value || 'Client';
 
   const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
   const originalTitle = document.title;
@@ -5125,119 +5125,23 @@ async function generateA4PDFBlob(elementId, filename) {
   }
 }
 
-// Bulletproof Single-Page High-Res A4 PDF Export Engine
+// Bulletproof Single-Page High-Res A4 PDF Export Engine (100% Vector Print Engine)
 async function exportBillBookToA4PDF(sourceElementId, filename) {
-  const sourceEl = document.getElementById(sourceElementId);
-  if (!sourceEl) {
-    showToast('⚠️ Document preview not ready, opening Print dialog...');
+  if (sourceElementId === 'printableInvoice') {
+    printCustomInvoice();
+  } else if (sourceElementId === 'printableQuotation') {
+    printQuotation();
+  } else {
     window.print();
-    return;
-  }
-
-  showToast(`⏳ Generating crisp single-page A4 PDF (${filename})...`);
-
-  // Offscreen container fixed at exact standard A4 width (794px at 96 DPI) at 0,0 behind everything
-  const container = document.createElement('div');
-  container.id = 'pdfExportWrapper';
-  container.style.cssText = 'position:fixed; left:0; top:0; width:794px; background:#ffffff; z-index:-99999; box-sizing:border-box; margin:0; padding:0; pointer-events:none; opacity:0;';
-
-  const clone = sourceEl.cloneNode(true);
-  clone.id = sourceElementId + '_pdfExportClone';
-  
-  // Explicitly reset any mobile zoom or transform from autoFitBillPreview so clone renders at 100% full A4
-  clone.style.zoom = '1';
-  clone.style.transform = 'none';
-  clone.style.webkitTransform = 'none';
-  clone.style.transformOrigin = 'unset';
-  clone.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 !important; padding:0 !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1080px !important; max-height:1100px !important; overflow:hidden !important; zoom:1 !important; transform:none !important; -webkit-transform:none !important;';
-
-  // Make sure table fills available height cleanly without spilling
-  const fillerRow = clone.querySelector('.bill-items-table tr[style*="height"]');
-  if (fillerRow) {
-    fillerRow.style.height = '110px';
-  }
-
-  container.appendChild(clone);
-  document.body.appendChild(container);
-
-  const opt = {
-    margin: [4, 4, 4, 4],
-    filename: filename,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      width: 794,
-      windowWidth: 820,
-      scrollX: 0,
-      scrollY: 0,
-      x: 0,
-      y: 0,
-      onclone: function(clonedDoc) {
-        // Enforce full A4 geometry inside html2canvas's cloned document
-        const bill = clonedDoc.getElementById(sourceElementId + '_pdfExportClone') || clonedDoc.querySelector('.billbook-container');
-        if (bill) {
-          bill.style.cssText = 'width:794px !important; max-width:794px !important; min-width:794px !important; box-sizing:border-box !important; margin:0 !important; padding:0 !important; background:#ffffff !important; border:2px solid #000000 !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:none !important; min-height:1080px !important; max-height:1100px !important; overflow:hidden !important; zoom:1 !important; transform:none !important; -webkit-transform:none !important;';
-        }
-        const overlay = clonedDoc.querySelector('.html2pdf__overlay');
-        if (overlay) {
-          overlay.style.cssText = 'position:fixed !important; left:0 !important; top:0 !important; width:820px !important; min-width:820px !important; right:auto !important; overflow:visible !important; opacity:0 !important; z-index:-99999 !important;';
-        }
-        const cont = clonedDoc.querySelector('.html2pdf__container');
-        if (cont) {
-          cont.style.cssText = 'position:absolute !important; left:0 !important; top:0 !important; width:794px !important; min-width:794px !important; max-width:794px !important; right:auto !important; margin:0 !important; padding:0 !important; overflow:visible !important;';
-        }
-      }
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-
-  try {
-    if (typeof html2pdf !== 'undefined') {
-      await html2pdf().set(opt).from(clone).save();
-      showToast(`✅ PDF Downloaded: ${filename}`);
-    } else {
-      window.print();
-    }
-  } catch (err) {
-    console.error('Direct PDF export error, fallback to print:', err);
-    showToast('⚠️ Opening Print/Save as PDF dialog...');
-    window.print();
-  } finally {
-    if (container.parentNode) {
-      container.parentNode.removeChild(container);
-    }
   }
 }
 
 function downloadCustomBillPDF() {
-  const docTitle = document.getElementById('custDocTitle')?.value || 'TAX INVOICE';
-  const invoiceNo = document.getElementById('custInvoiceNo')?.value || getNextInvoiceNumber();
-  const receiverName = document.getElementById('custReceiverName')?.value || 'Client';
-  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, receiverName);
-  const filename = `${baseName}.pdf`;
-
-  if (typeof renderCustomInvoicePreview === 'function') {
-    renderCustomInvoicePreview();
-  }
-
-  exportBillBookToA4PDF('printableInvoice', filename);
+  printCustomInvoice();
 }
 
 function downloadQuotationPDF() {
-  const docTitle = document.getElementById('quoteDocTitle')?.value || document.getElementById('docTitleSelect')?.value || 'QUOTATION';
-  const invoiceNo = document.getElementById('quoteInvoiceNo')?.value || document.getElementById('invoiceNoInput')?.value || getNextInvoiceNumber();
-  const clientName = document.getElementById('quoteClientName')?.value || document.getElementById('clientNameInput')?.value || 'Client';
-  const baseName = getDocumentCleanFileName(docTitle, invoiceNo, clientName);
-  const filename = `${baseName}.pdf`;
-
-  if (typeof renderQuotationPreview === 'function') {
-    renderQuotationPreview();
-  }
-
-  exportBillBookToA4PDF('printableQuotation', filename);
+  printQuotation();
 }
 
 
